@@ -2,8 +2,8 @@
 //  ContentView.swift
 //  SwarmEmu
 //
-//  Created by Antonio Sanchez-Rivas on 20/3/2024.
-//
+// SwarmEmu Copyright (c) 2024 Tony Sanchez
+// Nanowasp Copyright (c) 2007, 2011 David G. Churchill
 
 import SwiftUI
 

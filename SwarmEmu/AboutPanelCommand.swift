@@ -4,9 +4,7 @@
 //
 //  Adapted from code listed at https://danielsaidi.com/blog/2023/11/28/how-to-customize-the-macos-about-panel-in-swiftui
 //
-//  Created by Antonio Sanchez-Rivas on 10/2/2024.
-//  Version 0.1 3/3/2024
-//  Version 0.2 10/3/2024
+// SwarmEmu Copyright (c) 2024 Tony Sanchez
 
 import Foundation
 import SwiftUI
