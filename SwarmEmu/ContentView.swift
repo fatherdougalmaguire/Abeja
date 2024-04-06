@@ -9,37 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var imagename : String = "basic"
+    @State var imagename : String = "OIG3"
     
     var body: some View {
-        Text("These are just screenshots")
+        Text("At some point in the future,  this code will actually do something")
         VStack {
             Image(imagename)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 700, height: 700)
-            HStack {
-                Button("Basic", action:
-                        {
-                    imagename = "basic"
-                }
-                )
-                .buttonStyle(.borderedProminent)
-            }
-            Button("Emu Joust", action:
-                    {
-                imagename = "joust"
-            }
-            )
-            .buttonStyle(.borderedProminent)
-            Button("Space Invaders", action:
-                    {
-                imagename = "space invaders"
-            }
-            )
-            .buttonStyle(.borderedProminent)
+                .padding()
         }
-        .padding()
     }
 }
 
