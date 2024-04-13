@@ -19,7 +19,7 @@ struct SwarmEmuApp: App {
             AboutPanelCommand(
                             title: "About SwarmEmu",
                             applicationName: "SwarmEmu",
-                            credits: "\nSwarmEmu is a Microbee emulator written in Swift/SwiftUI\n\nIt is a port of Nanowasp ( www.nanowasp.org )\na Javascript emulation of a tape based Microbee written by David G. Churchill\nCopyright (c) 2007, 2011\n\nand hello to Jason Isaacs"
+                            credits: "\nSwarmEmu is a SwiftUI/Swift emulator compatible with tape based models of the Microbee computer\n\nBased on Nanowasp ( http://www.nanowasp.org ) \nCopyright (c) 2007, 2011 David G. Churchill\n\nHello to Jason Isaacs"
                         )
             CommandMenu("Tape") {
                 Button("Nothing to see here folks") {
