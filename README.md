@@ -6,7 +6,7 @@ Copyright (c) 2007, 2011 David G. Churchill
 
 The inital aim is to replicate the functionality of Nanowasp within Swift/SwiftUI
 
-And at some point along the way, expand to include other Microbee models and functionality.
+And at some point along the way, emulate other Microbee models
 And who knows, maybe port it to Windows and Linux
 
 Why ?
