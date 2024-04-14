@@ -8,22 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */; };
-		EA913F722BCA9DD400C119CC /* CRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA913F712BCA9DD400C119CC /* CRTC.swift */; };
 		EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */; };
 		EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */; };
 		EAC46BEF2BAA8DCD00F2783A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */; };
 		EAC46BF22BAA8DCD00F2783A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAC46BF12BAA8DCD00F2783A /* Preview Assets.xcassets */; };
+		EAC77AF92BCAA26900ECEE7E /* CRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC77AF82BCAA26900ECEE7E /* CRTC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPanelCommand.swift; sourceTree = "<group>"; };
-		EA913F712BCA9DD400C119CC /* CRTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTC.swift; sourceTree = "<group>"; };
 		EAC46BE72BAA8DCC00F2783A /* SwarmEmu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwarmEmu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwarmEmuApp.swift; sourceTree = "<group>"; };
 		EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EAC46BF12BAA8DCD00F2783A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EAC46BF32BAA8DCD00F2783A /* SwarmEmu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwarmEmu.entitlements; sourceTree = "<group>"; };
+		EAC77AF82BCAA26900ECEE7E /* CRTC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CRTC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +40,6 @@
 		EAC46BDE2BAA8DCC00F2783A = {
 			isa = PBXGroup;
 			children = (
-				EA913F712BCA9DD400C119CC /* CRTC.swift */,
 				EAC46BE92BAA8DCC00F2783A /* SwarmEmu */,
 				EAC46BE82BAA8DCC00F2783A /* Products */,
 			);
@@ -57,6 +56,7 @@
 		EAC46BE92BAA8DCC00F2783A /* SwarmEmu */ = {
 			isa = PBXGroup;
 			children = (
+				EAC77AF82BCAA26900ECEE7E /* CRTC.swift */,
 				EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */,
 				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
 				EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */,
@@ -146,7 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */,
-				EA913F722BCA9DD400C119CC /* CRTC.swift in Sources */,
+				EAC77AF92BCAA26900ECEE7E /* CRTC.swift in Sources */,
 				EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */,
 				EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */,
 			);
@@ -292,7 +292,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.11;
+				MARKETING_VERSION = 0.12a;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -319,7 +319,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.11;
+				MARKETING_VERSION = 0.12a;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
