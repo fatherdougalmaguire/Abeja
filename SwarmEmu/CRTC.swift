@@ -12,6 +12,10 @@ class CRTC : ObservableObject {
     
     var pcg = Array<UInt8>(repeating: 0,count:4096)
     var screen = Array<UInt8>(repeating: 32,count:4096)
+    
+    var xzoom : Int = 1
+    var yzoom : Int = 2
+    
     @Published var screenbitmap = Array<Bool>(repeating: false,count:131072)
     
     func ClearScreen()
@@ -303,6 +307,13 @@ class CRTC : ObservableObject {
             }
         }
         ClearScreen()
+        printstring("SwarmEmu To-do list",0,0)
+        printstring("* Emulate Z80",0,1)
+        printstring("* Emulate CRTC",0,2)
+        printstring("* Emulate Keyboard",0,3)
+        printstring("* Emulate Sound",0,4)
+        printstring("* Load Basic",0,5)
+        printstring("* Run Games",0,6)
     }
     
     func printchar ( _ charo : Character, _ dxpos : Int, _ dypos : Int )
@@ -332,9 +343,13 @@ class CRTC : ObservableObject {
             bit3 = ((pcg[startpos+MyIndex] & 0b00000100) >> 2) == 1
             bit2 = ((pcg[startpos+MyIndex] & 0b00000010) >> 1) == 1
             bit1 = ((pcg[startpos+MyIndex] & 0b00000001) >> 0) == 1
+            
+            //let stringy = String(pcg[startpos+MyIndex], radix: 2)
+            //let padd = String(repeating: "0",count: (8 - stringy.count))
+            //print(padd + stringy)
+            
             if bit8 {
                 screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)] = true
-                //  print((ypos+MyIndex)*512+xpos)
             }
             if bit7 {
                 screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+1] = true

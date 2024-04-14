@@ -10,9 +10,9 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var ThisCRTC = CRTC()
-    @State private var textInput : String = ""
     
-    let zoom : Int = 2
+    @State private var textInput : String = ""
+    @State private var doublesize : Bool = false
     
     var body: some View {
         Canvas { context, size in
@@ -20,16 +20,16 @@ struct ContentView: View {
                 for mycol in 0...511 {
                     if ThisCRTC.screenbitmap[myrow*512+mycol]
                     {
-                        context.fill(Path(CGRect(x:mycol*zoom,y:myrow*zoom, width: 1*zoom, height: 1*zoom)), with: .color(Color(.sRGB, red: 1, green: 0.749, blue: 0, opacity: 1.0)))
+                        context.fill(Path(CGRect(x:mycol*ThisCRTC.xzoom,y:myrow*ThisCRTC.yzoom, width: 1*ThisCRTC.xzoom, height: 1*ThisCRTC.yzoom)), with: .color(Color(.sRGB, red: 1, green: 0.749, blue: 0, opacity: 1.0)))
                     }
                     else
                     {
-                        context.fill(Path(CGRect(x:mycol*zoom,y:myrow*zoom, width: 1*zoom, height: 1*zoom)), with: .color(Color(.sRGB, red: 0, green: 0, blue: 0, opacity: 1.0)))
+                        context.fill(Path(CGRect(x:mycol*ThisCRTC.xzoom,y:myrow*ThisCRTC.yzoom, width: 1*ThisCRTC.xzoom, height: 1*ThisCRTC.yzoom)), with: .color(Color(.sRGB, red: 0, green: 0, blue: 0, opacity: 1.0)))
                     }
                 }
             }
         }
-        .frame(width: 1024, height: 512)
+        .frame(width: 512*CGFloat(ThisCRTC.xzoom), height: 256*CGFloat(ThisCRTC.yzoom))
         VStack
         {
             Button("Print MicroWorld Basic startup message")
@@ -37,16 +37,35 @@ struct ContentView: View {
                 ThisCRTC.ClearScreen()
                 ThisCRTC.printstring("Applied Technology MicroBee Colour Basic. Ver 5.22e",0,0)
                 ThisCRTC.printstring("Copyright MS 1983 for MicroWorld Australia",0,2)
-                ThisCRTC.printstring(">",0,4)
+                ThisCRTC.printstring(">_",0,4)
             }
-            TextField("Enter text here and press Enter", text: $textInput,
+            Toggle("Zoom screen", isOn: $doublesize)
+                .toggleStyle(SwitchToggleStyle(tint: .orange))
+                .onChange(of: doublesize)
+                {
+                    if doublesize
+                    {
+                        ThisCRTC.xzoom = 2
+                        ThisCRTC.yzoom = 4
+                        ThisCRTC.screenbitmap[0] = ThisCRTC.screenbitmap[0]
+                    }
+                    else
+                    {
+                        ThisCRTC.xzoom = 1
+                        ThisCRTC.yzoom = 2
+                        ThisCRTC.screenbitmap[0] = ThisCRTC.screenbitmap[0]
+                    }
+                }
+            TextField("Enter text to be displayed here and then press Enter", text: $textInput,
                       onCommit:
                         {
                             ThisCRTC.ClearScreen()
                             ThisCRTC.printstring(textInput,0,0)
                             
                         }
-            )
+                      )
+                        .padding()
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
             Spacer()
             Spacer()
         }
