@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */; };
+		EA71A8082BCD3B3E00BD58EA /* EmulatorCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA71A8072BCD3B3E00BD58EA /* EmulatorCore.swift */; };
+		EA71A80A2BCD3B5200BD58EA /* Z80.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA71A8092BCD3B5200BD58EA /* Z80.swift */; };
+		EA71A80E2BCD3B5A00BD58EA /* basic_5.22e.rom in Resources */ = {isa = PBXBuildFile; fileRef = EA71A80B2BCD3B5A00BD58EA /* basic_5.22e.rom */; };
+		EA71A80F2BCD3B5A00BD58EA /* charrom.bin in Resources */ = {isa = PBXBuildFile; fileRef = EA71A80C2BCD3B5A00BD58EA /* charrom.bin */; };
 		EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */; };
 		EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */; };
 		EAC46BEF2BAA8DCD00F2783A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */; };
@@ -17,6 +21,10 @@
 
 /* Begin PBXFileReference section */
 		EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPanelCommand.swift; sourceTree = "<group>"; };
+		EA71A8072BCD3B3E00BD58EA /* EmulatorCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmulatorCore.swift; sourceTree = "<group>"; };
+		EA71A8092BCD3B5200BD58EA /* Z80.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Z80.swift; sourceTree = "<group>"; };
+		EA71A80B2BCD3B5A00BD58EA /* basic_5.22e.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = basic_5.22e.rom; sourceTree = "<group>"; };
+		EA71A80C2BCD3B5A00BD58EA /* charrom.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = charrom.bin; sourceTree = "<group>"; };
 		EAC46BE72BAA8DCC00F2783A /* SwarmEmu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwarmEmu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwarmEmuApp.swift; sourceTree = "<group>"; };
 		EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -37,6 +45,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA71A80D2BCD3B5A00BD58EA /* Roms */ = {
+			isa = PBXGroup;
+			children = (
+				EA71A80B2BCD3B5A00BD58EA /* basic_5.22e.rom */,
+				EA71A80C2BCD3B5A00BD58EA /* charrom.bin */,
+			);
+			name = Roms;
+			path = ../../../../../Downloads/SwarmEmu/SwarmEmu/Roms;
+			sourceTree = "<group>";
+		};
 		EAC46BDE2BAA8DCC00F2783A = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +74,9 @@
 		EAC46BE92BAA8DCC00F2783A /* SwarmEmu */ = {
 			isa = PBXGroup;
 			children = (
+				EA71A80D2BCD3B5A00BD58EA /* Roms */,
+				EA71A8092BCD3B5200BD58EA /* Z80.swift */,
+				EA71A8072BCD3B3E00BD58EA /* EmulatorCore.swift */,
 				EAC77AF82BCAA26900ECEE7E /* CRTC.swift */,
 				EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */,
 				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
@@ -135,6 +156,8 @@
 			files = (
 				EAC46BF22BAA8DCD00F2783A /* Preview Assets.xcassets in Resources */,
 				EAC46BEF2BAA8DCD00F2783A /* Assets.xcassets in Resources */,
+				EA71A80F2BCD3B5A00BD58EA /* charrom.bin in Resources */,
+				EA71A80E2BCD3B5A00BD58EA /* basic_5.22e.rom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,8 +169,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */,
+				EA71A8082BCD3B3E00BD58EA /* EmulatorCore.swift in Sources */,
 				EAC77AF92BCAA26900ECEE7E /* CRTC.swift in Sources */,
 				EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */,
+				EA71A80A2BCD3B5200BD58EA /* Z80.swift in Sources */,
 				EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,7 +317,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.12a;
+				MARKETING_VERSION = 0.13a;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -319,7 +344,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.12a;
+				MARKETING_VERSION = 0.13a;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

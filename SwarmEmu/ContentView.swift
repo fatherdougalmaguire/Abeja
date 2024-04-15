@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var ThisCRTC = CRTC()
+    @StateObject var ThisEmulatorCore = EmulatorCore()
     
     @State private var textInput : String = ""
     @State private var doublesize : Bool = false
