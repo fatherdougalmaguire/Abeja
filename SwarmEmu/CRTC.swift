@@ -16,6 +16,11 @@ class CRTC : ObservableObject {
     var xzoom : Int = 1
     var yzoom : Int = 2
     
+    var xpixels : Int = 8
+    var ypixels : Int = 16
+    
+    var charoffset : Int = 0
+    
     @Published var screenbitmap = Array<Bool>(repeating: false,count:131072)
     
     func ClearScreen()
@@ -45,7 +50,6 @@ class CRTC : ObservableObject {
         } else {
             print("Can't find character rom")
         }
-        print(pcg[0])
 
         ClearScreen()
         printstring("SwarmEmu To-do list",0,0)
@@ -71,9 +75,9 @@ class CRTC : ObservableObject {
         var bit2 : Bool
         var bit1 : Bool
         
-        startpos = Int(charo.asciiValue ?? 0)*16
+        startpos = (Int(charo.asciiValue ?? 0)*16)+charoffset
         
-        for MyIndex in 0...15
+        for MyIndex in 0..<ypixels
         {
             //print("**",MyIndex)
             bit8 = ((pcg[startpos+MyIndex] & 0b10000000) >> 7) == 1
@@ -85,40 +89,29 @@ class CRTC : ObservableObject {
             bit2 = ((pcg[startpos+MyIndex] & 0b00000010) >> 1) == 1
             bit1 = ((pcg[startpos+MyIndex] & 0b00000001) >> 0) == 1
             
-            //let stringy = String(pcg[startpos+MyIndex], radix: 2)
-            //let padd = String(repeating: "0",count: (8 - stringy.count))
-            //print(padd + stringy)
-            
             if bit8 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)] = true
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)] = true
             }
             if bit7 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+1] = true
-                // print((ypos+MyIndex)*512+xpos+1)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+1] = true
             }
             if bit6 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+2] = true
-                // print((ypos+MyIndex)*512+xpos+2)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+2] = true
             }
             if bit5 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+3] = true
-                //print((ypos+MyIndex)*512+xpos+3)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+3] = true
             }
             if bit4 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+4] = true
-                // print((ypos+MyIndex)*512+xpos+4)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+4] = true
             }
             if bit3 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+5] = true
-                // print((ypos+MyIndex)*512+xpos+5)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+5] = true
             }
             if bit2 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+6] = true
-                //print((ypos+MyIndex)*512+xpos+6)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+6] = true
             }
             if bit1 {
-                screenbitmap[(dypos*512*16)+(MyIndex*512)+(dxpos*8)+7] = true
-                //print((ypos+MyIndex)*512+xpos+7)
+                screenbitmap[(dypos*512*ypixels)+(MyIndex*512)+(dxpos*8)+7] = true
             }
         }
     }

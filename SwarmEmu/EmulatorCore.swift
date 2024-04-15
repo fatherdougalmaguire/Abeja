@@ -32,6 +32,5 @@ class EmulatorCore : ObservableObject {
         } else {
             print("Can't find basic rom")
         }
-        print(AddressSpace[32768])
     }
 }

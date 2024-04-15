@@ -14,6 +14,7 @@ struct ContentView: View {
     
     @State private var textInput : String = ""
     @State private var doublesize : Bool = false
+    @State private var eightycolumn : Bool = false
     
     var body: some View {
         Canvas { context, size in
@@ -48,13 +49,36 @@ struct ContentView: View {
                     {
                         ThisCRTC.xzoom = 2
                         ThisCRTC.yzoom = 4
-                        ThisCRTC.screenbitmap[0] = ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
                     }
                     else
                     {
                         ThisCRTC.xzoom = 1
                         ThisCRTC.yzoom = 2
-                        ThisCRTC.screenbitmap[0] = ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                    }
+                }
+            Toggle("80 column display", isOn: $eightycolumn)
+                .toggleStyle(SwitchToggleStyle(tint: .orange))
+                .onChange(of: eightycolumn)
+                {
+                    if eightycolumn
+                    {
+                        ThisCRTC.xpixels = 8
+                        ThisCRTC.ypixels = 11
+                        ThisCRTC.charoffset = 2048
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                    }
+                    else
+                    {
+                        ThisCRTC.xpixels = 8
+                        ThisCRTC.ypixels = 16
+                        ThisCRTC.charoffset = 0
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
                     }
                 }
             TextField("Enter text to be displayed here and then press Enter", text: $textInput,
