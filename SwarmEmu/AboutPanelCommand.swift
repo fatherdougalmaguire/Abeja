@@ -25,7 +25,6 @@ public struct AboutPanelCommand: Commands {
                 .credits: NSAttributedString(
                     string: credits,
                     attributes: [
-                        //.backgroundColor: NSColor.secondaryLabelColor,
                         .paragraphStyle: paragraphStyle,
                         .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
                         

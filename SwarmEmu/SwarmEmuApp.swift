@@ -14,6 +14,7 @@ struct SwarmEmuApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowResizability(.contentSize)
         .commands
         {
             AboutPanelCommand(
@@ -39,5 +40,11 @@ struct SwarmEmuApp: App {
                 Link("Hello to Jason Isaacs", destination: URL(string: "https://www.kermodeandmayo.com")!)
             }
         }
+    }
+}
+
+struct ExampleView: View {
+     var body: some View {
+        Text("some text")
     }
 }

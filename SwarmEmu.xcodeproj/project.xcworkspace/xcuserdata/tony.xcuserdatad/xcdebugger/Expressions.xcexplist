@@ -3,6 +3,14 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "closure #5 in closure #2 in SwarmEmuApp.body.getter:SwarmEmuApp.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "Bundle.main.displayName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "CRTC.updatebuffer():CRTC.swift">
          <PersistentStrings>
             <PersistentString
