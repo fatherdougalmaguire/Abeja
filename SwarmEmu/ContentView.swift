@@ -18,9 +18,9 @@ struct ContentView: View {
     
     var body: some View {
         Canvas { context, size in
-            for myrow in 0...255 {
-                for mycol in 0...511 {
-                    if ThisCRTC.screenbitmap[myrow*512+mycol]
+            for myrow in 0...ThisCRTC.canvasy-1 {
+                for mycol in 0...ThisCRTC.canvasx-1 {
+                    if ThisCRTC.screenbitmap[myrow*ThisCRTC.maxcanvasx+mycol]
                     {
                         context.fill(Path(CGRect(x:mycol*ThisCRTC.xzoom,y:myrow*ThisCRTC.yzoom, width: 1*ThisCRTC.xzoom, height: 1*ThisCRTC.yzoom)), with: .color(Color(.sRGB, red: 1, green: 0.749, blue: 0, opacity: 1.0)))
                     }
@@ -31,15 +31,27 @@ struct ContentView: View {
                 }
             }
         }
-        .frame(width: 512*CGFloat(ThisCRTC.xzoom), height: 256*CGFloat(ThisCRTC.yzoom))
+        .frame(width: CGFloat(ThisCRTC.canvasx)*CGFloat(ThisCRTC.xzoom), height: CGFloat(ThisCRTC.canvasy)*CGFloat(ThisCRTC.yzoom))
         VStack
         {
             Button("Print MicroWorld Basic startup message")
             {
-                ThisCRTC.ClearScreen()
-                ThisCRTC.printstring("Applied Technology MicroBee Colour Basic. Ver 5.22e",0,0)
-                ThisCRTC.printstring("Copyright MS 1983 for MicroWorld Australia",0,2)
-                ThisCRTC.printstring(">_",0,4)
+                if eightycolumn
+                {
+                    ThisCRTC.ClearScreen()
+                    ThisCRTC.printstring("Microbee  56k  CP/M",0,1)
+                    ThisCRTC.printstring("Vers 2.20 [ZCPR II]",0,2)
+                    ThisCRTC.printstring("A>",0,4)
+                    ThisCRTC.updatebuffer()
+                }
+                else
+                {
+                    ThisCRTC.ClearScreen()
+                    ThisCRTC.printstring("Applied Technology MicroBee Colour Basic. Ver 5.22e",0,0)
+                    ThisCRTC.printstring("Copyright MS 1983 for MicroWorld Australia",0,2)
+                    ThisCRTC.printstring(">_",0,4)
+                    ThisCRTC.updatebuffer()
+                }
             }
             Toggle("Zoom screen", isOn: $doublesize)
                 .toggleStyle(SwitchToggleStyle(tint: .orange))
@@ -49,15 +61,13 @@ struct ContentView: View {
                     {
                         ThisCRTC.xzoom = 2
                         ThisCRTC.yzoom = 4
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.updatebuffer()
                     }
                     else
                     {
                         ThisCRTC.xzoom = 1
                         ThisCRTC.yzoom = 2
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.updatebuffer()
                     }
                 }
             Toggle("80 column display", isOn: $eightycolumn)
@@ -68,17 +78,39 @@ struct ContentView: View {
                     {
                         ThisCRTC.xpixels = 8
                         ThisCRTC.ypixels = 11
+                        ThisCRTC.xcolumns = 80
+                        ThisCRTC.yrows = 24
                         ThisCRTC.charoffset = 2048
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.canvasx = 640
+                        ThisCRTC.canvasy = 264
+                        ThisCRTC.ClearScreen()
+                        ThisCRTC.printstring("SwarmEmu To-do list",0,0)
+                        ThisCRTC.printstring("* Emulate Z80",0,1)
+                        ThisCRTC.printstring("* Emulate CRTC",0,2)
+                        ThisCRTC.printstring("* Emulate Keyboard",0,3)
+                        ThisCRTC.printstring("* Emulate Sound",0,4)
+                        ThisCRTC.printstring("* Load Basic",0,5)
+                        ThisCRTC.printstring("* Run Games",0,6)
+                        ThisCRTC.updatebuffer()
                     }
                     else
                     {
                         ThisCRTC.xpixels = 8
                         ThisCRTC.ypixels = 16
                         ThisCRTC.charoffset = 0
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
-                        ThisCRTC.screenbitmap[0] = !ThisCRTC.screenbitmap[0]
+                        ThisCRTC.canvasx = 512
+                        ThisCRTC.canvasy = 256
+                        ThisCRTC.xcolumns = 64
+                        ThisCRTC.yrows = 16
+                        ThisCRTC.ClearScreen()
+                        ThisCRTC.printstring("SwarmEmu To-do list",0,0)
+                        ThisCRTC.printstring("* Emulate Z80",0,1)
+                        ThisCRTC.printstring("* Emulate CRTC",0,2)
+                        ThisCRTC.printstring("* Emulate Keyboard",0,3)
+                        ThisCRTC.printstring("* Emulate Sound",0,4)
+                        ThisCRTC.printstring("* Load Basic",0,5)
+                        ThisCRTC.printstring("* Run Games",0,6)
+                        ThisCRTC.updatebuffer()
                     }
                 }
             TextField("Enter text to be displayed here and then press Enter", text: $textInput,
@@ -86,7 +118,7 @@ struct ContentView: View {
                         {
                             ThisCRTC.ClearScreen()
                             ThisCRTC.printstring(textInput,0,0)
-                            
+                            ThisCRTC.updatebuffer()
                         }
                       )
                         .padding()
