@@ -8,7 +8,7 @@ Copyright (c) 2007, 2011 David G. Churchill
 
 The MicroWorld Basic V5.22e ROM and the MicroBee Font ROM are used in this emulator with kind permission from Ewan J. Wordsworth of [Microbee Technology](https://www.microbeetechnology.com.au/i)
 
-The inital aim is to replicate the functionality of Nanowasp within Swift/SwiftUI  
+The inital aim is to replicate the functionality of Nanowasp within Swift/SwiftUI on MacOS and iOS
 
 And at some point along the way, emulate other Microbee models  
 And who knows, maybe port it to Windows and Linux  
