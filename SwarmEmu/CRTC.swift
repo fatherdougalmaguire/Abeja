@@ -32,6 +32,9 @@ class CRTC : ObservableObject {
     
     var charoffset : Int = 0
     
+    var xcursor : Int = 1
+    var ycursor : Int = 1
+    
     @Published var screenbitmap = Array<Bool>(repeating: false,count:168960)
     //@Published var screenbitmap = Array(repeating: Array(repeating: false, count: 80*8),count:11*24)
     
@@ -45,6 +48,9 @@ class CRTC : ObservableObject {
         {
             screenram[MyIndex] = 32
         }
+        
+        xcursor = 1
+        ycursor = 1
     }
     
    init ()
@@ -68,13 +74,13 @@ class CRTC : ObservableObject {
         }
         
         ClearScreen()
-        printstring("SwarmEmu To-do list",0,0)
-        printstring("* Emulate Z80",0,1)
-        printstring("* Emulate CRTC",0,2)
-        printstring("* Emulate Keyboard",0,3)
-        printstring("* Emulate Sound",0,4)
-        printstring("* Load Basic",0,5)
-        printstring("* Run Games",0,6)
+        printline("SwarmEmu To-do list\n\n")
+        printline("* Emulate Z80\n")
+        printline("* Emulate CRTC\n")
+        printline("* Emulate Keyboard\n")
+        printline("* Emulate Sound\n")
+        printline("* Load Basic\n")
+        printline("* Run Games\n\n")
         updatebuffer()
     }
     
@@ -82,6 +88,7 @@ class CRTC : ObservableObject {
     
     {
         var startpos : Int
+        var startpos2 : Int
         
         var bit7 : Bool
         var bit6 : Bool
@@ -91,10 +98,14 @@ class CRTC : ObservableObject {
         var bit2 : Bool
         var bit1 : Bool
         var bit0 : Bool
+        
         var dxpos : Int
         var dypos : Int
         
-        for BufferIndex in 0..<2048
+        print("update buffer")
+        print(Date().timeIntervalSince1970)
+        
+        for BufferIndex in 0..<xcolumns*yrows-1
                 
         {
             startpos = Int(screenram[BufferIndex])*16+charoffset
@@ -112,39 +123,24 @@ class CRTC : ObservableObject {
                 bit1 = ((pcgram[startpos+MyIndex] & 0b00000010) >> 1) == 1
                 bit0 = ((pcgram[startpos+MyIndex] & 0b00000001) >> 0) == 1
                 
-                if bit7 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)] = true
-                }
-                if bit6 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+1] = true
-                }
-                if bit5 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+2] = true
-                }
-                if bit4 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+3] = true
-                }
-                if bit3 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+4] = true
-                }
-                if bit2 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+5] = true
-                }
-                if bit1 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+6] = true
-                }
-                if bit0 {
-                    screenbitmap[(dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)+7] = true
-                }
+                startpos2 = (dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)
+                screenbitmap[startpos2] = bit7
+                screenbitmap[startpos2+1] = bit6
+                screenbitmap[startpos2+2] = bit5
+                screenbitmap[startpos2+3] = bit4
+                screenbitmap[startpos2+4] = bit3
+                screenbitmap[startpos2+5] = bit2
+                screenbitmap[startpos2+6] = bit1
+                screenbitmap[startpos2+7] = bit0
             }
         }
+        print(Date().timeIntervalSince1970)
 
     }
 
     func printstring( _ message : String, _ xpos : Int, _ ypos : Int )
     
     {
-        
         var xposition : Int = 0
         
         for ascii in message
@@ -154,6 +150,44 @@ class CRTC : ObservableObject {
               screenram[ypos*xcolumns+xpos+xposition] = ascii.asciiValue ?? 0
               //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
               xposition = xposition+1
+            }
+        }
+    }
+    
+    func printline( _ message : String )
+    
+    {
+        for ascii in message
+        {
+          if xcursor <= xcolumns
+            {
+              if ascii.asciiValue == 10
+              {
+               xcursor = xcolumns+1
+              }
+              else
+              {
+                  screenram[(ycursor-1)*xcolumns+xcursor-1] = ascii.asciiValue ?? 0
+                  //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
+                  xcursor = xcursor+1
+              }
+            }
+          if xcursor > xcolumns
+            {
+             xcursor = 1
+             ycursor = ycursor+1
+            }
+          if ycursor > yrows
+            {
+              ycursor = yrows
+              for index in 0..<(yrows-1)*xcolumns
+              {
+               screenram[index] = screenram[index+xcolumns]
+              }
+              for index in (yrows-1)*xcolumns..<yrows*xcolumns
+              {
+               screenram[index] = 32
+              }
             }
         }
     }
