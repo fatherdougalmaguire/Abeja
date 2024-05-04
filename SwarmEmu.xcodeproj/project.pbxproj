@@ -12,6 +12,7 @@
 		EA71A80A2BCD3B5200BD58EA /* Z80.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA71A8092BCD3B5200BD58EA /* Z80.swift */; };
 		EA71A8202BD4E5C000BD58EA /* charrom.bin in Resources */ = {isa = PBXBuildFile; fileRef = EA71A81E2BD4E5C000BD58EA /* charrom.bin */; };
 		EA71A8212BD4E5C000BD58EA /* basic_5.22e.rom in Resources */ = {isa = PBXBuildFile; fileRef = EA71A81F2BD4E5C000BD58EA /* basic_5.22e.rom */; };
+		EA8453842BE61447006B7EC0 /* buffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = EA8453832BE61447006B7EC0 /* buffer.metal */; };
 		EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */; };
 		EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */; };
 		EAC46BEF2BAA8DCD00F2783A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 		EA71A8092BCD3B5200BD58EA /* Z80.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Z80.swift; sourceTree = "<group>"; };
 		EA71A81E2BD4E5C000BD58EA /* charrom.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = charrom.bin; sourceTree = "<group>"; };
 		EA71A81F2BD4E5C000BD58EA /* basic_5.22e.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = basic_5.22e.rom; sourceTree = "<group>"; };
+		EA8453832BE61447006B7EC0 /* buffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = buffer.metal; sourceTree = "<group>"; };
 		EAC46BE72BAA8DCC00F2783A /* SwarmEmu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwarmEmu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwarmEmuApp.swift; sourceTree = "<group>"; };
 		EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,16 +75,17 @@
 		EAC46BE92BAA8DCC00F2783A /* SwarmEmu */ = {
 			isa = PBXGroup;
 			children = (
-				EA71A81D2BD4E58D00BD58EA /* ROMS */,
-				EA71A8092BCD3B5200BD58EA /* Z80.swift */,
-				EA71A8072BCD3B3E00BD58EA /* EmulatorCore.swift */,
-				EAC77AF82BCAA26900ECEE7E /* CRTC.swift */,
-				EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */,
-				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
-				EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */,
-				EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */,
 				EAC46BF32BAA8DCD00F2783A /* SwarmEmu.entitlements */,
+				EA8453832BE61447006B7EC0 /* buffer.metal */,
+				EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */,
+				EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */,
+				EAC77AF82BCAA26900ECEE7E /* CRTC.swift */,
+				EA71A8072BCD3B3E00BD58EA /* EmulatorCore.swift */,
+				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
+				EA71A8092BCD3B5200BD58EA /* Z80.swift */,
+				EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */,
 				EAC46BF02BAA8DCD00F2783A /* Preview Content */,
+				EA71A81D2BD4E58D00BD58EA /* ROMS */,
 			);
 			path = SwarmEmu;
 			sourceTree = "<group>";
@@ -168,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */,
+				EA8453842BE61447006B7EC0 /* buffer.metal in Sources */,
 				EA71A8082BCD3B3E00BD58EA /* EmulatorCore.swift in Sources */,
 				EAC77AF92BCAA26900ECEE7E /* CRTC.swift in Sources */,
 				EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */,
@@ -232,7 +236,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.3;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -289,7 +293,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.3;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -313,14 +317,17 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tony Sanchez";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.143;
+				MARKETING_VERSION = 0.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -342,14 +349,17 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tony Sanchez";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.143;
+				MARKETING_VERSION = 0.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
