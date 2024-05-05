@@ -31,7 +31,7 @@ float moscillate(float f) {
     return 0.5 * (sin(f) + 1);
 }
 
-[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos,  float mytime)
+[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float mytime)
 {
     half4 thingy;
     int screenpos;
@@ -39,11 +39,11 @@ float moscillate(float f) {
     int xcursor;
     int ycursor;
     
-    ycursor = int(position.y) % 16;
-    xcursor = int(position.x) % 8;
+    ycursor = int(position.y) % int(ypixels); // 16 refers to pixels high - 16 for 64x16 and 11 for 80x24
+    xcursor = int(position.x) % 8;  // 8 refers to pixels wide - 8 for 64x16 and 80x25
     
-    screenpos = trunc(position.y/16.0)*64+trunc(position.x/8.0);
-    pcgpos = int(screenram[screenpos])*16+int(ycursor);
+    screenpos = trunc(position.y/ypixels)*int(xcolumns)+trunc(position.x/8.0); // screenram - 16 refers to pixels high - 16 for 64x16 and 11 for 80x24,8 refers to pixels wide - 8 for 64x16 and 80x25, 64 refers to columns of textp[
+    pcgpos = int(charoffset)+int(screenram[screenpos])*16+int(ycursor);  // 16 refers to PCG data - 16 for 64x16 and 80x24
     
     int bitmask = (128 >> int(xcursor));
     

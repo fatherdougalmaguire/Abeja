@@ -13,30 +13,35 @@ class CRTC : ObservableObject {
     var pcgram = Array<Float>(repeating: 0,count:4096)
     var screenram = Array<Float>(repeating: 32,count:2048)
     
-    var xzoom : Int = 1
-    var yzoom : Int = 2
-    
     var xpixels : Int = 8
-    var ypixels : Int = 16
+    var ypixels : Float = 16
     
-    var xcolumns : Int = 64
-    var yrows : Int = 16
+    var xcolumns : Float = 64
+    var yrows : Float = 16
     
     var maxcanvasx : Int = 640
     var maxcanvasy : Int = 264
     
-    var canvasx : Int = 512
-    var canvasy : Int = 256
+    var canvasx : Float = 512
+    var canvasy : Float = 256
     
-    var bitmapsize : Int = 168960
+    //var bitmapsize : Int = 168960
     
-    var charoffset : Int = 0
+    var charoffset : Float = 0
     
     var xcursor : Float = 1
     var ycursor : Float = 1
     
+    var tick : Float = 1
+    
     //@Published var screenbitmap = Array<Bool>(repeating: false,count:168960)
     //@Published var screenbitmap = Array(repeating: Array(repeating: false, count: 80*8),count:11*24)
+    
+    func updatetick ()
+    {
+        tick = tick+1
+        print(tick)
+    }
     
     func ClearScreen()
     {
@@ -147,7 +152,7 @@ class CRTC : ObservableObject {
         {
           if xpos+xposition < 64
             {
-              screenram[ypos*xcolumns+xpos+xposition] = Float(ascii.asciiValue ?? 0)
+              screenram[ypos*Int(xcolumns)+xpos+xposition] = Float(ascii.asciiValue ?? 0)
               //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
               xposition = xposition+1
             }
@@ -167,24 +172,24 @@ class CRTC : ObservableObject {
               }
               else
               {
-                  screenram[Int(ycursor-1)*xcolumns+Int(xcursor)-1] = Float(ascii.asciiValue ?? 0)
+                  screenram[Int(ycursor-1)*Int(xcolumns)+Int(xcursor)-1] = Float(ascii.asciiValue ?? 0)
                   //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
                   xcursor = xcursor+1
               }
             }
-          if xcursor > Float(xcolumns)
+          if xcursor > xcolumns
             {
              xcursor = 1
              ycursor = ycursor+1
             }
-          if ycursor > Float(yrows)
+          if ycursor > yrows
             {
-              ycursor = Float(yrows)
-              for index in 0..<(yrows-1)*xcolumns
+              ycursor = yrows
+              for index in 0..<(Int(yrows)-1)*Int(xcolumns)
               {
-               screenram[index] = screenram[index+xcolumns]
+               screenram[index] = screenram[index+Int(xcolumns)]
               }
-              for index in (yrows-1)*xcolumns..<yrows*xcolumns
+              for index in (Int(yrows)-1)*Int(xcolumns)..<Int(yrows)*Int(xcolumns)
               {
                screenram[index] = 32
               }
