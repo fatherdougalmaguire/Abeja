@@ -27,11 +27,11 @@ using namespace metal;
     }
 }
 
-float moscillate(float f) {
+float oscillate(float f) {
     return 0.5 * (sin(f) + 1);
 }
 
-[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float mytime)
+[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float tick)
 {
     half4 thingy;
     int screenpos;
@@ -47,16 +47,18 @@ float moscillate(float f) {
     
     int bitmask = (128 >> int(xcursor));
     
-    //return displaypcg*16+achar[pixely][pixelx];
-    
     if ((int(pcgchar[pcgpos]) & bitmask)  > 0 )
     {
-        //thingy = half4(1.0,0.749,0,moscillate(mytime+2 * M_PI_F));
         thingy = half4(1.0,0.749,0,1);
     }
     else
     {
         thingy = half4(0.0,0.0,0.0,1.0);
+    }
+    
+    if (( tick > 20 ) && (int(position.x) >= int((xcursorpos-1)*8)) && (int(position.x) <= int((xcursorpos*8)-1)) && ( int(position.y) == int((ycursorpos*ypixels)-1)))
+    {
+        thingy = half4(1.0,0.749,0,1);
     }
     
     return thingy;

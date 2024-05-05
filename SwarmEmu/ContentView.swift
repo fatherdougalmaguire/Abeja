@@ -37,7 +37,7 @@ struct ContentView: View {
                     .fill(Color.white)
                     .frame(width: CGFloat(ThisCRTC.canvasx), height: CGFloat(ThisCRTC.canvasy))
                 //.colorEffect(ShaderLibrary.pcg(.float(startDate.timeIntervalSinceNow)))
-                    .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisCRTC.screenram),.floatArray(ThisCRTC.pcgram),.float(ThisCRTC.xcursor),.float(ThisCRTC.ycursor),.float(ThisCRTC.ypixels),.float(ThisCRTC.xcolumns),.float(ThisCRTC.charoffset),.float(startDate.timeIntervalSinceNow)))
+                    .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisCRTC.screenram),.floatArray(ThisCRTC.pcgram),.float(ThisCRTC.xcursor),.float(ThisCRTC.ycursor),.float(ThisCRTC.ypixels),.float(ThisCRTC.xcolumns),.float(ThisCRTC.charoffset),.float(ThisCRTC.tick)))
                     .scaleEffect(x: 1*CGFloat(zoomfactor), y:1.333*CGFloat(zoomfactor))
                 //.colorEffect(ShaderLibrary.interlace())
                     .frame(width: CGFloat(ThisCRTC.canvasx*zoomfactor), height: CGFloat(ThisCRTC.canvasy*1.333*zoomfactor))
@@ -134,7 +134,7 @@ struct ContentView: View {
             {
                 for myindex in 1...1000
                 {
-                    ThisCRTC.printline("John Big Booty "+String(myindex+county)+"\n")
+                    ThisCRTC.printline("Line "+String(myindex+county)+" : Hello to Jason Isaacs\n")
                 }
                 county = county+1
             }

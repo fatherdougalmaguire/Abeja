@@ -32,7 +32,7 @@ class CRTC : ObservableObject {
     var xcursor : Float = 1
     var ycursor : Float = 1
     
-    var tick : Float = 1
+    var tick : Float = 0
     
     //@Published var screenbitmap = Array<Bool>(repeating: false,count:168960)
     //@Published var screenbitmap = Array(repeating: Array(repeating: false, count: 80*8),count:11*24)
@@ -40,7 +40,10 @@ class CRTC : ObservableObject {
     func updatetick ()
     {
         tick = tick+1
-        print(tick)
+        if tick > 40
+        {
+          tick = 0
+        }
     }
     
     func ClearScreen()
