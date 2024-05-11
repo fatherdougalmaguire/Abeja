@@ -1,7 +1,7 @@
 
-SwarmEmu is a SwiftUI/Swift emulator ( MacOS Sonoma 14.0 or greater ) compatible with tape based models of the Microbee computer  
+SwarmEmu is a SwiftUI/Swift emulator ( MacOS Sonoma 14.0+ ) compatible with tape based models of the Microbee computer  
 
-![image](https://github.com/fatherdougalmaguire/SwarmEmu/assets/144415904/02583830-edd1-4765-8f0b-ecf3ce2e0f9c)
+![image](https://github.com/fatherdougalmaguire/SwarmEmu/assets/144415904/35ff5925-00be-4bb9-8481-be82c1c63575)
 
 Based on [Nanowasp](http://www.nanowasp.org) 
 Copyright (c) 2007, 2011 David G. Churchill
