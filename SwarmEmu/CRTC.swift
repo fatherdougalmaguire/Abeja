@@ -34,16 +34,32 @@ class CRTC : ObservableObject {
     
     var tick : Float = 0
     
+    @Published var cursortype : Float = 2 // 0 = No blinking, 1 = No Cursor, 2 = normal flash, 3 = flash flash
+    
+    var cursorstart :  Float = 15
+    var cursorend : Float = 15
+    
     //@Published var screenbitmap = Array<Bool>(repeating: false,count:168960)
     //@Published var screenbitmap = Array(repeating: Array(repeating: false, count: 80*8),count:11*24)
     
     func updatetick ()
     {
+        var ticklimit : Float
+        
         tick = tick+1
-        if tick > 40
+        if cursortype == 2
+        {
+          ticklimit = 40
+        }
+        else
+        {
+          ticklimit = 20
+        }
+        if tick > ticklimit
         {
           tick = 0
         }
+        
     }
     
     func ClearScreen()

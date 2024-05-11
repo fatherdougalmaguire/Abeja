@@ -31,7 +31,7 @@ float oscillate(float f) {
     return 0.5 * (sin(f) + 1);
 }
 
-[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float tick)
+[[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float tick, float cursortype, float cursorstart, float cursorend)
 {
     half4 thingy;
     int screenpos;
@@ -56,10 +56,30 @@ float oscillate(float f) {
         thingy = half4(0.0,0.0,0.0,1.0);
     }
     
-    if (( tick > 20 ) && (int(position.x) >= int((xcursorpos-1)*8)) && (int(position.x) <= int((xcursorpos*8)-1)) && ( int(position.y) == int((ycursorpos*ypixels)-1)))
-    {
-        thingy = half4(1.0,0.749,0,1);
+    switch (int(cursortype))  {
+        case 0: // 0 = No blinking
+            if ((int(position.x) >= int((xcursorpos-1)*8)) && (int(position.x) <= int((xcursorpos*8)-1)) && ( int(position.y) >= int(((ycursorpos-1)*ypixels)+cursorstart)) && ( int(position.y) <= int((int(ycursorpos-1)*ypixels)+cursorend)))
+            {
+                thingy = half4(1.0,0.749,0,1);
+            }
+            break;
+
+        case 1: // 1 = No Cursor
+            break;
+            
+        case 2: // 2 = normal flash
+            if (( tick > 20 ) && (int(position.x) >= int((xcursorpos-1)*8)) && (int(position.x) <= int((xcursorpos*8)-1)) && ( int(position.y) >= int(((ycursorpos-1)*ypixels)+cursorstart)) && ( int(position.y) <= int((int(ycursorpos-1)*ypixels)+cursorend)))
+            {
+                thingy = half4(1.0,0.749,0,1);
+            }
+            break;
+            
+        case 3: // 3 = fast flash
+            if (( tick > 10 ) && (int(position.x) >= int((xcursorpos-1)*8)) && (int(position.x) <= int((xcursorpos*8)-1)) && ( int(position.y) >= int(((ycursorpos-1)*ypixels)+cursorstart)) && ( int(position.y) <= int((int(ycursorpos-1)*ypixels)+cursorend)))
+            {
+                thingy = half4(1.0,0.749,0,1);
+            }
+            break;
     }
-    
     return thingy;
 }
