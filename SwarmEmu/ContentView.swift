@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var eightycolumn : Bool = false
     @State private var zoomfactor: Float = 1.5
     @State private var county: Int = 1
-    //@State private var cursorblink: Float = 2
+    @State private var Interlace: Float = 1
     
     
     //    let timer = Timer.publish(every: 0.01 , on: .main, in: .common).autoconnect()
@@ -52,15 +52,24 @@ struct ContentView: View {
                 }
                 .frame(width: 200)
                 .tint(.orange)
+                Slider(value: $Interlace, in: 0...1, step:1)
+                {
+                    Text("Interlace")
+                } minimumValueLabel: {
+                    Text("Off")//.font(.title2).fontWeight(.thin)
+                } maximumValueLabel: {
+                    Text("On")//.font(.title2).fontWeight(.thin)
+                }
+                .frame(width: 200)
+                .tint(.orange)
             }
             TimelineView(.animation) { context in
                 Rectangle()
                     .fill(Color.white)
                     .frame(width: CGFloat(ThisCRTC.canvasx), height: CGFloat(ThisCRTC.canvasy))
-                //.colorEffect(ShaderLibrary.pcg(.float(startDate.timeIntervalSinceNow)))
                     .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisCRTC.screenram),.floatArray(ThisCRTC.pcgram),.float(ThisCRTC.xcursor),.float(ThisCRTC.ycursor),.float(ThisCRTC.ypixels),.float(ThisCRTC.xcolumns),.float(ThisCRTC.charoffset),.float(ThisCRTC.tick),.float(ThisCRTC.cursortype),.float(ThisCRTC.cursorstart),.float(ThisCRTC.cursorend)))
                     .scaleEffect(x: 1*CGFloat(zoomfactor), y:1.333*CGFloat(zoomfactor))
-                //.colorEffect(ShaderLibrary.interlace())
+                    .colorEffect(ShaderLibrary.interlace(.float(Interlace)))
                     .frame(width: CGFloat(ThisCRTC.canvasx*zoomfactor), height: CGFloat(ThisCRTC.canvasy*1.333*zoomfactor))
                     .onChange(of: context.date) { ThisCRTC.updatetick() }
             }

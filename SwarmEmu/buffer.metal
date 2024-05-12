@@ -8,29 +8,6 @@
 #include <metal_stdlib>
 using namespace metal;
 
-[[ stitchable ]] half4 interlace(float2 position, half4 color, float width, half4 replacement, float strength) {
-    // If the current color is not transparent…
-    if (color.a > 0.0h) {
-        // If we are an alternating horizontal line…
-        if (fmod(position.y, width * 2.0) <= width) {
-            // Render the original color
-            return color;
-        } else {
-            // Otherwise blend the original color with the provided color
-            // at whatever strength was requested, multiplying by this pixel's
-            // alpha to avoid a hard edge.
-            return half4(mix(color, replacement, strength)) * color.a;
-        }
-    } else {
-        // Use the current (transparent) color
-        return color;
-    }
-}
-
-float oscillate(float f) {
-    return 0.5 * (sin(f) + 1);
-}
-
 [[ stitchable ]] half4 newpcg(float2 position, half4 color, device const float *screenram, int screenramsize, device const float *pcgchar, int pcgcharsize, float xcursorpos, float ycursorpos, float ypixels, float xcolumns, float charoffset, float tick, float cursortype, float cursorstart, float cursorend)
 {
     half4 thingy;
@@ -82,4 +59,20 @@ float oscillate(float f) {
             break;
     }
     return thingy;
+}
+
+[[ stitchable ]] half4 interlace ( float2 position, half4 color, float interlaceon )
+{
+    half4 InterlaceColor = half4(0.0, 0.0, 0.0, 1.0);
+
+    // 2 pixels wide, change for more/less
+    // or change fragCoord.y to fragCoord.x for vertical lines
+    if ((int(position.y) % 2 == 0) && (interlaceon == 1))
+    {
+        return InterlaceColor;
+    }
+    else 
+    {
+        return color;
+    }
 }
