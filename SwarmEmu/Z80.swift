@@ -33,11 +33,16 @@ class Z80 : ObservableObject {
         var PC : UInt16 // Program Counter
     }
     
-    //@Published var screenbitmap = Array<Bool>(repeating: false,count:131072)
+    @Published var CPURegisters = registers( A: 0, F :0,B : 0,C : 0,H : 0,L : 0,AltA : 0,AltF : 0,AltB : 0,AltC : 0,AltH : 0,AltL : 0,I : 0,R : 0,IX : 0,IY : 0,SP : 0,PC : 0 )
     
-    init()
+    var CPURunning : Bool = false
     
+    func StepInstruction()
     {
-        
+        self.CPURegisters.PC = self.CPURegisters.PC+1
+        if self.CPURegisters.PC == 0xFFFF
+        {
+            self.CPURegisters.PC = 0
+        }
     }
 }

@@ -98,13 +98,9 @@ class CRTC : ObservableObject {
         }
         
         ClearScreen()
-        printline("SwarmEmu To-do list\n\n")
-        printline("* Emulate Z80\n")
-        printline("* Emulate CRTC\n")
-        printline("* Emulate Keyboard\n")
-        printline("* Emulate Sound\n")
-        printline("* Load Basic\n")
-        printline("* Run Games\n\n")
+        printline("Applied Technology MicroBee Colour Basic. Ver 5.22e\n\n")
+        printline("Copyright MS 1983 for MicroWorld Australia\n\n")
+        printline(">")
         //updatebuffer()
     }
     

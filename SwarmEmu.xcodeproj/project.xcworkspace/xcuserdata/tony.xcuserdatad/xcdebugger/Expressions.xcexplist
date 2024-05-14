@@ -3,14 +3,6 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "closure #5 in closure #2 in SwarmEmuApp.body.getter:SwarmEmuApp.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "Bundle.main.displayName">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "CRTC.updatebuffer():CRTC.swift">
          <PersistentStrings>
             <PersistentString
@@ -21,6 +13,22 @@
             </PersistentString>
             <PersistentString
                value = "ypixels">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #5 in closure #2 in SwarmEmuApp.body.getter:SwarmEmuApp.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "Bundle.main.displayName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #4 in closure #1 in ContentView.body.getter:ContentView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "String(1,radix:2).padding(toLength:16,withPad:&quot;0&quot;,startingAt:1)">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
