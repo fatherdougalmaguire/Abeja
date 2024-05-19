@@ -77,7 +77,7 @@ class CRTC : ObservableObject {
         ycursor = 1
     }
     
-   init ()
+    init ( startupmessage : String = "")
     
     {
         var pcgindex : Int = 0
@@ -97,65 +97,10 @@ class CRTC : ObservableObject {
             print("Can't find character rom")
         }
         
-        ClearScreen()
-        printline("Applied Technology MicroBee Colour Basic. Ver 5.22e\n\n")
-        printline("Copyright MS 1983 for MicroWorld Australia\n\n")
-        printline(">")
-        //updatebuffer()
-    }
-    
-    func updatebuffer ()
-    
-    {
-//        var startpos : Int
-//        var startpos2 : Int
-//        
-//        var bit7 : Bool
-//        var bit6 : Bool
-//        var bit5 : Bool
-//        var bit4 : Bool
-//        var bit3 : Bool
-//        var bit2 : Bool
-//        var bit1 : Bool
-//        var bit0 : Bool
-//        
-//        var dxpos : Int
-//        var dypos : Int
-//        
-//        print("update buffer")
-//        print(Date().timeIntervalSince1970)
-//        
-//        for BufferIndex in 0..<xcolumns*yrows-1
-//                
-//        {
-//            startpos = Int(screenram[BufferIndex])*16+charoffset
-//            //print(BufferIndex,screenram[BufferIndex],UnicodeScalar(screenram[BufferIndex]))
-//            dxpos = BufferIndex % xcolumns
-//            dypos = BufferIndex / xcolumns
-//            for MyIndex in 0..<ypixels
-//            {
-//                bit7 = ((Int(pcgram[startpos+MyIndex]) & 0b10000000) >> 7) == 1
-//                bit6 = ((Int(pcgram[startpos+MyIndex]) & 0b01000000) >> 6) == 1
-//                bit5 = ((Int(pcgram[startpos+MyIndex]) & 0b00100000) >> 5) == 1
-//                bit4 = ((Int(pcgram[startpos+MyIndex]) & 0b00010000) >> 4) == 1
-//                bit3 = ((Int(pcgram[startpos+MyIndex]) & 0b00001000) >> 3) == 1
-//                bit2 = ((Int(pcgram[startpos+MyIndex]) & 0b00000100) >> 2) == 1
-//                bit1 = ((Int(pcgram[startpos+MyIndex]) & 0b00000010) >> 1) == 1
-//                bit0 = ((Int(pcgram[startpos+MyIndex]) & 0b00000001) >> 0) == 1
-//                
-//                startpos2 = (dypos*maxcanvasx*ypixels)+(MyIndex*maxcanvasx)+(dxpos*8)
-//                screenbitmap[startpos2] = bit7
-//                screenbitmap[startpos2+1] = bit6
-//                screenbitmap[startpos2+2] = bit5
-//                screenbitmap[startpos2+3] = bit4
-//                screenbitmap[startpos2+4] = bit3
-//                screenbitmap[startpos2+5] = bit2
-//                screenbitmap[startpos2+6] = bit1
-//                screenbitmap[startpos2+7] = bit0
-//            }
-//        }
-//        print(Date().timeIntervalSince1970)
-
+        printline(startupmessage)
+//        printline("Applied Technology MicroBee Colour Basic. Ver 5.22e\n\n")
+//        printline("Copyright MS 1983 for MicroWorld Australia\n\n")
+//        printline(">")
     }
 
     func printstring( _ message : String, _ xpos : Int, _ ypos : Int )

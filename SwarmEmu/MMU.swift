@@ -10,53 +10,75 @@ import SwiftUI
 
 class MMU : ObservableObject {
     
-    struct MMUblock
-    {
-        var memoryactive : Bool
-        var memorystart : Int
-        var memoryend : Int
-        var AddressSpace : Array<UInt8>
-        var FloatAddressSpace : Array<Float>
-        
-        init( _ memoryactive: Bool, _ memorystart: Int, _ memoryend: Int, _ AddressSpace: Array<UInt8>, _ FloatAddressSpace: Array<Float>) {
-            self.memoryactive = memoryactive
-            self.memorystart = memorystart
-            self.memoryend = memoryend
-            self.AddressSpace = AddressSpace
-            self.FloatAddressSpace = FloatAddressSpace
-        }
+    enum MemoryBlocks  {
+        case Bank1Ram
+        case Bank2Ram
+        case BasicRom
+        case Pak0Rom
+        case NetRom
+        case ScreenRam
+        case CharRom
+        case PCGRam
     }
     
-    @Published var memory = MMUblock(true,0,0,[0],[0])
+    var Label : MemoryBlocks
+    var Active : Bool
+    var ShaderRam : Bool
+    var IsRom : Bool
+    var MemoryStart : Int
+    var MemoryEnd : Int
+    var AddressSpace : Array<UInt8>
+    var FloatAddressSpace : Array<Float>
     
-    init (_ tmemoryactive : Bool = true, _ tmemorystart : Int, _ tmemoryend : Int, _ filename : String, _ fileext : String)
+    init ( Label : MemoryBlocks, Active : Bool,  ShaderRam : Bool, IsRom : Bool,  MemoryStart : Int,  MemoryEnd : Int )
+    
+    {
+        self.Label = Label
+        self.Active = Active
+        self.ShaderRam = ShaderRam
+        self.IsRom = IsRom
+        self.MemoryStart = MemoryStart
+        self.MemoryEnd = MemoryEnd
+        self.AddressSpace = Array<UInt8>(repeating: 0,count:MemoryEnd-MemoryStart+1)
+        self.FloatAddressSpace = Array<Float>(repeating: 0,count:MemoryEnd-MemoryStart+1)
+    }
+    
+    func LoadROM ( FileName : String,  FileExtension : String)
     
     {
         var LoadCounter : Int = 0
         
-        self.memory.memoryactive = tmemoryactive
-        self.memory.memorystart = tmemorystart
-        self.memory.memoryend = tmemoryend
-        self.memory.AddressSpace = Array<UInt8>(repeating: 0,count:tmemoryend-tmemorystart+1)
-        if let urlPath = Bundle.main.url(forResource: filename, withExtension: fileext )
+        if let urlPath = Bundle.main.url(forResource: FileName, withExtension: FileExtension )
         {
             do {
                 let contents = try Data(contentsOf: urlPath)
                 for MyIndex in contents
                 {
-                    self.memory.AddressSpace[LoadCounter] = MyIndex
+                    AddressSpace[LoadCounter] = MyIndex
+                    FloatAddressSpace[LoadCounter] = Float(MyIndex)
                     LoadCounter = LoadCounter + 1
                 }
             }
             catch
             {
-                print("Problem with basic rom")
+                print("Problem loading Rom file")
             }
         }
         else
         {
-            print("Can't find basic rom")
+            print("Can't find Rom file")
         }
+    }
+    
+    func ReadAddress (  MemPointer : Int ) -> UInt8
+    {
+        return AddressSpace[MemPointer]
+    }
+    
+    func WriteAddress (  MemPointer : Int, DataValue : UInt8 )
+    {
+        AddressSpace[MemPointer] = DataValue
+        FloatAddressSpace[MemPointer] = Float(DataValue)
     }
     
 }
