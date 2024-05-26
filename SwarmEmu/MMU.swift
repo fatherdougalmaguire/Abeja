@@ -10,7 +10,8 @@ import SwiftUI
 
 class MMU : ObservableObject {
     
-    enum MemoryBlocks  {
+    enum MemoryBlocks  
+    {
         case Bank1Ram
         case Bank2Ram
         case BasicRom
@@ -21,32 +22,24 @@ class MMU : ObservableObject {
         case PCGRam
     }
     
-    var Label : MemoryBlocks
-    var Active : Bool
-    var ShaderRam : Bool
-    var IsRom : Bool
-    var MemoryStart : Int
-    var MemoryEnd : Int
-    var AddressSpace : Array<UInt8>
-    var FloatAddressSpace : Array<Float>
-    
-    init ( Label : MemoryBlocks, Active : Bool,  ShaderRam : Bool, IsRom : Bool,  MemoryStart : Int,  MemoryEnd : Int )
-    
+    struct MemoryBlock 
     {
-        self.Label = Label
-        self.Active = Active
-        self.ShaderRam = ShaderRam
-        self.IsRom = IsRom
-        self.MemoryStart = MemoryStart
-        self.MemoryEnd = MemoryEnd
-        self.AddressSpace = Array<UInt8>(repeating: 0,count:MemoryEnd-MemoryStart+1)
-        self.FloatAddressSpace = Array<Float>(repeating: 0,count:MemoryEnd-MemoryStart+1)
+        var MemoryStart : Int
+        var MemoryEnd : Int
+        var AddressSpace : Array<UInt8>
+        
+        init ( MemoryStart : Int,  MemoryEnd : Int )
+        {
+            self.MemoryStart = MemoryStart
+            self.MemoryEnd = MemoryEnd
+            self.AddressSpace = Array<UInt8>(repeating: 0,count:MemoryEnd-MemoryStart+1)
+        }
     }
-    
-    func LoadROM ( FileName : String,  FileExtension : String)
+
+    func LoadROM ( FileName : String,  FileExtension : String, MemPointer : UInt16, ThisMemory : inout MemoryBlock)
     
     {
-        var LoadCounter : Int = 0
+        var LoadCounter : Int = Int(MemPointer)
         
         if let urlPath = Bundle.main.url(forResource: FileName, withExtension: FileExtension )
         {
@@ -54,8 +47,7 @@ class MMU : ObservableObject {
                 let contents = try Data(contentsOf: urlPath)
                 for MyIndex in contents
                 {
-                    AddressSpace[LoadCounter] = MyIndex
-                    FloatAddressSpace[LoadCounter] = Float(MyIndex)
+                    ThisMemory.AddressSpace[LoadCounter] = UInt8(MyIndex)
                     LoadCounter = LoadCounter + 1
                 }
             }
@@ -70,15 +62,18 @@ class MMU : ObservableObject {
         }
     }
     
-    func ReadAddress (  MemPointer : Int ) -> UInt8
+    func ReadAddress (  MemPointer : UInt16, ThisMemory : MemoryBlock ) -> UInt8
     {
-        return AddressSpace[MemPointer]
+        return ThisMemory.AddressSpace[Int(MemPointer)]
     }
     
-    func WriteAddress (  MemPointer : Int, DataValue : UInt8 )
+    func WriteAddress (  MemPointer : UInt16, DataValue : UInt8, ThisMemory : inout MemoryBlock )
     {
-        AddressSpace[MemPointer] = DataValue
-        FloatAddressSpace[MemPointer] = Float(DataValue)
+        if MemPointer >= 0xF000
+        {
+            
+        }
+        ThisMemory.AddressSpace[Int(MemPointer)] = DataValue
     }
     
 }

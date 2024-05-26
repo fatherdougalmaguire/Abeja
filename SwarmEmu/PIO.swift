@@ -11,12 +11,12 @@ import SwiftUI
 class PIO : ObservableObject 
 
 {
-    
     struct PIO
     {
         var PIOthingy : Int
     }
-        init()
-        {
-        }
+    
+    init()
+    {
+    }
 }

@@ -25,8 +25,6 @@ class CRTC : ObservableObject {
     var canvasx : Float = 512
     var canvasy : Float = 256
     
-    //var bitmapsize : Int = 168960
-    
     var charoffset : Float = 0
     
     var xcursor : Float = 1
@@ -34,13 +32,10 @@ class CRTC : ObservableObject {
     
     var tick : Float = 0
     
-    @Published var cursortype : Float = 2 // 0 = No blinking, 1 = No Cursor, 2 = normal flash, 3 = flash flash
+    var cursortype : Float = 2 // 0 = No blinking, 1 = No Cursor, 2 = normal flash, 3 = fast flash
     
     var cursorstart :  Float = 15
     var cursorend : Float = 15
-    
-    //@Published var screenbitmap = Array<Bool>(repeating: false,count:168960)
-    //@Published var screenbitmap = Array(repeating: Array(repeating: false, count: 80*8),count:11*24)
     
     func updatetick ()
     {
@@ -64,10 +59,6 @@ class CRTC : ObservableObject {
     
     func ClearScreen()
     {
-        //for MyIndex in 0..<168960
-       // {
-       //     screenbitmap[MyIndex] = false
-       // }
         for MyIndex in 0..<2048
         {
             screenram[MyIndex] = 32
@@ -80,29 +71,28 @@ class CRTC : ObservableObject {
     init ( startupmessage : String = "")
     
     {
-        var pcgindex : Int = 0
-    
-        if let urlPath = Bundle.main.url(forResource: "charrom", withExtension: "bin") {
-            do {
-                let contents = try Data(contentsOf: urlPath)
-                for MyIndex in contents
-                {
-                    pcgram[pcgindex] = Float(MyIndex)
-                    pcgindex = pcgindex + 1
-                }
-            } catch {
-                print("Problem with character rom")
-            }
-        } else {
-            print("Can't find character rom")
-        }
-        
         printline(startupmessage)
+        
 //        printline("Applied Technology MicroBee Colour Basic. Ver 5.22e\n\n")
 //        printline("Copyright MS 1983 for MicroWorld Australia\n\n")
 //        printline(">")
     }
 
+    func WriteScreenRam ( MemPointer : UInt16, DataValue : UInt8)
+    
+    {
+        screenram[Int(MemPointer-0xF000)] = Float(DataValue)
+    }
+    
+    func LoadCharRom(MemPointer : UInt16, MemSize : Int, ThisMemory : MMU.MemoryBlock)
+    
+    {
+        for MyIndex in 0..<MemSize
+        {
+            pcgram[MyIndex] = Float(ThisMemory.AddressSpace[Int(MemPointer)+MyIndex])
+        }
+    }
+    
     func printstring( _ message : String, _ xpos : Int, _ ypos : Int )
     
     {
@@ -113,7 +103,6 @@ class CRTC : ObservableObject {
           if xpos+xposition < 64
             {
               screenram[ypos*Int(xcolumns)+xpos+xposition] = Float(ascii.asciiValue ?? 0)
-              //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
               xposition = xposition+1
             }
         }
@@ -133,7 +122,6 @@ class CRTC : ObservableObject {
               else
               {
                   screenram[Int(ycursor-1)*Int(xcolumns)+Int(xcursor)-1] = Float(ascii.asciiValue ?? 0)
-                  //print(xpos,ypos,ypos*xcolumns+xpos+xposition,ascii.asciiValue,ascii)
                   xcursor = xcursor+1
               }
             }

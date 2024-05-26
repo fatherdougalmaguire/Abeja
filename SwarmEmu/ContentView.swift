@@ -9,86 +9,60 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject var ThisCRTC1 = CRTC()
-    @StateObject var ThisZ80 = Z80()
-    
-    @State private var zoomfactor: Float = 1.5
-    @State private var Interlace: Float = 0
-    @State private var buttonpress: Int = 0
+    @StateObject var ThisMicrobee = Microbee()
+    @State var sideBarVisibility: NavigationSplitViewVisibility = .doubleColumn
     
     var body: some View {
         
-        VStack
+        NavigationSplitView(columnVisibility: $sideBarVisibility)
         {
-            Slider(value: $zoomfactor, in: 1...2, step:0.25)
-            {
-                Text("Zoom")
-            } minimumValueLabel: {
-                Text("1x")//.font(.title2).fontWeight(.thin)
-            } maximumValueLabel: {
-                Text("2x")//.font(.title2).fontWeight(.thin)
-            }
-            .frame(width: 200)
-            .tint(.orange)
-            
-            TimelineView(.animation) { context in
-                Rectangle()
-                    .fill(Color.white)
-                    .frame(width: CGFloat(ThisCRTC1.canvasx), height: CGFloat(ThisCRTC1.canvasy))
-                    .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisCRTC1.screenram),.floatArray(ThisCRTC1.pcgram),.float(ThisCRTC1.xcursor),.float(ThisCRTC1.ycursor),.float(ThisCRTC1.ypixels),.float(ThisCRTC1.xcolumns),.float(ThisCRTC1.charoffset),.float(ThisCRTC1.tick),.float(ThisCRTC1.cursortype),.float(ThisCRTC1.cursorstart),.float(ThisCRTC1.cursorend),.float(1)))
-                    .scaleEffect(x: 1*CGFloat(zoomfactor), y:1.333*CGFloat(zoomfactor))
-                    .colorEffect(ShaderLibrary.interlace(.float(Interlace)))
-                    .frame(width: CGFloat(ThisCRTC1.canvasx*zoomfactor), height: CGFloat(ThisCRTC1.canvasy*1.333*zoomfactor))
-                    .onChange(of: context.date) { ThisCRTC1.updatetick() }
-            }
-            HStack() {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    List() {
-                        Section {
-                            ForEach(0...32, id: \.self)
-                            {
-                                MyIndex in Text(ThisZ80.DumpRam(Int(ThisZ80.CPURegisters.PC/32*32)+Int(MyIndex*32))).monospaced().foregroundColor(.orange)
-                            } // End ForEach
-                        }
-                        header: {
-                            Text("Memory")
-                        }
-                    }
-                }
-                .listStyle(.inset(alternatesRowBackgrounds: true))
+            VStack() {
                 List() {
                     Section {
-                        Text("PC : "+ThisZ80.FormatRegister2(ThisZ80.CPURegisters.PC)+"        SP : "+ThisZ80.FormatRegister2(ThisZ80.CPURegisters.SP)).monospaced().foregroundColor(.orange)
-                        Text("IX : "+ThisZ80.FormatRegister2(ThisZ80.CPURegisters.IX)+"        IY : "+ThisZ80.FormatRegister2(ThisZ80.CPURegisters.IY)).monospaced().foregroundColor(.orange)
+                        ForEach(0...15, id: \.self)
+                        {
+                            MyIndex in Text(ThisMicrobee.MyZ80.DumpRam(MemPointer: UInt16(ThisMicrobee.CPURegisters.PC/16*16)+UInt16(MyIndex*16),ThisMemory : ThisMicrobee.AllTheRam)).monospaced().foregroundColor(.orange)
+                        } // End ForEach
+                    }
+                header: {
+                    Text("Memory")
+                }
+                }
+                .listStyle(.inset(alternatesRowBackgrounds: true))
+                .frame(width:600)
+                List() {
+                    Section {
+                        Text("PC : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.PC)+"        SP : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.SP)).monospaced().foregroundColor(.orange)
+                        Text("IX : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.IX)+"        IY : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.IY)).monospaced().foregroundColor(.orange)
                     }
                 header: {
                     Text("16 bit registers")
                 }
                     Section {
-                        Text("A  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.A)+"        F  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.F)).monospaced().foregroundColor(.orange)
-                        Text("B  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.B)+"        C  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.C)).monospaced().foregroundColor(.orange)
-                        Text("H  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.H)+"        L  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.L)).monospaced().foregroundColor(.orange)
+                        Text("A  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.A)+"        F  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.F)).monospaced().foregroundColor(.orange)
+                        Text("B  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.B)+"        C  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.C)).monospaced().foregroundColor(.orange)
+                        Text("H  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.H)+"        L  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.L)).monospaced().foregroundColor(.orange)
                     }
                 header: {
                     Text("8 bit registers")
                 }
                     Section {
-                        Text("A' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltA)+"        F' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltF)).monospaced().foregroundColor(.orange)
-                        Text("B' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltB)+"        C' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltC)).monospaced().foregroundColor(.orange)
-                        Text("H' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltH)+"        L' : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.AltL)).monospaced().foregroundColor(.orange)
+                        Text("A' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltA)+"        F' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltF)).monospaced().foregroundColor(.orange)
+                        Text("B' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltB)+"        C' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltC)).monospaced().foregroundColor(.orange)
+                        Text("H' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltH)+"        L' : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.AltL)).monospaced().foregroundColor(.orange)
                     }
                 header: {
                     Text("Alternate 8 bit registers")
                 }
                     Section {
-                        Text("I  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.I)+"        R  : "+ThisZ80.FormatRegister(ThisZ80.CPURegisters.R)).monospaced().foregroundColor(.orange)
+                        Text("I  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.I)+"        R  : "+ThisMicrobee.MyZ80.FormatRegister(ThisMicrobee.CPURegisters.R)).monospaced().foregroundColor(.orange)
                     }
                 header: {
                     Text("Interrupt registers")
                 }
                     Section {
                         Text("S Z H P N C                          S'Z'H'P'N'C'").monospaced().foregroundColor(.orange)
-                        Text(ThisZ80.FormatRegister3(ThisZ80.CPURegisters.F)+"                         "+ThisZ80.FormatRegister3(ThisZ80.CPURegisters.AltF)).monospaced().foregroundColor(.orange)
+                        Text(ThisMicrobee.MyZ80.FormatRegister3(ThisMicrobee.CPURegisters.F)+"                         "+ThisMicrobee.MyZ80.FormatRegister3(ThisMicrobee.CPURegisters.AltF)).monospaced().foregroundColor(.orange)
                     }
                 header: {
                     Text("Flags")
@@ -96,31 +70,81 @@ struct ContentView: View {
                 }
                 .listStyle(.inset(alternatesRowBackgrounds: true))
             }
+        }  detail: {
+            EmulatorView()
         }
-        HStack {
-            Button("Start/Stop CPU")
+        .environmentObject(ThisMicrobee)
+        
+    }
+    
+    struct EmulatorView: View {
+        
+        @EnvironmentObject var ThisMicrobee : Microbee
+        
+        @State var zoomfactor: Float = 1.5
+        @State var Interlace: Float = 0
+        @State var buttonpress: Int = 0
+        
+        var body: some View {
+            VStack
             {
+                VStack
+                {
+                    Slider(value: $zoomfactor, in: 1...2, step:0.25)
+                    {
+                        Text("Zoom")
+                    } minimumValueLabel: {
+                        Text("1x")//.font(.title2).fontWeight(.thin)
+                    } maximumValueLabel: {
+                        Text("2x")//.font(.title2).fontWeight(.thin)
+                    }
+                    .frame(width: 200)
+                    .tint(.orange)
+                    
+                    TimelineView(.animation)
+                    { context in
+                        Rectangle()
+                            .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx), height: CGFloat(ThisMicrobee.MyCRTC.canvasy))
+                            .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisMicrobee.MyCRTC.screenram),.floatArray(ThisMicrobee.MyCRTC.pcgram),.float(ThisMicrobee.MyCRTC.xcursor),.float(ThisMicrobee.MyCRTC.ycursor),.float(ThisMicrobee.MyCRTC.ypixels),.float(ThisMicrobee.MyCRTC.xcolumns),.float(ThisMicrobee.MyCRTC.charoffset),.float(ThisMicrobee.MyCRTC.tick),.float(ThisMicrobee.MyCRTC.cursortype),.float(ThisMicrobee.MyCRTC.cursorstart),.float(ThisMicrobee.MyCRTC.cursorend),.float(1)))
+                            .scaleEffect(x: 1*CGFloat(zoomfactor), y:1.333*CGFloat(zoomfactor))
+                            .colorEffect(ShaderLibrary.interlace(.float(Interlace)))
+                            .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx*zoomfactor), height: CGFloat(ThisMicrobee.MyCRTC.canvasy*1.333*zoomfactor))
+                            .onChange(of: context.date) { ThisMicrobee.MyCRTC.updatetick() }
+                    }
+                }
                 
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(true)
-            Button("Step CPU")
-            {
-                buttonpress = buttonpress+1
-            }
-            .onChange(of:buttonpress) {
-                ThisZ80.StepInstruction()
-            }
-            .buttonStyle(.borderedProminent)
-            Button("Reset CPU")
-            {
-  
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(true)
-        }.padding(15)
+                HStack {
+                    Button("Start/Stop CPU")
+                    {
+                        
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(true)
+                    .tint(.orange)
+                    Button("Step CPU")
+                    {
+                        buttonpress = buttonpress+1
+                    }
+                    .onChange(of:buttonpress) {
+                        ThisMicrobee.ExecuteInstruction(JumpValue : 1)
+                        //ThisMicrobee.MyCRTC.printline(String(ThisMicrobee.CPURegisters.PC,radix:16,uppercase: true)+"\n")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.orange)
+                    Button("Reset CPU")
+                    {
+                        
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(true)
+                    .tint(.orange)
+                }
+            }  .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.white)
+        }
     }
 }
+
 
 #Preview {
     ContentView()

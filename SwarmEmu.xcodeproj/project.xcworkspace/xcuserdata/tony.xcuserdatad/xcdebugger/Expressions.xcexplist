@@ -3,6 +3,17 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "Z80.FormatRegister2(_:):Z80.swift">
+      </ContextState>
+      <ContextState
+         contextName = "MMU.ReadAddress(MemPointer:):MMU.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "AddressSpace[Int(MemPointer)]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "CRTC.updatebuffer():CRTC.swift">
          <PersistentStrings>
             <PersistentString
@@ -13,6 +24,17 @@
             </PersistentString>
             <PersistentString
                value = "ypixels">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "CRTC.printstring(_:_:_:):CRTC.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "yrows">
+            </PersistentString>
+            <PersistentString
+               value = "ypos*xcolumns+xpos+xposition">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -33,15 +55,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "CRTC.printstring(_:_:_:):CRTC.swift">
+         contextName = "Z80.StepInstruction():Z80.swift">
+      </ContextState>
+      <ContextState
+         contextName = "Z80.DumpRam(MemPointer:ThisMemory:):Z80.swift">
          <PersistentStrings>
             <PersistentString
-               value = "yrows">
-            </PersistentString>
-            <PersistentString
-               value = "ypos*xcolumns+xpos+xposition">
+               value = "MMU.ReadAddress(MemPointer : UInt16(index),ThisMemory : ThisMemory)">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "MMU.LoadROM(FileName:FileExtension:MemPointer:):MMU.swift">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

@@ -13,6 +13,11 @@
 		EA71A80A2BCD3B5200BD58EA /* Z80.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA71A8092BCD3B5200BD58EA /* Z80.swift */; };
 		EA71A8202BD4E5C000BD58EA /* charrom.bin in Resources */ = {isa = PBXBuildFile; fileRef = EA71A81E2BD4E5C000BD58EA /* charrom.bin */; };
 		EA71A8212BD4E5C000BD58EA /* basic_5.22e.rom in Resources */ = {isa = PBXBuildFile; fileRef = EA71A81F2BD4E5C000BD58EA /* basic_5.22e.rom */; };
+		EA780A3D2BFCB1CF00F446D4 /* Tape.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA780A3C2BFCB1CF00F446D4 /* Tape.swift */; };
+		EA780A3F2BFCB1F000F446D4 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA780A3E2BFCB1F000F446D4 /* Sound.swift */; };
+		EA780A412BFCB20500F446D4 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA780A402BFCB20500F446D4 /* Disk.swift */; };
+		EA780A432BFCB21200F446D4 /* Microbee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA780A422BFCB21200F446D4 /* Microbee.swift */; };
+		EA7CD61E2BFE029B001ABE62 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7CD61D2BFE029B001ABE62 /* Keyboard.swift */; };
 		EA8453842BE61447006B7EC0 /* buffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = EA8453832BE61447006B7EC0 /* buffer.metal */; };
 		EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */; };
 		EAC46BED2BAA8DCC00F2783A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */; };
@@ -28,6 +33,11 @@
 		EA71A8092BCD3B5200BD58EA /* Z80.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Z80.swift; sourceTree = "<group>"; };
 		EA71A81E2BD4E5C000BD58EA /* charrom.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = charrom.bin; sourceTree = "<group>"; };
 		EA71A81F2BD4E5C000BD58EA /* basic_5.22e.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = basic_5.22e.rom; sourceTree = "<group>"; };
+		EA780A3C2BFCB1CF00F446D4 /* Tape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tape.swift; sourceTree = "<group>"; };
+		EA780A3E2BFCB1F000F446D4 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		EA780A402BFCB20500F446D4 /* Disk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disk.swift; sourceTree = "<group>"; };
+		EA780A422BFCB21200F446D4 /* Microbee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microbee.swift; sourceTree = "<group>"; };
+		EA7CD61D2BFE029B001ABE62 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		EA8453832BE61447006B7EC0 /* buffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = buffer.metal; sourceTree = "<group>"; };
 		EAC46BE72BAA8DCC00F2783A /* SwarmEmu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwarmEmu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwarmEmuApp.swift; sourceTree = "<group>"; };
@@ -82,10 +92,15 @@
 				EA0322A12BAA913E0083F426 /* AboutPanelCommand.swift */,
 				EAC46BEC2BAA8DCC00F2783A /* ContentView.swift */,
 				EAC77AF82BCAA26900ECEE7E /* CRTC.swift */,
+				EA780A402BFCB20500F446D4 /* Disk.swift */,
+				EA7CD61D2BFE029B001ABE62 /* Keyboard.swift */,
+				EA780A422BFCB21200F446D4 /* Microbee.swift */,
 				EA71A8072BCD3B3E00BD58EA /* MMU.swift */,
-				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
-				EA71A8092BCD3B5200BD58EA /* Z80.swift */,
 				EA0E3D6C2BF613240047B280 /* PIO.swift */,
+				EA780A3E2BFCB1F000F446D4 /* Sound.swift */,
+				EAC46BEA2BAA8DCC00F2783A /* SwarmEmuApp.swift */,
+				EA780A3C2BFCB1CF00F446D4 /* Tape.swift */,
+				EA71A8092BCD3B5200BD58EA /* Z80.swift */,
 				EAC46BEE2BAA8DCD00F2783A /* Assets.xcassets */,
 				EAC46BF02BAA8DCD00F2783A /* Preview Content */,
 				EA71A81D2BD4E58D00BD58EA /* ROMS */,
@@ -129,7 +144,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1530;
-				LastUpgradeCheck = 1530;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					EAC46BE62BAA8DCC00F2783A = {
 						CreatedOnToolsVersion = 15.3;
@@ -178,9 +193,14 @@
 				EA71A8082BCD3B3E00BD58EA /* MMU.swift in Sources */,
 				EAC77AF92BCAA26900ECEE7E /* CRTC.swift in Sources */,
 				EA0E3D6D2BF613240047B280 /* PIO.swift in Sources */,
+				EA7CD61E2BFE029B001ABE62 /* Keyboard.swift in Sources */,
+				EA780A412BFCB20500F446D4 /* Disk.swift in Sources */,
+				EA780A3F2BFCB1F000F446D4 /* Sound.swift in Sources */,
 				EA0322A22BAA913E0083F426 /* AboutPanelCommand.swift in Sources */,
 				EA71A80A2BCD3B5200BD58EA /* Z80.swift in Sources */,
+				EA780A3D2BFCB1CF00F446D4 /* Tape.swift in Sources */,
 				EAC46BEB2BAA8DCC00F2783A /* SwarmEmuApp.swift in Sources */,
+				EA780A432BFCB21200F446D4 /* Microbee.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +241,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -243,6 +264,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -283,6 +305,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -313,6 +336,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SwarmEmu/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -326,7 +350,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.161;
+				MARKETING_VERSION = 0.165;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
@@ -345,6 +369,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SwarmEmu/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -358,7 +383,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.161;
+				MARKETING_VERSION = 0.165;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
