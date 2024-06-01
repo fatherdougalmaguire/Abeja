@@ -21,7 +21,7 @@ struct ContentView: View {
                     Section {
                         ForEach(0...15, id: \.self)
                         {
-                            MyIndex in Text(ThisMicrobee.MyZ80.DumpRam(MemPointer: UInt16(ThisMicrobee.CPURegisters.PC/16*16)+UInt16(MyIndex*16),ThisMemory : ThisMicrobee.AllTheRam)).monospaced().foregroundColor(.orange)
+                            MyIndex in Text(ThisMicrobee.MyZ80.DumpRam(BaseMemPointer : ThisMicrobee.CPURegisters.PC, MemPointer : UInt16(ThisMicrobee.CPURegisters.PC/256*256)+UInt16(MyIndex*16),ThisMemory : ThisMicrobee.AllTheRam)).monospaced().foregroundColor(.orange).truncationMode(.tail).lineLimit(1)
                         } // End ForEach
                     }
                 header: {
@@ -29,7 +29,7 @@ struct ContentView: View {
                 }
                 }
                 .listStyle(.inset(alternatesRowBackgrounds: true))
-                .frame(width:600)
+                .frame(width:625)
                 List() {
                     Section {
                         Text("PC : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.PC)+"        SP : "+ThisMicrobee.MyZ80.FormatRegister2(ThisMicrobee.CPURegisters.SP)).monospaced().foregroundColor(.orange)

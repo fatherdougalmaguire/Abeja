@@ -32,7 +32,7 @@ class MMU : ObservableObject {
         {
             self.MemoryStart = MemoryStart
             self.MemoryEnd = MemoryEnd
-            self.AddressSpace = Array<UInt8>(repeating: 0,count:MemoryEnd-MemoryStart+1)
+            self.AddressSpace = Array<UInt8>(repeating: 35,count:MemoryEnd-MemoryStart+1)
         }
     }
 

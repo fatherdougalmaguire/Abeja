@@ -350,7 +350,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.165;
+				MARKETING_VERSION = 0.166;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
@@ -383,7 +383,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.165;
+				MARKETING_VERSION = 0.166;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fatherdougalmaguire.SwarmEmu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
