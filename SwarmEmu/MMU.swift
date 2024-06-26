@@ -28,14 +28,14 @@ class MMU : ObservableObject {
         var MemoryEnd : Int
         var AddressSpace : Array<UInt8>
         
-        init ( MemoryStart : Int,  MemoryEnd : Int )
+        init ( MemoryStart : Int,  MemoryEnd : Int, FillData : UInt8 )
         {
             self.MemoryStart = MemoryStart
             self.MemoryEnd = MemoryEnd
-            self.AddressSpace = Array<UInt8>(repeating: 35,count:MemoryEnd-MemoryStart+1)
+            self.AddressSpace = Array<UInt8>(repeating: FillData,count:MemoryEnd-MemoryStart+1)
         }
     }
-
+    
     func LoadROM ( FileName : String,  FileExtension : String, MemPointer : UInt16, ThisMemory : inout MemoryBlock)
     
     {
