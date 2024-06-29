@@ -1,6 +1,6 @@
 //
-//  Sound.swift
-//  SwarmEmu
+//  Disk.swift
+//  Abeja
 //
 //  Created by Antonio Sanchez-Rivas on 21/5/2024.
 //
@@ -8,15 +8,16 @@
 import Foundation
 import SwiftUI
 
-class Sound : ObservableObject
+class Disk : ObservableObject
 
 {
-    struct Sound
+    struct Disk
     {
-        var Soundthingy : Int
+        var DiskThingy : Int
     }
     
     init()
     {
     }
 }
+

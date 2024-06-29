@@ -1,10 +1,11 @@
 //
 //  AboutPanelCommand.swift
-//  LifeOnMars
+//  Abeja
 //
 //  Adapted from code listed at https://danielsaidi.com/blog/2023/11/28/how-to-customize-the-macos-about-panel-in-swiftui
 //
-// SwarmEmu Copyright (c) 2024 Tony Sanchez
+//  Created by Antonio Sanchez-Rivas on 6/4/2024.
+//
 
 import Foundation
 import SwiftUI

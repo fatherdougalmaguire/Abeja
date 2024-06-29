@@ -1,9 +1,9 @@
 //
 //  ContentView.swift
-//  SwarmEmu
+//  Abeja
 //
-// SwarmEmu Copyright (c) 2024 Tony Sanchez
-// Nanowasp Copyright (c) 2007, 2011 David G. Churchill
+//  Created by Antonio Sanchez-Rivas on 14/4/2024
+//
 
 import SwiftUI
 

@@ -1,6 +1,6 @@
 //
 //  EmulatorCore.swift
-//  SwarmEmu
+//  Abeja
 //
 //  Created by Antonio Sanchez-Rivas on 14/4/2024.
 //

@@ -1,9 +1,9 @@
 //
-//  SwarmEmuApp.swift
-//  SwarmEmu
+//  AbejaApp.swift
+//  Abeja
 //
-// SwarmEmu Copyright (c) 2024 Tony Sanchez
-// Nanowasp Copyright (c) 2007, 2011 David G. Churchill
+//  Created by Antonio Sanchez-Rivas on 6/4/2024.
+//
 
 import SwiftUI
 
@@ -18,9 +18,9 @@ struct SwarmEmuApp: App {
         .commands
         {
             AboutPanelCommand(
-                title: "About SwarmEmu",
-                applicationName: "SwarmEmu",
-                credits: "\nSwarmEmu is a SwiftUI/Swift emulator compatible with tape based models of the Microbee computer\n\nBased on Nanowasp ( http://www.nanowasp.org ) \nCopyright (c) 2007, 2011 David G. Churchill\n\nThe MicroWorld Basic V5.22e ROM and the MicroBee Font ROM are used in this emulator with kind permission from Ewan J. Wordsworth of Microbee Technology\n\nHello to Jason Isaacs"
+                title: "About Abeja",
+                applicationName: "Abeja",
+                credits: "\nAbeja is a SwiftUI/Swift emulator compatible with tape based models of the Microbee computer\n\nThe MicroWorld Basic V5.22e ROM and the MicroBee Font ROM are used in this emulator with kind permission from Ewan J. Wordsworth of Microbee Technology\n\nHello to Jason Isaacs"
             )
             CommandMenu("Tape") {
                 Button("Nothing to see here folks") {

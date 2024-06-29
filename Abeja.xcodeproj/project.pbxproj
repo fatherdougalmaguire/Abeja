@@ -1,0 +1,412 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EA7F1A892C2FE1C4000CF5B7 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7F1A882C2FE1C4000CF5B7 /* Sound.swift */; };
+		EADF416A2C2FDE07005DE675 /* buffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = EADF41692C2FDE07005DE675 /* buffer.metal */; };
+		EADF41752C2FDE1E005DE675 /* AboutPanelCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416B2C2FDE1E005DE675 /* AboutPanelCommand.swift */; };
+		EADF41762C2FDE1E005DE675 /* Z80.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416C2C2FDE1E005DE675 /* Z80.swift */; };
+		EADF41772C2FDE1E005DE675 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416D2C2FDE1E005DE675 /* Keyboard.swift */; };
+		EADF41782C2FDE1E005DE675 /* Microbee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416E2C2FDE1E005DE675 /* Microbee.swift */; };
+		EADF41792C2FDE1E005DE675 /* MMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416F2C2FDE1E005DE675 /* MMU.swift */; };
+		EADF417A2C2FDE1F005DE675 /* PIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF41702C2FDE1E005DE675 /* PIO.swift */; };
+		EADF417B2C2FDE1F005DE675 /* CRTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF41712C2FDE1E005DE675 /* CRTC.swift */; };
+		EADF417C2C2FDE1F005DE675 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF41722C2FDE1E005DE675 /* Disk.swift */; };
+		EADF417D2C2FDE1F005DE675 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF41732C2FDE1E005DE675 /* ContentView.swift */; };
+		EADF417E2C2FDE1F005DE675 /* Tape.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF41742C2FDE1E005DE675 /* Tape.swift */; };
+		EADF41802C2FDE60005DE675 /* AbejaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF417F2C2FDE60005DE675 /* AbejaApp.swift */; };
+		EADF41832C2FDEA1005DE675 /* charrom.bin in Resources */ = {isa = PBXBuildFile; fileRef = EADF41812C2FDEA1005DE675 /* charrom.bin */; };
+		EADF41842C2FDEA1005DE675 /* basic_5.22e.rom in Resources */ = {isa = PBXBuildFile; fileRef = EADF41822C2FDEA1005DE675 /* basic_5.22e.rom */; };
+		EAFB122F2C2FD7CF00B412DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAFB122E2C2FD7CF00B412DF /* Assets.xcassets */; };
+		EAFB12322C2FD7CF00B412DF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAFB12312C2FD7CF00B412DF /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		EA7F1A882C2FE1C4000CF5B7 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		EADF41692C2FDE07005DE675 /* buffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = buffer.metal; sourceTree = "<group>"; };
+		EADF416B2C2FDE1E005DE675 /* AboutPanelCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPanelCommand.swift; sourceTree = "<group>"; };
+		EADF416C2C2FDE1E005DE675 /* Z80.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Z80.swift; sourceTree = "<group>"; };
+		EADF416D2C2FDE1E005DE675 /* Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		EADF416E2C2FDE1E005DE675 /* Microbee.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Microbee.swift; sourceTree = "<group>"; };
+		EADF416F2C2FDE1E005DE675 /* MMU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMU.swift; sourceTree = "<group>"; };
+		EADF41702C2FDE1E005DE675 /* PIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIO.swift; sourceTree = "<group>"; };
+		EADF41712C2FDE1E005DE675 /* CRTC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CRTC.swift; sourceTree = "<group>"; };
+		EADF41722C2FDE1E005DE675 /* Disk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Disk.swift; sourceTree = "<group>"; };
+		EADF41732C2FDE1E005DE675 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EADF41742C2FDE1E005DE675 /* Tape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tape.swift; sourceTree = "<group>"; };
+		EADF417F2C2FDE60005DE675 /* AbejaApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbejaApp.swift; sourceTree = "<group>"; };
+		EADF41812C2FDEA1005DE675 /* charrom.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = charrom.bin; path = Abeja/ROMS/charrom.bin; sourceTree = SOURCE_ROOT; };
+		EADF41822C2FDEA1005DE675 /* basic_5.22e.rom */ = {isa = PBXFileReference; lastKnownFileType = file; name = basic_5.22e.rom; path = Abeja/ROMS/basic_5.22e.rom; sourceTree = SOURCE_ROOT; };
+		EAFB12272C2FD7CE00B412DF /* Abeja.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Abeja.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAFB122E2C2FD7CF00B412DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EAFB12312C2FD7CF00B412DF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EAFB12332C2FD7CF00B412DF /* Abeja.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Abeja.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EAFB12242C2FD7CE00B412DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EACF73F22C2FDF8A00BDCCD2 /* ROMS */ = {
+			isa = PBXGroup;
+			children = (
+				EADF41812C2FDEA1005DE675 /* charrom.bin */,
+				EADF41822C2FDEA1005DE675 /* basic_5.22e.rom */,
+			);
+			path = ROMS;
+			sourceTree = "<group>";
+		};
+		EAFB121E2C2FD7CE00B412DF = {
+			isa = PBXGroup;
+			children = (
+				EAFB12292C2FD7CE00B412DF /* Abeja */,
+				EAFB12282C2FD7CE00B412DF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EAFB12282C2FD7CE00B412DF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EAFB12272C2FD7CE00B412DF /* Abeja.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EAFB12292C2FD7CE00B412DF /* Abeja */ = {
+			isa = PBXGroup;
+			children = (
+				EAFB12332C2FD7CF00B412DF /* Abeja.entitlements */,
+				EADF41692C2FDE07005DE675 /* buffer.metal */,
+				EADF417F2C2FDE60005DE675 /* AbejaApp.swift */,
+				EADF416B2C2FDE1E005DE675 /* AboutPanelCommand.swift */,
+				EADF41732C2FDE1E005DE675 /* ContentView.swift */,
+				EADF41712C2FDE1E005DE675 /* CRTC.swift */,
+				EADF41722C2FDE1E005DE675 /* Disk.swift */,
+				EADF416D2C2FDE1E005DE675 /* Keyboard.swift */,
+				EADF416E2C2FDE1E005DE675 /* Microbee.swift */,
+				EADF416F2C2FDE1E005DE675 /* MMU.swift */,
+				EADF41702C2FDE1E005DE675 /* PIO.swift */,
+				EA7F1A882C2FE1C4000CF5B7 /* Sound.swift */,
+				EADF41742C2FDE1E005DE675 /* Tape.swift */,
+				EADF416C2C2FDE1E005DE675 /* Z80.swift */,
+				EAFB122E2C2FD7CF00B412DF /* Assets.xcassets */,
+				EAFB12302C2FD7CF00B412DF /* Preview Content */,
+				EACF73F22C2FDF8A00BDCCD2 /* ROMS */,
+			);
+			path = Abeja;
+			sourceTree = "<group>";
+		};
+		EAFB12302C2FD7CF00B412DF /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				EAFB12312C2FD7CF00B412DF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EAFB12262C2FD7CE00B412DF /* Abeja */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAFB12362C2FD7CF00B412DF /* Build configuration list for PBXNativeTarget "Abeja" */;
+			buildPhases = (
+				EAFB12232C2FD7CE00B412DF /* Sources */,
+				EAFB12242C2FD7CE00B412DF /* Frameworks */,
+				EAFB12252C2FD7CE00B412DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Abeja;
+			productName = Abeja;
+			productReference = EAFB12272C2FD7CE00B412DF /* Abeja.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EAFB121F2C2FD7CE00B412DF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					EAFB12262C2FD7CE00B412DF = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = EAFB12222C2FD7CE00B412DF /* Build configuration list for PBXProject "Abeja" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EAFB121E2C2FD7CE00B412DF;
+			productRefGroup = EAFB12282C2FD7CE00B412DF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EAFB12262C2FD7CE00B412DF /* Abeja */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EAFB12252C2FD7CE00B412DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EADF41832C2FDEA1005DE675 /* charrom.bin in Resources */,
+				EAFB12322C2FD7CF00B412DF /* Preview Assets.xcassets in Resources */,
+				EADF41842C2FDEA1005DE675 /* basic_5.22e.rom in Resources */,
+				EAFB122F2C2FD7CF00B412DF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EAFB12232C2FD7CE00B412DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA7F1A892C2FE1C4000CF5B7 /* Sound.swift in Sources */,
+				EADF417C2C2FDE1F005DE675 /* Disk.swift in Sources */,
+				EADF417A2C2FDE1F005DE675 /* PIO.swift in Sources */,
+				EADF416A2C2FDE07005DE675 /* buffer.metal in Sources */,
+				EADF41802C2FDE60005DE675 /* AbejaApp.swift in Sources */,
+				EADF417E2C2FDE1F005DE675 /* Tape.swift in Sources */,
+				EADF41752C2FDE1E005DE675 /* AboutPanelCommand.swift in Sources */,
+				EADF41792C2FDE1E005DE675 /* MMU.swift in Sources */,
+				EADF417B2C2FDE1F005DE675 /* CRTC.swift in Sources */,
+				EADF41782C2FDE1E005DE675 /* Microbee.swift in Sources */,
+				EADF417D2C2FDE1F005DE675 /* ContentView.swift in Sources */,
+				EADF41772C2FDE1E005DE675 /* Keyboard.swift in Sources */,
+				EADF41762C2FDE1E005DE675 /* Z80.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EAFB12342C2FD7CF00B412DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EAFB12352C2FD7CF00B412DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		EAFB12372C2FD7CF00B412DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
+				DEVELOPMENT_TEAM = 5VUXP3WKH8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024. All Rights Reserved";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.171;
+				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EAFB12382C2FD7CF00B412DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
+				DEVELOPMENT_TEAM = 5VUXP3WKH8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024. All Rights Reserved";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.171;
+				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EAFB12222C2FD7CE00B412DF /* Build configuration list for PBXProject "Abeja" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAFB12342C2FD7CF00B412DF /* Debug */,
+				EAFB12352C2FD7CF00B412DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAFB12362C2FD7CF00B412DF /* Build configuration list for PBXNativeTarget "Abeja" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAFB12372C2FD7CF00B412DF /* Debug */,
+				EAFB12382C2FD7CF00B412DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EAFB121F2C2FD7CE00B412DF /* Project object */;
+}
