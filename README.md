@@ -3,8 +3,9 @@ Abeja is a SwiftUI/Swift emulator compatible with tape based models of the Micro
 
 Requires MacOS Sonoma 14.0 or greater
 
-![image](https://github.com/fatherdougalmaguire/SwarmEmu/assets/144415904/b54c7440-a3b1-4ca4-9231-8010ff3bd2ca)
-
 The MicroWorld Basic V5.22e ROM and the MicroBee Font ROM are used in this emulator with kind permission from Ewan J. Wordsworth of [Microbee Technology](https://www.microbeetechnology.com.au/)
 
-Copyright (c) 2024 Tony Sanchez
+© Tony Sanchez 2024. All Rights Reserved
+
+
+![image](https://github.com/fatherdougalmaguire/Abeja/assets/144415904/aa245e63-66d7-42a2-8a1b-bc26237e0687)
