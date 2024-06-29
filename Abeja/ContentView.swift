@@ -83,8 +83,8 @@ struct ContentView: View {
         
         let ZoomValues = ["Small","Medium","Large"]
         
-        @State var zoomfactory: String = "Medium"
-        @State var zoomfactor: Float = 1.5
+        @State var zoomfactory: String = "Small"
+        @State var zoomfactor: Float = 1.0
         @State var Interlace: Float = 0
         @State var buttonpress: Int = 0
         @State var buttonpress1: Int = 0
