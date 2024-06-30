@@ -7,5 +7,5 @@ The MicroWorld Basic v5.22e ROM and the MicroBee Font ROM are used in this emula
 
 © Tony Sanchez 2024. All Rights Reserved
 
+![image](https://github.com/fatherdougalmaguire/Abeja/assets/144415904/cd371dbd-57d0-4663-b662-58ab25106ed9)
 
-![image](https://github.com/fatherdougalmaguire/Abeja/assets/144415904/aa245e63-66d7-42a2-8a1b-bc26237e0687)
