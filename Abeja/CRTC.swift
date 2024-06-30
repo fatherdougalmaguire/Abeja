@@ -37,6 +37,9 @@ class CRTC : ObservableObject {
     var cursorstart :  Float = 15
     var cursorend : Float = 15
     
+    var zoomfactor : Float = 1
+    var interlace  : Float = 0
+    
     func updatetick ()
     {
         var ticklimit : Float
