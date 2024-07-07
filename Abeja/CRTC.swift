@@ -40,6 +40,8 @@ class CRTC : ObservableObject {
     var zoomfactor : Float = 1
     var interlace  : Float = 0
     
+    var screencolour : Float = 0 // 0 = Amber, 1 = Green, 2 = White
+    
     func updatetick ()
     {
         var ticklimit : Float

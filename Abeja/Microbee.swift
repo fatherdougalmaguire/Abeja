@@ -25,6 +25,7 @@ class Microbee : ObservableObject
     var MicrobeeModel : MicrobeeModelType
     var BatteryBackupOn : Bool
     var ExecCount : Int = 0
+    var DebugView : Bool = true
     
     var MyCRTC = CRTC()
     var MyPIO = PIO()

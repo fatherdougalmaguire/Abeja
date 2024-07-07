@@ -119,7 +119,10 @@ struct SettingsView: View
     
     let ZoomValues = ["Small","Medium","Large"]
     @State var zoomfactory: String = "Small"
+    let ScreenColours = ["Amber","Green","White"]
+    @State var ScreenColourChoice: String = "Amber"
     @State var interlace: Bool = false
+    @State var debugview : Bool = true
     
     var body: some View {
         Form()
@@ -146,6 +149,28 @@ struct SettingsView: View
                     ThisMicrobee.MyCRTC.zoomfactor = 1.5
                 }
             }
+            Picker("Text Colour", selection: $ScreenColourChoice )
+            {
+                ForEach(ScreenColours, id: \.self)
+                {
+                    Text(String($0))
+                }
+            }
+            .padding()
+            .tint(.orange)
+            .pickerStyle(.segmented)
+            .colorMultiply(.orange)
+            .onChange(of : ScreenColourChoice)
+            {
+                switch ScreenColourChoice
+                {
+                case "Amber" : ThisMicrobee.MyCRTC.screencolour = 0
+                case "Green" : ThisMicrobee.MyCRTC.screencolour = 1
+                case "White" : ThisMicrobee.MyCRTC.screencolour = 2
+                default:
+                    ThisMicrobee.MyCRTC.zoomfactor = 1.5
+                }
+            }
             Toggle("Interlace", isOn: $interlace)
                 .toggleStyle(SwitchToggleStyle(tint: .orange))
                 .onChange(of: interlace)
@@ -158,6 +183,12 @@ struct SettingsView: View
                 {
                     ThisMicrobee.MyCRTC.interlace = 1
                 }
+            }
+            Toggle("Debug view", isOn: $debugview)
+                .toggleStyle(SwitchToggleStyle(tint: .orange))
+                .onChange(of: debugview)
+            {
+                ThisMicrobee.DebugView = !ThisMicrobee.DebugView
             }
         }.frame(width:350,alignment: .leading)
     }
@@ -185,6 +216,8 @@ struct EmulatorControlView : View
             }
             .buttonStyle(.borderedProminent)
             .tint(.orange)
+            .symbolEffect(.pulse,
+                          isActive: ThisMicrobee.MyZ80.CPURunning)
             Button("Step CPU",systemImage: "forward.frame")
             {
                 buttonpress1 = buttonpress1+1
@@ -324,13 +357,38 @@ struct EmulatorView: View
     
     var body: some View
     {
-        HStack()
+        if ThisMicrobee.DebugView
         {
-            VStack()
+            HStack()
             {
-                MemoryDumpView().environmentObject(ThisMicrobee)
-                DisassemblyView().environmentObject(ThisMicrobee)
+                VStack()
+                {
+                    MemoryDumpView().environmentObject(ThisMicrobee)
+                    DisassemblyView().environmentObject(ThisMicrobee)
+                }
+                VStack()
+                {
+                    EmulatorControlView().environmentObject(ThisMicrobee)
+                    TimelineView(.animation)
+                    { context in
+                        Rectangle()
+                            .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx), height: CGFloat(ThisMicrobee.MyCRTC.canvasy))
+                            .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisMicrobee.MyCRTC.screenram),.floatArray(ThisMicrobee.MyCRTC.pcgram),.float(ThisMicrobee.MyCRTC.xcursor),.float(ThisMicrobee.MyCRTC.ycursor),.float(ThisMicrobee.MyCRTC.ypixels),.float(ThisMicrobee.MyCRTC.xcolumns),.float(ThisMicrobee.MyCRTC.charoffset),.float(ThisMicrobee.MyCRTC.tick),.float(ThisMicrobee.MyCRTC.cursortype),.float(ThisMicrobee.MyCRTC.cursorstart),.float(ThisMicrobee.MyCRTC.cursorend),.float(ThisMicrobee.MyCRTC.screencolour)))
+                            .scaleEffect(x: 1*CGFloat(ThisMicrobee.MyCRTC.zoomfactor), y:1.333*CGFloat(ThisMicrobee.MyCRTC.zoomfactor))
+                            .colorEffect(ShaderLibrary.interlace(.float(ThisMicrobee.MyCRTC.interlace)))
+                            .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx*ThisMicrobee.MyCRTC.zoomfactor), height: CGFloat(ThisMicrobee.MyCRTC.canvasy*1.333*ThisMicrobee.MyCRTC.zoomfactor))
+                            .onChange(of: context.date)
+                        {
+                            ThisMicrobee.MyCRTC.updatetick()
+                            ThisMicrobee.ExecuteInstructionBundle(JumpValue : 1)
+                        }
+                    }
+                    RegisterView().environmentObject(ThisMicrobee)
+                }
             }
+        }
+        else
+        {
             VStack()
             {
                 EmulatorControlView().environmentObject(ThisMicrobee)
@@ -338,7 +396,7 @@ struct EmulatorView: View
                 { context in
                     Rectangle()
                         .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx), height: CGFloat(ThisMicrobee.MyCRTC.canvasy))
-                        .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisMicrobee.MyCRTC.screenram),.floatArray(ThisMicrobee.MyCRTC.pcgram),.float(ThisMicrobee.MyCRTC.xcursor),.float(ThisMicrobee.MyCRTC.ycursor),.float(ThisMicrobee.MyCRTC.ypixels),.float(ThisMicrobee.MyCRTC.xcolumns),.float(ThisMicrobee.MyCRTC.charoffset),.float(ThisMicrobee.MyCRTC.tick),.float(ThisMicrobee.MyCRTC.cursortype),.float(ThisMicrobee.MyCRTC.cursorstart),.float(ThisMicrobee.MyCRTC.cursorend),.float(1)))
+                        .colorEffect(ShaderLibrary.newpcg(.floatArray(ThisMicrobee.MyCRTC.screenram),.floatArray(ThisMicrobee.MyCRTC.pcgram),.float(ThisMicrobee.MyCRTC.xcursor),.float(ThisMicrobee.MyCRTC.ycursor),.float(ThisMicrobee.MyCRTC.ypixels),.float(ThisMicrobee.MyCRTC.xcolumns),.float(ThisMicrobee.MyCRTC.charoffset),.float(ThisMicrobee.MyCRTC.tick),.float(ThisMicrobee.MyCRTC.cursortype),.float(ThisMicrobee.MyCRTC.cursorstart),.float(ThisMicrobee.MyCRTC.cursorend),.float(ThisMicrobee.MyCRTC.screencolour)))
                         .scaleEffect(x: 1*CGFloat(ThisMicrobee.MyCRTC.zoomfactor), y:1.333*CGFloat(ThisMicrobee.MyCRTC.zoomfactor))
                         .colorEffect(ShaderLibrary.interlace(.float(ThisMicrobee.MyCRTC.interlace)))
                         .frame(width: CGFloat(ThisMicrobee.MyCRTC.canvasx*ThisMicrobee.MyCRTC.zoomfactor), height: CGFloat(ThisMicrobee.MyCRTC.canvasy*1.333*ThisMicrobee.MyCRTC.zoomfactor))
@@ -348,7 +406,6 @@ struct EmulatorView: View
                         ThisMicrobee.ExecuteInstructionBundle(JumpValue : 1)
                     }
                 }
-                RegisterView().environmentObject(ThisMicrobee)
             }
         }
     }

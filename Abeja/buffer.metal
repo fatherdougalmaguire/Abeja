@@ -17,14 +17,24 @@ using namespace metal;
     int xcursor;
     int ycursor;
     
-    if (screencolor > 0)
-    {
-        drawingcolor = half4(1.0,0.749,0,1);
+    switch (int(screencolor)) {
+      case 0:
+            drawingcolor = half4(1.0,0.749,0,1);
+        break;
+      case 1:
+            drawingcolor = half4(0.2,1,0,1);
+        break;
+      default:
+            drawingcolor = half4(1,1,1,1);
     }
-    else
-    {
-        drawingcolor = half4(0.2,1,0,1);
-    }
+//    if (screencolor > 0)
+//    {
+//        drawingcolor = half4(1.0,0.749,0,1);
+//    }
+//    else
+//    {
+//        drawingcolor = half4(0.2,1,0,1);
+//    }
         
     ycursor = int(position.y) % int(ypixels); // 16 refers to pixels high - 16 for 64x16 and 11 for 80x24
     xcursor = int(position.x) % 8;  // 8 refers to pixels wide - 8 for 64x16 and 80x25
