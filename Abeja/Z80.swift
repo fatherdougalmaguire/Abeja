@@ -1522,16 +1522,22 @@ class Z80 : ObservableObject {
         FourthByte = MyMMU.ReadAddress(MemPointer: TheseRegisters.PC+3, ThisMemory: ThisMemory)
         
         switch FirstByte {
-        case 0x00:
-            print("NOP")
+           
+        case 0x00:        
+            print("00:::")
+            print ("NOP")
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x01:
-            print("LD BC,nn")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "No operation is performed.")
+        case 0x01:        
+            print("01:n:n:")
+            print ("LD BC,NN")
             TheseRegisters.B = ThirdByte
             TheseRegisters.C = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into BC.")
         case 0x02:
-            print("LD (BC),A")
+            print("02:::")
+            print ("LD (BC),A")
             MemoryAddress = Int(TheseRegisters.B)*0x100+Int(TheseRegisters.C)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1539,8 +1545,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.A)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by BC.")
         case 0x03:
-            print("INC BC")
+            print("03:::")
+            print ("INC BC")
             if TheseRegisters.C == 0xFF
             {
                 TheseRegisters.C = 0
@@ -1550,50 +1558,52 @@ class Z80 : ObservableObject {
             {
                 TheseRegisters.C = TheseRegisters.C + 1
             }
-            TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x04:
-            print("INC B")
-        case 0x05:
-            print("DEC B")
-        case 0x06:
-            print("LD B,n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to BC")
+        case 0x04:        print("04:::"); print ("INC B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to B")
+        case 0x05:        print("05:::"); print ("DEC B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from B")
+        case 0x06:        
+            print("06:n::")
+            print ("LD B,N")
             TheseRegisters.B = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x07:
-            print("RLCA")
-        case 0x08:
-            print("EX AF,AF’")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into B.")
+        case 0x07:        print("07:::"); print ("RLCA"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+        case 0x08:        
+            print("08:::")
+            print ("EX AF,AF'")
             (TheseRegisters.A,TheseRegisters.AltA) = (TheseRegisters.AltA,TheseRegisters.A)
             (TheseRegisters.F,TheseRegisters.AltF) = (TheseRegisters.AltF,TheseRegisters.F)
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x09:
-            print("ADD HL,BC")
-        case 0x0A:
-            print("LD A,(BC)")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of AF and AF'.")
+        case 0x09:        print("09:::"); print ("ADD HL,BC"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to HL.")
+        case 0x0A:        
+            print("0A:::")
+            print ("LD A,(BC)")
             MemoryAddress = Int(TheseRegisters.B)*0x100+Int(TheseRegisters.C)
             TheseRegisters.A = ThisMemory.AddressSpace[MemoryAddress]
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x0B:
-            print("DEC BC")
-        case 0x0C:
-            print("INC C")
-        case 0x0D:
-            print("DEC C")
-        case 0x0E:
-            print("LD C,n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by BC into A.")
+        case 0x0B:        print("0B:::"); print ("DEC BC"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from BC")
+        case 0x0C:        print("0C:::"); print ("INC C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to C.")
+        case 0x0D:        print("0D:::"); print ("DEC C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from C.")
+        case 0x0E:        
+            print("0E:n::")
+            print ("LD C,N")
             TheseRegisters.C = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x0F:
-            print("CA")
-        case 0x10:
-            print("DJNZ nn")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into C")
+        case 0x0F:        print("0F:::"); print ("RRCA"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+        case 0x10:        print("10:d::"); print ("DJNZ D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [13,8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The B register is decremented, and if not zero, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x11:
-            print("LD DE,nn")
+            print("11:n:n:")
+            print ("LD DE,NN")
             TheseRegisters.D = ThirdByte
             TheseRegisters.E = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into DE.")
         case 0x12:
-            print("LD (DE),A")
+            print("12:::")
+            print ("LD (DE),A")
             MemoryAddress = Int(TheseRegisters.D)*0x100+Int(TheseRegisters.E)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1601,8 +1611,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.A)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by DE.")
         case 0x13:
-            print("INC DE")
+            print("13:::")
+            print ("INC DE")
             if TheseRegisters.E == 0xFF
             {
                 TheseRegisters.E = 0
@@ -1613,46 +1625,46 @@ class Z80 : ObservableObject {
                 TheseRegisters.E = TheseRegisters.E + 1
             }
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x14:
-            print("INC D")
-        case 0x15:
-            print("DEC D")
-        case 0x16:
-            print("LD D,n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to DE")
+        case 0x14:        print("14:::"); print ("INC D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to D")
+        case 0x15:        print("15:::"); print ("DEC D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from D")
+        case 0x16:        
+            print("16:::")
+            print ("LD D,N")
             TheseRegisters.D = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x17:
-            print("RLA")
-        case 0x18:
-            print("JR nn")
-        case 0x19:
-            print("ADD HL,DE")
-        case 0x1A:
-            print("LD A,(DE)")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into D")
+        case 0x17:        print("17:::"); print ("RLA"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+        case 0x18:        print("18:d::"); print ("JR D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
+        case 0x19:        print("19:::"); print ("ADD HL,DE"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to HL.")
+        case 0x1A:        
+            print("1A:::")
+            print ("LD A,(DE)")
             MemoryAddress = Int(TheseRegisters.D)*0x100+Int(TheseRegisters.E)
             TheseRegisters.A = ThisMemory.AddressSpace[MemoryAddress]
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x1B:
-            print("DEC DE")
-        case 0x1C:
-            print("INC E")
-        case 0x1D:
-            print("DEC E")
-        case 0x1E:
-            print("LD E,n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by DE into A.")
+        case 0x1B:        print("1B:::"); print ("DEC DE"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from DE")
+        case 0x1C:        print("1C:::"); print ("INC E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to E.")
+        case 0x1D:        print("1D:::"); print ("DEC E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from E.")
+        case 0x1E:        
+            print("1E:n::")
+            print ("LD E,N")
             TheseRegisters.E = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x1F:
-            print("RRA")
-        case 0x20:
-            print("JR NZ,nn")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into E.")
+        case 0x1F:        print("1F:::"); print ("RRA"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+        case 0x20:        print("20:d::"); print ("JR NZ,D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x21:
-            print("LD HL,nn")
+            print("21:n:n:")
+            print ("LD HL,NN")
             TheseRegisters.H = ThirdByte
             TheseRegisters.L = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into HL.")
         case 0x22:
-            print("LD (nn),HL")
+            print("22:n:n:")
+            print ("LD (NN),HL")
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.L
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1666,8 +1678,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.H)
             }
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [16], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores HL into the memory location pointed to by $nn.")
         case 0x23:
-            print("INC HL")
+            print("23:::")
+            print ("INC HL")
             if TheseRegisters.L == 0xFF
             {
                 TheseRegisters.L = 0
@@ -1678,46 +1692,45 @@ class Z80 : ObservableObject {
                 TheseRegisters.L = TheseRegisters.L + 1
             }
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x24:
-            print("INC H")
-        case 0x25:
-            print("DEC H")
-        case 0x26:
-            print("LD H,n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to HL")
+        case 0x24:        print("24:::"); print ("INC H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to HL")
+        case 0x25:        print("25:::"); print ("DEC H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from HL")
+        case 0x26:        
+            print("26:::")
+            print ("LD H,N")
             TheseRegisters.H = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x27:
-            print("DAA")
-        case 0x28:
-            print("JR Z,nn")
-        case 0x29:
-            print("ADD HL,HL")
-        case 0x2A:
-            print("LD HL,(nn)")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into H")
+        case 0x27:        print("27:::"); print ("DAA"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "*", NFlag: "-", PVFlag: "p", HFlag: "*", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adjusts A for BCD addition and subtraction operations.")
+        case 0x28:        print("28:d::"); print ("JR Z,D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
+        case 0x29:        print("29:::"); print ("ADD HL,HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of HL is added to HL.")
+        case 0x2A:        
+            print("2A:n:n:")
+            print ("LD HL,(NN)")
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             TheseRegisters.L = ThisMemory.AddressSpace[MemoryAddress]
             TheseRegisters.H = ThisMemory.AddressSpace[MemoryAddress+1]
-            TheseRegisters.PC = TheseRegisters.PC+3
-        case 0x2B:
-            print("DEC HL")
-        case 0x2C:
-            print("INC L")
-        case 0x2D:
-            print("DEC L")
-        case 0x2E:
-            print("LD L,n")
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [16], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into HL.")
+        case 0x2B:        print("2B:::"); print ("DEC HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from HL")
+        case 0x2C:        print("2C:::"); print ("INC L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to L.")
+        case 0x2D:        print("2D:::"); print ("DEC L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from L.")
+        case 0x2E:        
+            print("2E:::")
+            print ("LD L,N")
             TheseRegisters.L = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x2F:
-            print("CPL")
-        case 0x30:
-            print("JR NC,nn")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into L.")
+        case 0x2F:        print("2F:::"); print ("CPL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "1", PVFlag: "-", HFlag: "1", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are inverted (one's complement).")
+        case 0x30:        print("30:d::"); print ("JR NC,D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x31:
-            print("LD SP,nn")
+            print("31:n:n:")
+            print ("LD SP,NN")
             TheseRegisters.SP = UInt16(ThirdByte)*0x100 + UInt16(SecondByte)
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into SP.")
         case 0x32:
-            print("LD (nn),A")
+            print("32:n:n:")
+            print ("LD (NN),A")
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1725,16 +1738,18 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.A)
             }
             TheseRegisters.PC = TheseRegisters.PC+3
+            // OpcodeSize: 1, InstructionSize: 3, Cycle: [13], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by $nn.")
         case 0x33:
-            print("INC SP")
+            print("33:::")
+            print ("INC SP")
             TheseRegisters.SP = TheseRegisters.SP + 1
             TheseRegisters.PC = TheseRegisters.PC + 1
-        case 0x34:
-            print("INC (HL)")
-        case 0x35:
-            print("DEC (HL)")
-        case 0x36:
-            print("LD (HL),n")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to SP")
+        case 0x34:        print("34:::"); print ("INC (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to (HL).")
+        case 0x35:        print("35:::"); print ("DEC (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from (HL).")
+        case 0x36:        
+            print("36:n::")
+            print ("LD (HL),N")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  SecondByte
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1742,124 +1757,72 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(SecondByte)
             }
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x37:
-            print("SCF")
-        case 0x38:
-            print("JR C,nn")
-        case 0x39:
-            print("ADD HL,SP")
-        case 0x3A:
-            print("LD A,(nn)")
-        case 0x3B:
-            print("DEC SP")
-        case 0x3C:
-            print("INC A")
-        case 0x3D:
-            print("DEC A")
-        case 0x3E:
-            print("LD A,nn")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into (HL).")
+        case 0x37:        print("37:::"); print ("SCF"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "1", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets the carry flag.")
+        case 0x38:        print("38:d::"); print ("JR C,D"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
+        case 0x39:        print("39:::"); print ("ADD HL,SP"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to HL.")
+        case 0x3A:        print("3A:n:n:"); print ("LD A,(NN)"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [13], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into A.")
+        case 0x3B:        print("3B:::"); print ("DEC SP"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from SP")
+        case 0x3C:        print("3C:::"); print ("INC A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to A.")
+        case 0x3D:        print("3D:::"); print ("DEC A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from A.")
+        case 0x3E:        
+            print("3E:n::")
+            print ("LD A,N")
             TheseRegisters.A = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
-        case 0x3F:
-            print("CCF")
-        case 0x40:
-            print("LD B,B")
-        case 0x41:
-            print("LD B,C")
-        case 0x42:
-            print("LD B,D")
-        case 0x43:
-            print("LD B,E")
-        case 0x44:
-            print("LD B,H")
-        case 0x45:
-            print("LD B,L")
-        case 0x46:
-            print("LD B,(HL)")
-        case 0x47:
-            print("LD B,A")
-        case 0x48:
-            print("LD C,B")
-        case 0x49:
-            print("LD C,C")
-        case 0x4A:
-            print("LD C,D")
-        case 0x4B:
-            print("LD C,E")
-        case 0x4C:
-            print("LD C,H")
-        case 0x4D:
-            print("LD C,L")
-        case 0x4E:
-            print("LD C,(HL)")
-        case 0x4F:
-            print("LD C,A")
-        case 0x50:
-            print("LD D,B")
-        case 0x51:
-            print("LD D,C")
-        case 0x52:
-            print("LD D,D")
-        case 0x53:
-            print("LD D,E")
-        case 0x54:
-            print("LD D,H")
-        case 0x55:
-            print("LD D,L")
-        case 0x56:
-            print("LD D,(HL)")
-        case 0x57:
-            print("LD D,A")
-        case 0x58:
-            print("LD E,B")
-        case 0x59:
-            print("LD E,C")
-        case 0x5A:
-            print("LD E,D")
-        case 0x5B:
-            print("LD E,E")
-        case 0x5C:
-            print("LD E,H")
-        case 0x5D:
-            print("LD E,L")
-        case 0x5E:
-            print("LD E,(HL)")
-        case 0x5F:
-            print("LD E,A")
-        case 0x60:
-            print("LD H,B")
-        case 0x61:
-            print("LD H,C")
-        case 0x62:
-            print("LD H,D")
-        case 0x63:
-            print("LD H,E")
-        case 0x64:
-            print("LD H,H")
-        case 0x65:
-            print("LD H,L")
-        case 0x66:
-            print("LD H,(HL)")
-        case 0x67:
-            print("LD H,A")
-        case 0x68:
-            print("LD L,B")
-        case 0x69:
-            print("LD L,C")
-        case 0x6A:
-            print("LD L,D")
-        case 0x6B:
-            print("LD L,E")
-        case 0x6C:
-            print("LD L,H")
-        case 0x6D:
-            print("LD L,L")
-        case 0x6E:
-            print("LD L,(HL)")
-        case 0x6F:
-            print("LD L,A")
+            // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into A.")
+        case 0x3F:        print("3F:::"); print ("CCF"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "*", NFlag: "0", PVFlag: "-", HFlag: "*", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Inverts the carry flag.")
+        case 0x40:        print("40:::"); print ("LD B,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into B")
+        case 0x41:        print("41:::"); print ("LD B,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into B")
+        case 0x42:        print("42:::"); print ("LD B,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into B")
+        case 0x43:        print("43:::"); print ("LD B,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into B")
+        case 0x44:        print("44:::"); print ("LD B,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into B")
+        case 0x45:        print("45:::"); print ("LD B,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into B")
+        case 0x46:        print("46:::"); print ("LD B,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into B")
+        case 0x47:        print("47:::"); print ("LD B,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into B.")
+        case 0x48:        print("48:::"); print ("LD C,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into C.")
+        case 0x49:        print("49:::"); print ("LD C,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into C.")
+        case 0x4A:        print("4A:::"); print ("LD C,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
+        case 0x4B:        print("4B:::"); print ("LD C,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
+        case 0x4C:        print("4C:::"); print ("LD C,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
+        case 0x4D:        print("4D:::"); print ("LD C,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
+        case 0x4E:        print("4E:::"); print ("LD C,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into C.")
+        case 0x4F:        print("4F:::"); print ("LD C,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
+        case 0x50:        print("50:::"); print ("LD D,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into D")
+        case 0x51:        print("51:::"); print ("LD D,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into D")
+        case 0x52:        print("52:::"); print ("LD D,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into D")
+        case 0x53:        print("53:::"); print ("LD D,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into D")
+        case 0x54:        print("54:::"); print ("LD D,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into D")
+        case 0x55:        print("55:::"); print ("LD D,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into D")
+        case 0x56:        print("56:::"); print ("LD D,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into D")
+        case 0x57:        print("57:::"); print ("LD D,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into D.")
+        case 0x58:        print("58:::"); print ("LD E,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into E.")
+        case 0x59:        print("59:::"); print ("LD E,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into E.")
+        case 0x5A:        print("5A:::"); print ("LD E,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
+        case 0x5B:        print("5B:::"); print ("LD E,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
+        case 0x5C:        print("5C:::"); print ("LD E,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
+        case 0x5D:        print("5D:::"); print ("LD E,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
+        case 0x5E:        print("5E:::"); print ("LD E,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into E")
+        case 0x5F:        print("5F:::"); print ("LD E,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
+        case 0x60:        print("60:::"); print ("LD H,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into H")
+        case 0x61:        print("61:::"); print ("LD H,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into H")
+        case 0x62:        print("62:::"); print ("LD H,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of  D are loaded into H")
+        case 0x63:        print("63:::"); print ("LD H,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into H")
+        case 0x64:        print("64:::"); print ("LD H,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into H")
+        case 0x65:        print("65:::"); print ("LD H,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into H")
+        case 0x66:        print("66:::"); print ("LD H,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into H")
+        case 0x67:        print("67:::"); print ("LD H,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into H.")
+        case 0x68:        print("68:::"); print ("LD L,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into L.")
+        case 0x69:        print("69:::"); print ("LD L,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into L.")
+        case 0x6A:        print("6A:::"); print ("LD L,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
+        case 0x6B:        print("6B:::"); print ("LD L,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
+        case 0x6C:        print("6C:::"); print ("LD L,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
+        case 0x6D:        print("6D:::"); print ("LD L,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
+        case 0x6E:        print("6E:::"); print ("LD L,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into L")
+        case 0x6F:        print("6F:::"); print ("LD L,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
         case 0x70:
-            print("LD (HL),B")
+            print("70:::")
+            print ("LD (HL),B")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.B
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1867,8 +1830,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.B)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into (HL).")
         case 0x71:
-            print("LD (HL),C")
+            print("71:::")
+            print ("LD (HL),C")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.C
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1876,8 +1841,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.C)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into (HL).")
         case 0x72:
-            print("LD (HL),D")
+            print("72:::")
+            print ("LD (HL),D")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.D
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1885,17 +1852,21 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.D)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into (HL).")
         case 0x73:
-            print("LD (HL),E")
+            print("73:::")
+            print ("LD (HL),E")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.E
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
             {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.E)
             }
-            TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into (HL).")
         case 0x74:
-            print("LD (HL),H")
+            print("74:::")
+            print ("LD (HL),H")
+            TheseRegisters.PC = TheseRegisters.PC+1
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.H
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1903,8 +1874,10 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.H)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into (HL).")
         case 0x75:
-            print("LD (HL),L")
+            print("75:::")
+            print ("LD (HL),L")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.L
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1912,10 +1885,14 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.L)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into (HL).")
         case 0x76:
-            print("HALT")
+            print("76:::")
+            print ("HALT")
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Suspends CPU operation until an interrupt or reset occurs.")
         case 0x77:
-            print("LD (HL),A")
+            print("77:::")
+            print ("LD (HL),A")
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
             if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
@@ -1923,1240 +1900,1336 @@ class Z80 : ObservableObject {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.A)
             }
             TheseRegisters.PC = TheseRegisters.PC+1
-        case 0x78:
-            print("LD A,B")
-        case 0x79:
-            print("LD A,C")
-        case 0x7A:
-            print("LD A,D")
-        case 0x7B:
-            print("LD A,E")
-        case 0x7C:
-            print("LD A,H")
-        case 0x7D:
-            print("LD A,L")
-        case 0x7E:
-            print("LD A,(HL)")
-        case 0x7F:
-            print("LD A,A")
-        case 0x80:
-            print("ADD A,B")
-        case 0x81:
-            print("ADD A,C")
-        case 0x82:
-            print("ADD A,D")
-        case 0x83:
-            print("ADD A,E")
-        case 0x84:
-            print("ADD A,H")
-        case 0x85:
-            print("ADD A,L")
-        case 0x86:
-            print("ADD A,(HL)")
-        case 0x87:
-            print("ADD A,A")
-        case 0x88:
-            print("ADC A,B")
-        case 0x89:
-            print("ADC A,C")
-        case 0x8A:
-            print("ADC A,D")
-        case 0x8B:
-            print("ADC A,E")
-        case 0x8C:
-            print("ADC A,H")
-        case 0x8D:
-            print("ADC A,L")
-        case 0x8E:
-            print("ADC A,(HL)")
-        case 0x8F:
-            print("ADC A,A")
-        case 0x90:
-            print("SUB A,B")
-        case 0x91:
-            print("SUB A,C")
-        case 0x92:
-            print("SUB A,D")
-        case 0x93:
-            print("SUB A,E")
-        case 0x94:
-            print("SUB A,H")
-        case 0x95:
-            print("SUB A,L")
-        case 0x96:
-            print("SUB A,(HL)")
-        case 0x97:
-            print("SUB A,A")
-        case 0x98:
-            print("SBC A,B")
-        case 0x99:
-            print("SBC A,C")
-        case 0x9A:
-            print("SBC A,D")
-        case 0x9B:
-            print("SBC A,E")
-        case 0x9C:
-            print("SBC A,H")
-        case 0x9D:
-            print("SBC A,L")
-        case 0x9E:
-            print("SBC A,(HL)")
-        case 0x9F:
-            print("SBC A,A")
-        case 0xA0:
-            print("AND B")
-        case 0xA1:
-            print("AND C")
-        case 0xA2:
-            print("AND D")
-        case 0xA3:
-            print("AND E")
-        case 0xA4:
-            print("AND H")
-        case 0xA5:
-            print("AND L")
-        case 0xA6:
-            print("AND (HL)")
-        case 0xA7:
-            print("AND A")
-        case 0xA8:
-            print("XOR B")
-        case 0xA9:
-            print("XOR C")
-        case 0xAA:
-            print("XOR D")
-        case 0xAB:
-            print("XOR E")
-        case 0xAC:
-            print("XOR H")
-        case 0xAD:
-            print("XOR L")
-        case 0xAE:
-            print("XOR (HL)")
-        case 0xAF:
-            print("XOR A")
-        case 0xB0:
-            print("OR B")
-        case 0xB1:
-            print("OR C")
-        case 0xB2:
-            print("OR D")
-        case 0xB3:
-            print("OR E")
-        case 0xB4:
-            print("OR H")
-        case 0xB5:
-            print("OR L")
-        case 0xB6:
-            print("OR (HL)")
-        case 0xB7:
-            print("OR A")
-        case 0xB8:
-            print("CP B")
-        case 0xB9:
-            print("CP C")
-        case 0xBA:
-            print("CP D")
-        case 0xBB:
-            print("CP E")
-        case 0xBC:
-            print("CP H")
-        case 0xBD:
-            print("CP L")
-        case 0xBE:
-            print("CP (HL)")
-        case 0xBF:
-            print("CP A")
-        case 0xC0:
-            print("RET NZ")
-        case 0xC1:
-            print("POP BC")
-        case 0xC2:
-            print("JP NZ,nn")
-        case 0xC3:
-            print("JP nn")
-        case 0xC4:
-            print("CALL NZ,nn")
-        case 0xC5:
-            print("PUSH BC")
-        case 0xC6:
-            print("ADD A,nn")
-        case 0xC7:
-            print("RST 00")
-        case 0xC8:
-            print("RET Z")
-        case 0xC9:
-            print("RET")
-        case 0xCA:
-            print("JP Z,nn")
+            
+            // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into (HL).")
+        case 0x78:        print("78:::"); print ("LD A,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into A.")
+        case 0x79:        print("79:::"); print ("LD A,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into A.")
+        case 0x7A:        print("7A:::"); print ("LD A,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
+        case 0x7B:        print("7B:::"); print ("LD A,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
+        case 0x7C:        print("7C:::"); print ("LD A,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
+        case 0x7D:        print("7D:::"); print ("LD A,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
+        case 0x7E:        print("7E:::"); print ("LD A,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into A")
+        case 0x7F:        print("7F:::"); print ("LD A,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
+        case 0x80:        print("80:::"); print ("ADD A,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds B to A.")
+        case 0x81:        print("81:::"); print ("ADD A,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds C to A.")
+        case 0x82:        print("82:::"); print ("ADD A,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds D to A.")
+        case 0x83:        print("83:::"); print ("ADD A,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds E to A.")
+        case 0x84:        print("84:::"); print ("ADD A,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds H to A.")
+        case 0x85:        print("85:::"); print ("ADD A,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds L to A.")
+        case 0x86:        print("86:::"); print ("ADD A,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds (HL) to A.")
+        case 0x87:        print("87:::"); print ("ADD A,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds A to A.")
+        case 0x88:        print("88:::"); print ("ADC A,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds B and the carry flag to A.")
+        case 0x89:        print("89:::"); print ("ADC A,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds C and the carry flag to A.")
+        case 0x8A:        print("8A:::"); print ("ADC A,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds D and the carry flag to A.")
+        case 0x8B:        print("8B:::"); print ("ADC A,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds E and the carry flag to A.")
+        case 0x8C:        print("8C:::"); print ("ADC A,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds H and the carry flag to A.")
+        case 0x8D:        print("8D:::"); print ("ADC A,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds L and the carry flag to A.")
+        case 0x8E:        print("8E:::"); print ("ADC A,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds (HL) and the carry flag to A.")
+        case 0x8F:        print("8F:::"); print ("ADC A,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds A and the carry flag to A.")
+        case 0x90:        print("90:::"); print ("SUB B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x91:        print("91:::"); print ("SUB C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x92:        print("92:::"); print ("SUB D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x93:        print("93:::"); print ("SUB E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x94:        print("94:::"); print ("SUB H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x95:        print("95:::"); print ("SUB L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
+        case 0x96:        print("96:::"); print ("SUB (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) from A.")
+        case 0x97:        print("97:::"); print ("SUB A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A from A.")
+        case 0x98:        print("98:::"); print ("SBC A,B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts B and the carry flag from A.")
+        case 0x99:        print("99:::"); print ("SBC A,C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts C and the carry flag from A.")
+        case 0x9A:        print("9A:::"); print ("SBC A,D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts D and the carry flag from A.")
+        case 0x9B:        print("9B:::"); print ("SBC A,E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts E and the carry flag from A.")
+        case 0x9C:        print("9C:::"); print ("SBC A,H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts H and the carry flag from A.")
+        case 0x9D:        print("9D:::"); print ("SBC A,L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts L and the carry flag from A.")
+        case 0x9E:        print("9E:::"); print ("SBC A,(HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) and the carry flag from A.")
+        case 0x9F:        print("9F:::"); print ("SBC A,A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A and the carry flag from A.")
+        case 0xA0:        print("A0:::"); print ("AND B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with B")
+        case 0xA1:        print("A1:::"); print ("AND C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with C")
+        case 0xA2:        print("A2:::"); print ("AND D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with D")
+        case 0xA3:        print("A3:::"); print ("AND E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with E")
+        case 0xA4:        print("A4:::"); print ("AND H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with H")
+        case 0xA5:        print("A5:::"); print ("AND L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with L")
+        case 0xA6:        print("A6:::"); print ("AND (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with (HL).")
+        case 0xA7:        print("A7:::"); print ("AND A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with A.")
+        case 0xA8:        print("A8:::"); print ("XOR B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with B")
+        case 0xA9:        print("A9:::"); print ("XOR C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with C")
+        case 0xAA:        print("AA:::"); print ("XOR D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with D")
+        case 0xAB:        print("AB:::"); print ("XOR E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with E")
+        case 0xAC:        print("AC:::"); print ("XOR H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with H")
+        case 0xAD:        print("AD:::"); print ("XOR L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with L")
+        case 0xAE:        print("AE:::"); print ("XOR (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with (HL).")
+        case 0xAF:        print("AF:::"); print ("XOR A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with A.")
+        case 0xB0:        print("B0:::"); print ("OR B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with B")
+        case 0xB1:        print("B1:::"); print ("OR C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with C")
+        case 0xB2:        print("B2:::"); print ("OR D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with D")
+        case 0xB3:        print("B3:::"); print ("OR E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with E")
+        case 0xB4:        print("B4:::"); print ("OR H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with H")
+        case 0xB5:        print("B5:::"); print ("OR L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with L")
+        case 0xB6:        print("B6:::"); print ("OR (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with (HL).")
+        case 0xB7:        print("B7:::"); print ("OR A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with A.")
+        case 0xB8:        print("B8:::"); print ("CP B"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
+        case 0xB9:        print("B9:::"); print ("CP C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
+        case 0xBA:        print("BA:::"); print ("CP D"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
+        case 0xBB:        print("BB:::"); print ("CP E"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
+        case 0xBC:        print("BC:::"); print ("CP H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts H from A and affects flags according to the result. A is not modified.")
+        case 0xBD:        print("BD:::"); print ("CP L"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts L from A and affects flags according to the result. A is not modified.")
+        case 0xBE:        print("BE:::"); print ("CP (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) from A and affects flags according to the result. A is not modified.")
+        case 0xBF:        print("BF:::"); print ("CP A"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
+        case 0xC0:        print("C0:::"); print ("RET NZ"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the top stack entry is popped into PC.")
+        case 0xC1:        print("C1:::"); print ("POP BC"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into C and SP is incremented. The memory location pointed to by SP is stored into B and SP is incremented again.")
+        case 0xC2:        print("C2:n:n:"); print ("JP NZ,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, $nn is copied to PC.")
+        case 0xC3:        print("C3:n:n:"); print ("JP NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "$nn is copied to PC.")
+        case 0xC4:        print("C4:n:n:"); print ("CALL NZ,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xC5:        print("C5:::"); print ("PUSH BC"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and B is stored into the memory location pointed to by SP. SP is decremented again and C is stored into the memory location pointed to by SP.")
+        case 0xC6:        print("C6:n::"); print ("ADD A,N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds $n to A.")
+        case 0xC7:        print("C7:::"); print ("RST 00H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 00H.")
+        case 0xC8:        print("C8:::"); print ("RET Z"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the top stack entry is popped into PC.")
+        case 0xC9:        print("C9:::"); print ("RET"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The top stack entry is popped into PC.")
+        case 0xCA:        print("CA:n:n:"); print ("JP Z,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, $nn is copied to PC.")
         case 0xCB:
             switch SecondByte
             {
-            case 0x00 :
-                print("RLC B")
-            case 0x01 :
-                print("RLC C")
-            case 0x02 :
-                print("RLC D")
-            case 0x03 :
-                print("RLC E")
-            case 0x04 :
-                print("RLC H")
-            case 0x05 :
-                print("RLC L")
-            case 0x06 :
-                print("RLC (HL)")
-            case 0x07 :
-                print("RLC A")
-            case 0x08 :
-                print("RRC B")
-            case 0x09 :
-                print("RRC C")
-            case 0x0A :
-                print("RRC D")
-            case 0x0B :
-                print("RRC E")
-            case 0x0E :
-                print("RRC (HL)")
-            case 0x0F :
-                print("RRC A")
-            case 0x10 :
-                print("RL B")
-            case 0x11 :
-                print("RL C")
-            case 0x12 :
-                print("RL D")
-            case 0x13 :
-                print("RL E")
-            case 0x14 :
-                print("RL H")
-            case 0x15 :
-                print("RL L")
-            case 0x16 :
-                print("RL (HL)")
-            case 0x17 :
-                print("RL A")
-            case 0x18 :
-                print("RR B")
-            case 0x19 :
-                print("RR C")
-            case 0x1A :
-                print("RR D")
-            case 0x1B :
-                print("RR E")
-            case 0x1C  :
-                print("RR H")
-            case 0x1D :
-                print("RR L")
-            case 0x1E :
-                print("RR (HL)")
-            case 0x1F :
-                print("RR A")
-            case 0x20 :
-                print("SLA B")
-            case 0x21 :
-                print("SLA C")
-            case 0x22 :
-                print("SLA D")
-            case 0x23 :
-                print("SLA E")
-            case 0x24 :
-                print("SLA H")
-            case 0x25 :
-                print("SLA L")
-            case 0x26  :
-                print("SLA (HL)")
-            case 0x27 :
-                print("SLA A")
-            case 0x28 :
-                print("SRA B")
-            case 0x29 :
-                print("SRA C")
-            case 0x2A :
-                print("SRA D")
-            case 0x2B :
-                print("SRA E")
-            case 0x2C :
-                print("SRA H")
-            case 0x2D :
-                print("SRA L")
-            case 0x2E :
-                print("SRA (HL)")
-            case 0x2F :
-                print("SRA A")
-            case 0x30 :
-                print("SLS B")
-            case 0x31 :
-                print("SLS C")
-            case 0x32 :
-                print("SLS D")
-            case 0x33 :
-                print("SLS E")
-            case 0x34 :
-                print("SLS H")
-            case 0x35 :
-                print("SLS L")
-            case 0x36 :
-                print("SLS (HL)")
-            case 0x37 :
-                print("SLS A")
-            case 0x38 :
-                print("SRL B")
-            case 0x39 :
-                print("SRL C")
-            case 0x3A :
-                print("SRL D")
-            case 0x3B :
-                print("SRL E")
-            case 0x3C :
-                print("SRL H")
-            case 0x3D :
-                print("SRL L")
-            case 0x3E :
-                print("SRL (HL)")
-            case 0x3F :
-                print("SRL A")
-            case 0x40 :
-                print("BIT 0,B")
-            case 0x41 :
-                print("BIT 0,C")
-            case 0x42 :
-                print("BIT 0,D")
-            case 0x43 :
-                print("BIT 0,E")
-            case 0x44 :
-                print("BIT 0,H")
-            case 0x45 :
-                print("BIT 0,L")
-            case 0x46 :
-                print("BIT 0,(HL)")
-            case 0x47 :
-                print("BIT 0,A")
-            case 0x48 :
-                print("BIT 1,B")
-            case 0x49 :
-                print( "BIT 1,C")
-            case 0x4A :
-                print("BIT 1,D")
-            case 0x4B :
-                print("BIT 1,E")
-            case 0x4C :
-                print("BIT 1,H")
-            case 0x4D :
-                print("BIT 1,L")
-            case 0x4E :
-                print("BIT 1,(HL)")
-            case 0x4F :
-                print("BIT 1,A")
-            case 0x50 :
-                print("BIT 2,B")
-            case 0x51 :
-                print("BIT 2,C")
-            case 0x52 :
-                print("BIT 2,D")
-            case 0x53 :
-                print("BIT 2,E")
-            case 0x54 :
-                print("BIT 2,H")
-            case 0x55 :
-                print("BIT 2,L")
-            case 0x56 :
-                print("BIT 2,(HL)")
-            case 0x57 :
-                print("BIT 2,A")
-            case 0x58 :
-                print("BIT 3,B")
-            case 0x59 :
-                print("BIT 3,C")
-            case 0x5A :
-                print("BIT 3,D")
-            case 0x5B :
-                print("BIT 3,E")
-            case 0x5C :
-                print("BIT 3,H")
-            case 0x5D :
-                print("BIT 3,L")
-            case 0x5E :
-                print("BIT 3,(HL)")
-            case 0x5F :
-                print("BIT 3,A")
-            case 0x60 :
-                print("BIT 4,B")
-            case 0x61 :
-                print("BIT 4,C")
-            case 0x62 :
-                print("BIT 4,D")
-            case 0x63 :
-                print("BIT 4,E")
-            case 0x64 :
-                print("BIT 4,H")
-            case 0x65 :
-                print("BIT 4,L")
-            case 0x66 :
-                print("BIT 4,(HL)")
-            case 0x67 :
-                print("BIT 4,A")
-            case 0x68 :
-                print("BIT 5,B")
-            case 0x69 :
-                print("BIT 5,C")
-            case 0x6A :
-                print("BIT 5,D")
-            case 0x6B :
-                print("BIT 5,")
-            case 0x6C :
-                print("BIT 5,H")
-            case 0x6D :
-                print("BIT 5,L")
-            case 0x6E :
-                print("BIT 5,(HL)")
-            case 0x6F :
-                print("BIT 5,A")
-            case 0x70 :
-                print("BIT 6,B")
-            case 0x71 :
-                print("BIT 6,C")
-            case 0x72 :
-                print("BIT 6,D")
-            case 0x73 :
-                print("BIT 6,E")
-            case 0x74 :
-                print("BIT 6,H")
-            case 0x75 :
-                print("BIT 6,L")
-            case 0x76 :
-                print("BIT 6,(HL)")
-            case 0x77 :
-                print("BIT 6,A")
-            case 0x78 :
-                print("BIT 7,B")
-            case 0x79 :
-                print("BIT 7,C")
-            case 0x7A :
-                print("BIT 7,D")
-            case 0x7B :
-                print("BIT 7,E")
-            case 0x7C :
-                print("BIT 7,H")
-            case 0x7D :
-                print("BIT 7,L")
-            case 0x7E :
-                print("BIT 7,(HL)")
-            case 0x7F :
-                print("BIT 7,A")
-            case 0x80 :
-                print("RES 0,B")
-            case 0x81 :
-                print("RES 0,C")
-            case 0x82 :
-                print("RES 0,D")
-            case 0x83 :
-                print("RES 0,E")
-            case 0x84 :
-                print("RES 0,H")
-            case 0x85 :
-                print("RES 0,L")
-            case 0x86 :
-                print("RES 0,(HL)")
-            case 0x87 :
-                print("RES 0,A")
-            case 0x88 :
-                print("RES 1,B")
-            case 0x89 :
-                print("RES 1,C")
-            case 0x8A :
-                print("RES 1,D")
-            case 0x8B :
-                print("RES 1,E")
-            case 0x8C :
-                print("RES 1,H")
-            case 0x8D :
-                print("RES 1,L")
-            case 0x8E :
-                print("RES 1,(HL)")
-            case 0x8F :
-                print("RES 1,A")
-            case 0x90 :
-                print("RES 2,B")
-            case 0x91 :
-                print("RES 2,C")
-            case 0x92 :
-                print("RES 2,D")
-            case 0x93 :
-                print("RES 2,E")
-            case 0x94 :
-                print("RES 2,H")
-            case  0x95 :
-                print("RES 2,L")
-            case 0x96 :
-                print("RES 2,(HL)")
-            case 0x97 :
-                print("RES 2,A")
-            case 0x98 :
-                print("RES 3,B")
-            case 0x99 :
-                print("RES 3,C")
-            case 0x9A  :
-                print("RES 3,D")
-            case 0x9B :
-                print("RES 3,E")
-            case 0x9C :
-                print("RES 3,H")
-            case 0x9D :
-                print("RES 3,L")
-            case 0x9E :
-                print("RES 3,(HL)")
-            case 0x9F :
-                print("RES 3,A")
-            case 0xA0 :
-                print("RES 4,B")
-            case 0xA1 :
-                print("RES 4,C")
-            case 0xA2 :
-                print("RES 4,D")
-            case 0xA3 :
-                print("RES 4,")
-            case 0xA4 :
-                print("RES 4,H")
-            case 0xA5 :
-                print("RES 4,L")
-            case 0xA6 :
-                print("RES 4,(HL)")
-            case 0xA7 :
-                print("RES 4,A")
-            case 0xA8 :
-                print("RES 5,B")
-            case 0xA9 :
-                print("RES 5,C")
-            case 0xAA :
-                print("RES 5,D")
-            case 0xAB :
-                print("RES 5,E")
-            case 0xAC  :
-                print("RES 5,H")
-            case 0xAD :
-                print("RES 5,L")
-            case 0xAE :
-                print("RES 5,(HL)")
-            case 0xAF :
-                print("RES 5,A")
-            case 0xB0 :
-                print("RES 6,B")
-            case 0xB1 :
-                print("RES 6,C")
-            case 0xB2 :
-                print("RES 6,D")
-            case 0xB3 :
-                print("RES 6,E")
-            case 0xB4 :
-                print("RES 6,H")
-            case 0xB5 :
-                print("RES 6,L")
-            case 0xB6 :
-                print("RES 6,(HL)")
-            case 0xB7 :
-                print("RES 6,A")
-            case 0xB8 :
-                print("RES 7,B")
-            case 0xB9 :
-                print("RES 7,C")
-            case 0xBA :
-                print("RES 7,D")
-            case 0xBB :
-                print("RES 7,E")
-            case 0xBC :
-                print("RES 7,H")
-            case 0xBD :
-                print("RES 7,L")
-            case
-                0xBE :
-                print("RES 7,(HL)")
-            case 0xBF :
-                print("RES 7,A")
-            case 0xC0 :
-                print("SET 0,B")
-            case 0xC1 :
-                print("SET 0,C")
-            case 0xC2 :
-                print("SET 0,D")
-            case 0xC3 :
-                print("SET 0,E")
-            case 0xC4 :
-                print("SET 0,H")
-            case 0xC5 :
-                print("SET 0,L")
-            case 0xC6 :
-                print("SET 0,(HL)")
-            case 0xC7 :
-                print("SET 0,A")
-            case 0xC8 :
-                print("SET 1,B")
-            case 0xC9 :
-                print("SET 1,C")
-            case 0xCA  :
-                print("SET 1,D")
-            case 0xCB :
-                print("SET 1,E")
-            case 0xCC :
-                print("SET 1,H")
-            case 0xCD :
-                print("SET 1,L")
-            case 0xCE :
-                print("SET 1,(HL)")
-            case 0xCF :
-                print("SET 1,A")
-            case 0xD0 :
-                print("SET 2,B")
-            case 0xD1 :
-                print("SET 2,C")
-            case 0xD2 :
-                print("SET 2,D")
-            case 0xD3 :
-                print("SET 2,E")
-            case 0xD4 :
-                print("SET 2,H")
-            case 0xD5 :
-                print("SET 2,L")
-            case 0xD6 :
-                print("SET 2,(HL)")
-            case 0xD7 :
-                print("SET 2,A")
-            case 0xD8 :
-                print("SET 3,B")
-            case 0xD9 :
-                print("SET 3,C")
-            case 0xDA :
-                print("SET 3,D")
-            case 0xDB :
-                print("SET 3,E")
-            case 0xDC :
-                print("SET 3,H")
-            case 0xDD :
-                print("SET 3,L")
-            case 0xDE :
-                print("SET 3,(HL)")
-            case 0xDF :
-                print("SET 3,A")
-            case 0xE0 :
-                print("SET 4,B")
-            case 0xE1 :
-                print("SET 4,C")
-            case 0xE2 :
-                print("SET 4,D")
-            case 0xE3 :
-                print("SET 4,E")
-            case 0xE4 :
-                print("SET 4,H")
-            case 0xE5 :
-                print( "SET 4,L")
-            case 0xE6 :
-                print("SET 4,(HL)")
-            case 0xE7 :
-                print("SET 4,A")
-            case 0xE8 :
-                print("SET 5,B")
-            case 0xE9 :
-                print("SET 5,C")
-            case 0xEA :
-                print("SET 5,D")
-            case 0xEB :
-                print("SET 5,E")
-            case 0xEC :
-                print("SET 5,H")
-            case 0xED :
-                print("SET 5,L")
-            case 0xEE :
-                print("SET 5,(HL)")
-            case 0xEF :
-                print("SET 5,A")
-            case 0xF0 :
-                print("SET 6,B")
-            case 0xF1 :
-                print("SET 6,C")
-            case 0xF2 :
-                print("SET 6,D")
-            case 0xF3 :
-                print("SET 6,E")
-            case 0xF4 :
-                print( "SET 6,H")
-            case 0xF5 :
-                print("SET 6,L")
-            case 0xF6 :
-                print("SET 6,(HL)")
-            case 0xF7 :
-                print("SET 6,A")
-            case 0xF8 :
-                print("SET 7,B")
-            case 0xF9 :
-                print("SET 7,C")
-            case 0xFA :
-                print("SET 7,D")
-            case 0xFB :
-                print("SET 7,E")
-            case 0xFC :
-                print("SET 7,H")
-            case 0xFD :
-                print("SET 7,L")
-            case 0xFE :
-                print("SET 7,(HL)")
-            case 0xFF :
-                print("SET 7,A")
+            case 0x00:    print("CB:00::"); print ("RLC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x01:    print("CB:01::"); print ("RLC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x02:    print("CB:02::"); print ("RLC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x03:    print("CB:03::"); print ("RLC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x04:    print("CB:04::"); print ("RLC H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x05:    print("CB:05::"); print ("RLC L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x06:    print("CB:06::"); print ("RLC (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x07:    print("CB:07::"); print ("RLC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+            case 0x08:    print("CB:08::"); print ("RRC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x09:    print("CB:09::"); print ("RRC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0A:    print("CB:0A::"); print ("RRC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0B:    print("CB:0B::"); print ("RRC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0C:    print("CB:0C::"); print ("RRC H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0D:    print("CB:0D::"); print ("RRC L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0E:    print("CB:0E::"); print ("RRC (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x0F:    print("CB:0F::"); print ("RRC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+            case 0x10:    print("CB:10::"); print ("RL B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x11:    print("CB:11::"); print ("RL C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x12:    print("CB:12::"); print ("RL D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x13:    print("CB:13::"); print ("RL E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x14:    print("CB:14::"); print ("RL H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x15:    print("CB:15::"); print ("RL L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x16:    print("CB:16::"); print ("RL (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x17:    print("CB:17::"); print ("RL A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+            case 0x18:    print("CB:18::"); print ("RR B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x19:    print("CB:19::"); print ("RR C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1A:    print("CB:1A::"); print ("RR D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1B:    print("CB:1B::"); print ("RR E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1C:    print("CB:1C::"); print ("RR H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1D:    print("CB:1D::"); print ("RR L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1E:    print("CB:1E::"); print ("RR (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x1F:    print("CB:1F::"); print ("RR A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+            case 0x20:    print("CB:20::"); print ("SLA B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x21:    print("CB:21::"); print ("SLA C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x22:    print("CB:22::"); print ("SLA D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x23:    print("CB:23::"); print ("SLA E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x24:    print("CB:24::"); print ("SLA H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x25:    print("CB:25::"); print ("SLA L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x26:    print("CB:26::"); print ("SLA (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x27:    print("CB:27::"); print ("SLA A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+            case 0x28:    print("CB:28::"); print ("SRA B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x29:    print("CB:29::"); print ("SRA C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2A:    print("CB:2A::"); print ("SRA D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2B:    print("CB:2B::"); print ("SRA E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2C:    print("CB:2C::"); print ("SRA H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2D:    print("CB:2D::"); print ("SRA L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2E:    print("CB:2E::"); print ("SRA (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x2F:    print("CB:2F::"); print ("SRA A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+            case 0x30:    print("CB:30::"); print ("SLL B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of B are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x31:    print("CB:31::"); print ("SLL C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of C are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x32:    print("CB:32::"); print ("SLL D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of D are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x33:    print("CB:33::"); print ("SLL E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of E are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x34:    print("CB:34::"); print ("SLL H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of H are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x35:    print("CB:35::"); print ("SLL L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of L are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x36:    print("CB:36::"); print ("SLL (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of (HL) are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x37:    print("CB:37::"); print ("SLL A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of A are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+            case 0x38:    print("CB:38::"); print ("SRL B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x39:    print("CB:39::"); print ("SRL C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3A:    print("CB:3A::"); print ("SRL D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3B:    print("CB:3B::"); print ("SRL E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3C:    print("CB:3C::"); print ("SRL H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3D:    print("CB:3D::"); print ("SRL L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3E:    print("CB:3E::"); print ("SRL (HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x3F:    print("CB:3F::"); print ("SRL A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+            case 0x40:    print("CB:40::"); print ("BIT 0,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of B")
+            case 0x41:    print("CB:41::"); print ("BIT 0,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of C")
+            case 0x42:    print("CB:42::"); print ("BIT 0,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of D")
+            case 0x43:    print("CB:43::"); print ("BIT 0,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of E")
+            case 0x44:    print("CB:44::"); print ("BIT 0,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of H")
+            case 0x45:    print("CB:45::"); print ("BIT 0,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of L")
+            case 0x46:    print("CB:46::"); print ("BIT 0,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of (HL).")
+            case 0x47:    print("CB:47::"); print ("BIT 0,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of A.")
+            case 0x48:    print("CB:48::"); print ("BIT 1,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of B.")
+            case 0x49:    print("CB:49::"); print ("BIT 1,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of C")
+            case 0x4A:    print("CB:4A::"); print ("BIT 1,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of D")
+            case 0x4B:    print("CB:4B::"); print ("BIT 1,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of E")
+            case 0x4C:    print("CB:4C::"); print ("BIT 1,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of H")
+            case 0x4D:    print("CB:4D::"); print ("BIT 1,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of L")
+            case 0x4E:    print("CB:4E::"); print ("BIT 1,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of (HL).")
+            case 0x4F:    print("CB:4F::"); print ("BIT 1,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of A")
+            case 0x50:    print("CB:50::"); print ("BIT 2,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of B")
+            case 0x51:    print("CB:51::"); print ("BIT 2,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of C")
+            case 0x52:    print("CB:52::"); print ("BIT 2,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of D")
+            case 0x53:    print("CB:53::"); print ("BIT 2,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of E")
+            case 0x54:    print("CB:54::"); print ("BIT 2,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of H")
+            case 0x55:    print("CB:55::"); print ("BIT 2,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of L")
+            case 0x56:    print("CB:56::"); print ("BIT 2,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of (HL).")
+            case 0x57:    print("CB:57::"); print ("BIT 2,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of A")
+            case 0x58:    print("CB:58::"); print ("BIT 3,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of B")
+            case 0x59:    print("CB:59::"); print ("BIT 3,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of C")
+            case 0x5A:    print("CB:5A::"); print ("BIT 3,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of D")
+            case 0x5B:    print("CB:5B::"); print ("BIT 3,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of E")
+            case 0x5C:    print("CB:5C::"); print ("BIT 3,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of H")
+            case 0x5D:    print("CB:5D::"); print ("BIT 3,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of L")
+            case 0x5E:    print("CB:5E::"); print ("BIT 3,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of (HL).")
+            case 0x5F:    print("CB:5F::"); print ("BIT 3,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of A")
+            case 0x60:    print("CB:60::"); print ("BIT 4,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of B")
+            case 0x61:    print("CB:61::"); print ("BIT 4,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of C")
+            case 0x62:    print("CB:62::"); print ("BIT 4,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of D")
+            case 0x63:    print("CB:63::"); print ("BIT 4,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of E")
+            case 0x64:    print("CB:64::"); print ("BIT 4,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of H")
+            case 0x65:    print("CB:65::"); print ("BIT 4,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of L")
+            case 0x66:    print("CB:66::"); print ("BIT 4,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of (HL).")
+            case 0x67:    print("CB:67::"); print ("BIT 4,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of A")
+            case 0x68:    print("CB:68::"); print ("BIT 5,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of B")
+            case 0x69:    print("CB:69::"); print ("BIT 5,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of C")
+            case 0x6A:    print("CB:6A::"); print ("BIT 5,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of D")
+            case 0x6B:    print("CB:6B::"); print ("BIT 5,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of E")
+            case 0x6C:    print("CB:6C::"); print ("BIT 5,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of H")
+            case 0x6D:    print("CB:6D::"); print ("BIT 5,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of L")
+            case 0x6E:    print("CB:6E::"); print ("BIT 5,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of (HL).")
+            case 0x6F:    print("CB:6F::"); print ("BIT 5,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of A")
+            case 0x70:    print("CB:70::"); print ("BIT 6,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of B")
+            case 0x71:    print("CB:71::"); print ("BIT 6,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of C")
+            case 0x72:    print("CB:72::"); print ("BIT 6,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of D")
+            case 0x73:    print("CB:73::"); print ("BIT 6,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of E")
+            case 0x74:    print("CB:74::"); print ("BIT 6,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of H")
+            case 0x75:    print("CB:75::"); print ("BIT 6,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of L")
+            case 0x76:    print("CB:76::"); print ("BIT 6,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of (HL).")
+            case 0x77:    print("CB:77::"); print ("BIT 6,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of A")
+            case 0x78:    print("CB:78::"); print ("BIT 7,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of B")
+            case 0x79:    print("CB:79::"); print ("BIT 7,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of C")
+            case 0x7A:    print("CB:7A::"); print ("BIT 7,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of D")
+            case 0x7B:    print("CB:7B::"); print ("BIT 7,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of E")
+            case 0x7C:    print("CB:7C::"); print ("BIT 7,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of H")
+            case 0x7D:    print("CB:7D::"); print ("BIT 7,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of L")
+            case 0x7E:    print("CB:7E::"); print ("BIT 7,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of (HL).")
+            case 0x7F:    print("CB:7F::"); print ("BIT 7,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of A")
+            case 0x80:    print("CB:80::"); print ("RES 0,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of B.")
+            case 0x81:    print("CB:81::"); print ("RES 0,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of C.")
+            case 0x82:    print("CB:82::"); print ("RES 0,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of D.")
+            case 0x83:    print("CB:83::"); print ("RES 0,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of E.")
+            case 0x84:    print("CB:84::"); print ("RES 0,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of H.")
+            case 0x85:    print("CB:85::"); print ("RES 0,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of L.")
+            case 0x86:    print("CB:86::"); print ("RES 0,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of (HL).")
+            case 0x87:    print("CB:87::"); print ("RES 0,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of A.")
+            case 0x88:    print("CB:88::"); print ("RES 1,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of B.")
+            case 0x89:    print("CB:89::"); print ("RES 1,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of C.")
+            case 0x8A:    print("CB:8A::"); print ("RES 1,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of D.")
+            case 0x8B:    print("CB:8B::"); print ("RES 1,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of E.")
+            case 0x8C:    print("CB:8C::"); print ("RES 1,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of H.")
+            case 0x8D:    print("CB:8D::"); print ("RES 1,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of L.")
+            case 0x8E:    print("CB:8E::"); print ("RES 1,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of (HL).")
+            case 0x8F:    print("CB:8F::"); print ("RES 1,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of A.")
+            case 0x90:    print("CB:90::"); print ("RES 2,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of B.")
+            case 0x91:    print("CB:91::"); print ("RES 2,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of C.")
+            case 0x92:    print("CB:92::"); print ("RES 2,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of D.")
+            case 0x93:    print("CB:93::"); print ("RES 2,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of E.")
+            case 0x94:    print("CB:94::"); print ("RES 2,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of H.")
+            case 0x95:    print("CB:95::"); print ("RES 2,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of L.")
+            case 0x96:    print("CB:96::"); print ("RES 2,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of (HL).")
+            case 0x97:    print("CB:97::"); print ("RES 2,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of A.")
+            case 0x98:    print("CB:98::"); print ("RES 3,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of B.")
+            case 0x99:    print("CB:99::"); print ("RES 3,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of C.")
+            case 0x9A:    print("CB:9A::"); print ("RES 3,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of D.")
+            case 0x9B:    print("CB:9B::"); print ("RES 3,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of E.")
+            case 0x9C:    print("CB:9C::"); print ("RES 3,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of H.")
+            case 0x9D:    print("CB:9D::"); print ("RES 3,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of L.")
+            case 0x9E:    print("CB:9E::"); print ("RES 3,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of (HL).")
+            case 0x9F:    print("CB:9F::"); print ("RES 3,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of A.")
+            case 0xA0:    print("CB:A0::"); print ("RES 4,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of B.")
+            case 0xA1:    print("CB:A1::"); print ("RES 4,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of C.")
+            case 0xA2:    print("CB:A2::"); print ("RES 4,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of D.")
+            case 0xA3:    print("CB:A3::"); print ("RES 4,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of E.")
+            case 0xA4:    print("CB:A4::"); print ("RES 4,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of H.")
+            case 0xA5:    print("CB:A5::"); print ("RES 4,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of L.")
+            case 0xA6:    print("CB:A6::"); print ("RES 4,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of (HL).")
+            case 0xA7:    print("CB:A7::"); print ("RES 4,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of A.")
+            case 0xA8:    print("CB:A8::"); print ("RES 5,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of B.")
+            case 0xA9:    print("CB:A9::"); print ("RES 5,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of C.")
+            case 0xAA:    print("CB:AA::"); print ("RES 5,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of D.")
+            case 0xAB:    print("CB:AB::"); print ("RES 5,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of E.")
+            case 0xAC:    print("CB:AC::"); print ("RES 5,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of H.")
+            case 0xAD:    print("CB:AD::"); print ("RES 5,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of L.")
+            case 0xAE:    print("CB:AE::"); print ("RES 5,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of (HL).")
+            case 0xAF:    print("CB:AF::"); print ("RES 5,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of A.")
+            case 0xB0:    print("CB:B0::"); print ("RES 6,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of B.")
+            case 0xB1:    print("CB:B1::"); print ("RES 6,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of C.")
+            case 0xB2:    print("CB:B2::"); print ("RES 6,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of D.")
+            case 0xB3:    print("CB:B3::"); print ("RES 6,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of E.")
+            case 0xB4:    print("CB:B4::"); print ("RES 6,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of H.")
+            case 0xB5:    print("CB:B5::"); print ("RES 6,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of L.")
+            case 0xB6:    print("CB:B6::"); print ("RES 6,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of (HL).")
+            case 0xB7:    print("CB:B7::"); print ("RES 6,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of A.")
+            case 0xB8:    print("CB:B8::"); print ("RES 7,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of B.")
+            case 0xB9:    print("CB:B9::"); print ("RES 7,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of C.")
+            case 0xBA:    print("CB:BA::"); print ("RES 7,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of D.")
+            case 0xBB:    print("CB:BB::"); print ("RES 7,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of E.")
+            case 0xBC:    print("CB:BC::"); print ("RES 7,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of H.")
+            case 0xBD:    print("CB:BD::"); print ("RES 7,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of L.")
+            case 0xBE:    print("CB:BE::"); print ("RES 7,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of (HL).")
+            case 0xBF:    print("CB:BF::"); print ("RES 7,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of A.")
+            case 0xC0:    print("CB:C0::"); print ("SET 0,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of B.")
+            case 0xC1:    print("CB:C1::"); print ("SET 0,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of C.")
+            case 0xC2:    print("CB:C2::"); print ("SET 0,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of D.")
+            case 0xC3:    print("CB:C3::"); print ("SET 0,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of E.")
+            case 0xC4:    print("CB:C4::"); print ("SET 0,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of H.")
+            case 0xC5:    print("CB:C5::"); print ("SET 0,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of L.")
+            case 0xC6:    print("CB:C6::"); print ("SET 0,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of (HL).")
+            case 0xC7:    print("CB:C7::"); print ("SET 0,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of A.")
+            case 0xC8:    print("CB:C8::"); print ("SET 1,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of B.")
+            case 0xC9:    print("CB:C9::"); print ("SET 1,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of C.")
+            case 0xCA:    print("CB:CA::"); print ("SET 1,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of D.")
+            case 0xCB:    print("CB:CB::"); print ("SET 1,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of E.")
+            case 0xCC:    print("CB:CC::"); print ("SET 1,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of H.")
+            case 0xCD:    print("CB:CD::"); print ("SET 1,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of L.")
+            case 0xCE:    print("CB:CE::"); print ("SET 1,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of (HL).")
+            case 0xCF:    print("CB:CF::"); print ("SET 1,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of A.")
+            case 0xD0:    print("CB:D0::"); print ("SET 2,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of B.")
+            case 0xD1:    print("CB:D1::"); print ("SET 2,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of C.")
+            case 0xD2:    print("CB:D2::"); print ("SET 2,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of D.")
+            case 0xD3:    print("CB:D3::"); print ("SET 2,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of E.")
+            case 0xD4:    print("CB:D4::"); print ("SET 2,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of H.")
+            case 0xD5:    print("CB:D5::"); print ("SET 2,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of L.")
+            case 0xD6:    print("CB:D6::"); print ("SET 2,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of (HL).")
+            case 0xD7:    print("CB:D7::"); print ("SET 2,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of A.")
+            case 0xD8:    print("CB:D8::"); print ("SET 3,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of B.")
+            case 0xD9:    print("CB:D9::"); print ("SET 3,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of C.")
+            case 0xDA:    print("CB:DA::"); print ("SET 3,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of D.")
+            case 0xDB:    print("CB:DB::"); print ("SET 3,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of E.")
+            case 0xDC:    print("CB:DC::"); print ("SET 3,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of H.")
+            case 0xDD:    print("CB:DD::"); print ("SET 3,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of L.")
+            case 0xDE:    print("CB:DE::"); print ("SET 3,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of (HL).")
+            case 0xDF:    print("CB:DF::"); print ("SET 3,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of A.")
+            case 0xE0:    print("CB:E0::"); print ("SET 4,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of B.")
+            case 0xE1:    print("CB:E1::"); print ("SET 4,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of C.")
+            case 0xE2:    print("CB:E2::"); print ("SET 4,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of D.")
+            case 0xE3:    print("CB:E3::"); print ("SET 4,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of E.")
+            case 0xE4:    print("CB:E4::"); print ("SET 4,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of H.")
+            case 0xE5:    print("CB:E5::"); print ("SET 4,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of L.")
+            case 0xE6:    print("CB:E6::"); print ("SET 4,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of (HL).")
+            case 0xE7:    print("CB:E7::"); print ("SET 4,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of A.")
+            case 0xE8:    print("CB:E8::"); print ("SET 5,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of B.")
+            case 0xE9:    print("CB:E9::"); print ("SET 5,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of C.")
+            case 0xEA:    print("CB:EA::"); print ("SET 5,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of D.")
+            case 0xEB:    print("CB:EB::"); print ("SET 5,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of E.")
+            case 0xEC:    print("CB:EC::"); print ("SET 5,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of H.")
+            case 0xED:    print("CB:ED::"); print ("SET 5,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of L.")
+            case 0xEE:    print("CB:EE::"); print ("SET 5,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of (HL).")
+            case 0xEF:    print("CB:EF::"); print ("SET 5,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of A.")
+            case 0xF0:    print("CB:F0::"); print ("SET 6,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of B.")
+            case 0xF1:    print("CB:F1::"); print ("SET 6,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of C.")
+            case 0xF2:    print("CB:F2::"); print ("SET 6,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of D.")
+            case 0xF3:    print("CB:F3::"); print ("SET 6,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of E.")
+            case 0xF4:    print("CB:F4::"); print ("SET 6,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of H.")
+            case 0xF5:    print("CB:F5::"); print ("SET 6,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of L.")
+            case 0xF6:    print("CB:F6::"); print ("SET 6,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of (HL).")
+            case 0xF7:    print("CB:F7::"); print ("SET 6,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6of A.")
+            case 0xF8:    print("CB:F8::"); print ("SET 7,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of B.")
+            case 0xF9:    print("CB:F9::"); print ("SET 7,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of C.")
+            case 0xFA:    print("CB:FA::"); print ("SET 7,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of D.")
+            case 0xFB:    print("CB:FB::"); print ("SET 7,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of E.")
+            case 0xFC:    print("CB:FC::"); print ("SET 7,H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of H.")
+            case 0xFD:    print("CB:FD::"); print ("SET 7,L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of L.")
+            case 0xFE:    print("CB:FE::"); print ("SET 7,(HL)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of (HL).")
+            case 0xFF:    print("CB:FF::"); print ("SET 7,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of A.")
             default :
-                print("Unimplemented opcode",FirstByte,SecondByte)
+                print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
             }
-        case 0xCC:
-            print("CALL Z,nn")
-        case 0xCD:
-            print("CALL nn")
-        case 0xCE:
-            print("ADC A,nn")
-        case 0xCF:
-            print("RST 08")
-        case 0xD0:
-            print("RET NC")
-        case 0xD1:
-            print("POP DE")
-        case 0xD2:
-            print("JP NC,nn")
-        case 0xD3:
-            print("OUT (nn),A")
-        case 0xD4:
-            print("CALL NC,nn")
-        case 0xD5:
-            print("PUSH DE")
-        case 0xD6:
-            print("SUB A,nn")
-        case 0xD7:
-            print("RST 10")
-        case 0xD8:
-            print("RET C")
-        case 0xD9:
-            print("EXX")
-        case 0xDA:
-            print("JP C,nn")
-        case 0xDB:
-            print("IN A,(nn)")
-        case 0xDC:
-            print("CALL C,nn")
+        case 0xCC:        print("CC:n:n:"); print ("CALL Z,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xCD:        print("CD:n:n:"); print ("CALL NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xCE:        print("CE:n::"); print ("ADC A,N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds $n and the carry flag to A.")
+        case 0xCF:        print("CF:::"); print ("RST 08H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 8.")
+        case 0xD0:        print("D0:::"); print ("RET NC"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the top stack entry is popped into PC.")
+        case 0xD1:        print("D1:::"); print ("POP DE"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into E and SP is incremented. The memory location pointed to by SP is stored into D and SP is incremented again.")
+        case 0xD2:        print("D2:n:n:"); print ("JP NC,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, $nn is copied to PC.")
+        case 0xD3:        print("D3:n::"); print ("OUT (N),A"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of A is written to port $n.")
+        case 0xD4:        print("D4:n:n:"); print ("CALL NC,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xD5:        print("D5:::"); print ("PUSH DE"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and D is stored into the memory location pointed to by SP. SP is decremented again and E is stored into the memory location pointed to by SP.")
+        case 0xD6:        print("D6:n::"); print ("SUB N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n from A.")
+        case 0xD7:        print("D7:::"); print ("RST 10H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 10H.")
+        case 0xD8:        print("D8:::"); print ("RET C"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the top stack entry is popped into PC.")
+        case 0xD9:        print("D9:::"); print ("EXX"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of BC, DE, and HL with BC', DE', and HL'.")
+        case 0xDA:        print("DA:n:n:"); print ("JP C,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, $nn is copied to PC.")
+        case 0xDB:        print("DB:n::"); print ("IN A,(N)"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "A byte from port $n is written to A.")
+        case 0xDC:        print("DC:n:n:"); print ("CALL C,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xDD:
             switch SecondByte
             {
-            case 0x09:
-                print("ADD IX,BC")
-            case 0x19 :
-                print("ADD IX,DE")
-            case 0x21 :
-                print("LD IX,nn")
-            case 0x22  :
-                print("LD (nn),IX")
-            case 0x23 :
-                print("INC IX")
-            case 0x24 :
-                print("INC IXH")
-            case 0x25 :
-                print("DEC IXH")
-            case 0x26 :
-                print("LD IXH,nn")
-            case 0x29 :
-                print("ADD IX,IX")
-            case 0x2A :
-                print("LD IX,(nn)")
-            case 0x2B :
-                print("INC IXL")
-            case 0x2D :
-                print("DEC IXL")
-            case 0x2E :
-                print("LD IXL,nn")
-            case 0x34 :
-                print("INC (IX+nn)")
-            case 0x35 :
-                print("DEC (IX+nn)")
-            case 0x39 :
-                print("ADD IX,SP")
-            case 0x44 :
-                print("LD B,IXH")
-            case 0x45 :
-                print("LD B,IXL")
-            case 0x46 :
-                print("LD B,(IX+nn)")
-            case 0x4C : print("LD C,IXH")
-            case 0x4D :
-                print("LD C,IXL")
-            case 0x4E :
-                print("LD C,(IX+nn)")
-            case 0x54 :
-                print("LD D,IXL")
-            case 0x5E :
-                print("LD E,(IX+nn)")
-            case 0x60 :
-                print("LD IXH,B")
-            case 0x61 :
-                print("LD IXH,C")
-            case 0x62 :
-                print("LD IXH,D")
-            case 0x63 :
-                print("LD IXH,E")
-            case 0x64 :
-                print("LD IXH,IXH")
-            case 0x65 :
-                print("LD IXH,IXL")
-            case 0x66 :
-                print("LD H,(IX+nn)")
-            case 0x67 :
-                print("LD IXH,A")
-            case 0x68 :
-                print("LD IXL,B")
-            case 0x69 :
-                print("LD IXL,C")
-            case 0x6A :
-                print("LD IXL,D")
-            case 0x6B :
-                print("LD IXL,E")
-            case 0x6C :
-                print("LD IXL,IXH")
-            case 0x6D :
-                print("LD IXL,IXL")
-            case 0x6E :
-                print("LD L,(IX+nn)")
-            case 0x6F :
-                print("LD IXL,A")
-            case 0x70 :
-                print("LD (IX+nn),B")
-            case 0x71 :
-                print("LD (IX+nn),C")
-            case 0x72 :
-                print("LD (IX+nn),D")
-            case 0x73 :
-                print("LD (IX+nn),E")
-            case 0x74 :
-                print("LD (IX+nn),H")
-            case 0x75 :
-                print("LD (IX+nn),L")
-            case 0x77 :
-                print("LD (IX+nn),A")
-            case 0x7C :
-                print("LD A,IXH")
-            case 0x7D :
-                print("LD A,IXL")
-            case 0x7E :
-                print("LD A,(IX+nn)")
-            case 0x84 :
-                print("ADD A,IXH")
-            case 0x85 :
-                print("ADD A,IXL")
-            case 0x86 :
-                print("ADD A,(IX+nn)")
-            case 0x8C :
-                print("ADC A,IXH")
-            case 0x8D :
-                print("ADC A,IXL")
-            case 0x8E :
-                print("ADC A,(IX+nn)")
-            case 0x94 :
-                print("SUB A,IXH")
-            case 0x95 :
-                print("SUB A,IXL")
-            case 0x96 :
-                print("SUB A,(IX+nn)")
-            case 0x9C :
-                print("SBC A,IXH")
-            case 0x9D :
-                print("SBC A,IXL")
-            case 0x9E :
-                print("SBC A,(IX+nn)")
-            case 0xA4 :
-                print("AND IXH")
-            case 0xA5 :
-                print("AND IXL")
-            case 0xA6 :
-                print("AND (IX+nn)")
-            case 0xAC :
-                print("XOR IXH")
-            case 0xAD :
-                print("XOR IXL")
-            case 0xAE :
-                print("XOR (IX+nn)")
-            case 0xB4 :
-                print("OR IXH")
-            case 0xB5 :
-                print("OR IXL")
-            case 0xB6 :
-                print("OR (IX+nn)")
-            case 0xBC :
-                print("CP IXH")
-            case 0xBD :
-                print("CP IXL")
-            case 0xBE :
-                print("CP (IX+nn)")
-            case 0xE1 :
-                print("POP IX")
-            case 0xE :
-                print("EX (SP),IX")
-            case 0xE5 :
-                print("PUSH IX")
-            case 0xE9 :
-                print("JP (IX)")
+            case 0x04:    print("DD:04::"); print ("INC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to B")
+            case 0x05:    print("DD:05::"); print ("DEC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from B")
+            case 0x06:    print("DD:06:n:"); print ("LD B,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into B")
+            case 0x09:    print("DD:09::"); print ("ADD IX,BC"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to IX.")
+            case 0x0C:    print("DD:0C::"); print ("INC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to C")
+            case 0x0D:    print("DD:0D::"); print ("DEC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from C")
+            case 0x0E:    print("DD:0E:n:"); print ("LD C,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into C")
+            case 0x14:    print("DD:14::"); print ("INC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to D")
+            case 0x15:    print("DD:15::"); print ("DEC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from D")
+            case 0x16:    print("DD:16:n:"); print ("LD D,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into D")
+            case 0x19:    print("DD:19::"); print ("ADD IX,DE"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to IX.")
+            case 0x1C:    print("DD:1C::"); print ("INC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to E.")
+            case 0x1D:    print("DD:1D::"); print ("DEC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from E")
+            case 0x1E:    print("DD:1E:n:"); print ("LD E,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into E")
+            case 0x21:    print("DD:21:n:n"); print ("LD IX,NN"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into register IX.")
+            case 0x22:    print("DD:22:n:n"); print ("LD (NN),IX"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores IX into the memory location pointed to by $nn.")
+            case 0x23:    print("DD:23::"); print ("INC IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to IX.")
+            case 0x24:    print("DD:24::"); print ("INC IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IXH")
+            case 0x25:    print("DD:25::"); print ("DEC IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IXH")
+            case 0x26:    print("DD:26:n:"); print ("LD IHX,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into IXH")
+            case 0x29:    print("DD:29::"); print ("ADD IX,IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of IX is added to IX.")
+            case 0x2A:    print("DD:2A:n:n"); print ("LD IX,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into IX.")
+            case 0x2B:    print("DD:2B::"); print ("DEC IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from IX.")
+            case 0x2C:    print("DD:2C::"); print ("INC IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IXL.")
+            case 0x2D:    print("DD:2D::"); print ("DEC IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IXL.")
+            case 0x2E:    print("DD:2E:n:"); print ("LD IXL,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into IXL.")
+            case 0x34:    print("DD:34:d:"); print ("INC (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to the memory location pointed to by IX plus $d.")
+            case 0x35:    print("DD:35:d:"); print ("DEC (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from the memory location pointed to by IX plus $d.")
+            case 0x36:    print("DD:36:d:n"); print ("LD (IX+D),N"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores $n to the memory location pointed to by IX plus $d.")
+            case 0x39:    print("DD:39::"); print ("ADD IX,SP"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to IX.")
+            case 0x3C:    print("DD:3C::"); print ("INC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to A.")
+            case 0x3D:    print("DD:3D::"); print ("DEC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from A.")
+            case 0x3E:    print("DD:3E:N:"); print ("LD A,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into A.")
+            case 0x40:    print("DD:40::"); print ("LD B,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into B")
+            case 0x41:    print("DD:41::"); print ("LD B,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into B")
+            case 0x42:    print("DD:42::"); print ("LD B,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into B")
+            case 0x43:    print("DD:43::"); print ("LD B,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into B")
+            case 0x44:    print("DD:44::"); print ("LD B,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into B")
+            case 0x45:    print("DD:45::"); print ("LD B,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into B")
+            case 0x46:    print("DD:46:d:"); print ("LD B,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into B")
+            case 0x47:    print("DD:47::"); print ("LD B,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into B")
+            case 0x48:    print("DD:48::"); print ("LD C,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into C")
+            case 0x49:    print("DD:49::"); print ("LD C,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into C")
+            case 0x4A:    print("DD:4A::"); print ("LD C,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into C")
+            case 0x4B:    print("DD:4B::"); print ("LD C,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into C")
+            case 0x4C:    print("DD:4C::"); print ("LD C,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into C")
+            case 0x4D:    print("DD:4D::"); print ("LD C,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into C")
+            case 0x4E:    print("DD:4E:d:"); print ("LD C,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into C.")
+            case 0x4F:    print("DD:4F::"); print ("LD C,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into C.")
+            case 0x50:    print("DD:50::"); print ("LD D,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into D")
+            case 0x51:    print("DD:51::"); print ("LD D,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into D")
+            case 0x52:    print("DD:52::"); print ("LD D,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into D")
+            case 0x53:    print("DD:53::"); print ("LD D,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into D")
+            case 0x54:    print("DD:54::"); print ("LD D,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into D")
+            case 0x55:    print("DD:55::"); print ("LD D,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into D")
+            case 0x56:    print("DD:56:d:"); print ("LD D,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into D")
+            case 0x57:    print("DD:57::"); print ("LD D,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into D")
+            case 0x58:    print("DD:58::"); print ("LD E,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into E")
+            case 0x59:    print("DD:59::"); print ("LD E,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into E")
+            case 0x5A:    print("DD:5A::"); print ("LD E,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into E")
+            case 0x5B:    print("DD:5B::"); print ("LD E,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into E")
+            case 0x5C:    print("DD:5C::"); print ("LD E,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into E")
+            case 0x5D:    print("DD:5D::"); print ("LD E,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into E")
+            case 0x5E:    print("DD:5E:d:"); print ("LD E,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into E")
+            case 0x5F:    print("DD:5F::"); print ("LD E,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into E.")
+            case 0x60:    print("DD:60::"); print ("LD IXH,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IXH")
+            case 0x61:    print("DD:61::"); print ("LD IXH,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IXH")
+            case 0x62:    print("DD:62::"); print ("LD IXH,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IXH")
+            case 0x63:    print("DD:63::"); print ("LD IXH,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IXH")
+            case 0x64:    print("DD:64::"); print ("LD IXH,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXH")
+            case 0x65:    print("DD:65::"); print ("LD IXH,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXH")
+            case 0x66:    print("DD:66:d:"); print ("LD H,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into H")
+            case 0x67:    print("DD:67::"); print ("LD IXH,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IXH.")
+            case 0x68:    print("DD:68::"); print ("LD IXL,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IXL.")
+            case 0x69:    print("DD:69::"); print ("LD IXL,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IXL.")
+            case 0x6A:    print("DD:6A::"); print ("LD IXL,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IXL.")
+            case 0x6B:    print("DD:6B::"); print ("LD IXL,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IXL.")
+            case 0x6C:    print("DD:6C::"); print ("LD IXL,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXL.")
+            case 0x6D:    print("DD:6D::"); print ("LD IXL,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into IXL.")
+            case 0x6E:    print("DD:6E::"); print ("LD L,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into L.")
+            case 0x6F:    print("DD:6F::"); print ("LD IXL,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IXL.")
+            case 0x70:    print("DD:70:d:"); print ("LD (IX+D),B"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores B to the memory location pointed to by IX plus $d.")
+            case 0x71:    print("DD:71:d:"); print ("LD (IX+D),C"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores C to the memory location pointed to by IX plus $d.")
+            case 0x72:    print("DD:72:d:"); print ("LD (IX+D),D"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores D to the memory location pointed to by IX plus $d.")
+            case 0x73:    print("DD:73:d:"); print ("LD (IX+D),E"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores E to the memory location pointed to by IX plus $d.")
+            case 0x74:    print("DD:74:d:"); print ("LD (IX+D),H"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores H to the memory location pointed to by IX plus $d.")
+            case 0x75:    print("DD:75:d:"); print ("LD (IX+D),L"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores L to the memory location pointed to by IX plus $d.")
+            case 0x77:    print("DD:77:d:"); print ("LD (IX+D),A"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A to the memory location pointed to by IX plus d.")
+            case 0x78:    print("DD:78::"); print ("LD A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into A.")
+            case 0x79:    print("DD:79::"); print ("LD A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into A.")
+            case 0x7A:    print("DD:7A::"); print ("LD A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into A.")
+            case 0x7B:    print("DD:7B::"); print ("LD A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into A.")
+            case 0x7C:    print("DD:7C::"); print ("LD A,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into A.")
+            case 0x7D:    print("DD:7D::"); print ("LD A,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into A.")
+            case 0x7E:    print("DD:7E:d:"); print ("LD A,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into A.")
+            case 0x7F:    print("DD:7F::"); print ("LD A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into A.")
+            case 0x80:    print("DD:80::"); print ("ADD A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B to A.")
+            case 0x81:    print("DD:81::"); print ("ADD A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C to A.")
+            case 0x82:    print("DD:82::"); print ("ADD A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D to A.")
+            case 0x83:    print("DD:83::"); print ("ADD A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E to A.")
+            case 0x84:    print("DD:84::"); print ("ADD A,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXH to A.")
+            case 0x85:    print("DD:85::"); print ("ADD A,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXL to A.")
+            case 0x86:    print("DD:86:d:"); print ("ADD A,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IX plus $d to A.")
+            case 0x87:    print("DD:87::"); print ("ADD A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A to A.")
+            case 0x88:    print("DD:88::"); print ("ADC A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B and the carry flag to A.")
+            case 0x89:    print("DD:89::"); print ("ADC A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C and the carry flag to A.")
+            case 0x8A:    print("DD:8A::"); print ("ADC A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D and the carry flag to A.")
+            case 0x8B:    print("DD:8B::"); print ("ADC A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E and the carry flag to A.")
+            case 0x8C:    print("DD:8C::"); print ("ADC A,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXH and the carry flag to A.")
+            case 0x8D:    print("DD:8D::"); print ("ADC A,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXL and the carry flag to A.")
+            case 0x8E:    print("DD:8E:d:"); print ("ADC A,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IX plus $d and the carry flag to A.")
+            case 0x8F:    print("DD:8F::"); print ("ADC A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A and the carry flag to A.")
+            case 0x90:    print("DD:90::"); print ("SUB B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
+            case 0x91:    print("DD:91::"); print ("SUB C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A.")
+            case 0x92:    print("DD:92::"); print ("SUB D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A.")
+            case 0x93:    print("DD:93::"); print ("SUB E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A.")
+            case 0x94:    print("DD:94::"); print ("SUB IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH from A.")
+            case 0x95:    print("DD:95::"); print ("SUB IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL from A.")
+            case 0x96:    print("DD:96:d:"); print ("SUB (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d from A.")
+            case 0x97:    print("DD:97::"); print ("SUB A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A.")
+            case 0x98:    print("DD:98::"); print ("SBC A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B and the carry flag from A.")
+            case 0x99:    print("DD:99::"); print ("SBC A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C and the carry flag from A.")
+            case 0x9A:    print("DD:9A::"); print ("SBC A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D and the carry flag from A.")
+            case 0x9B:    print("DD:9B::"); print ("SBC A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E and the carry flag from A.")
+            case 0x9C:    print("DD:9C::"); print ("SBC A,IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH and the carry flag from A.")
+            case 0x9D:    print("DD:9D::"); print ("SBC A,IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL and the carry flag from A.")
+            case 0x9E:    print("DD:9E:d:"); print ("SBC A,(IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d and the carry flag from A.")
+            case 0x9F:    print("DD:9F::"); print ("SBC A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A and the carry flag from A.")
+            case 0xA0:    print("DD:A0::"); print ("AND B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with B")
+            case 0xA1:    print("DD:A1::"); print ("AND C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with C")
+            case 0xA2:    print("DD:A2::"); print ("AND D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with D")
+            case 0xA3:    print("DD:A3::"); print ("AND E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with E")
+            case 0xA4:    print("DD:A4::"); print ("AND IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IXH")
+            case 0xA5:    print("DD:A5::"); print ("AND IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IXL")
+            case 0xA6:    print("DD:A6:d:"); print ("AND (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with the value pointed to by IX plus $d.")
+            case 0xA7:    print("DD:A7::"); print ("AND A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with A.")
+            case 0xA8:    print("DD:A8::"); print ("XOR B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with B")
+            case 0xA9:    print("DD:A9::"); print ("XOR C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with C")
+            case 0xAA:    print("DD:AA::"); print ("XOR D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with D")
+            case 0xAB:    print("DD:AB::"); print ("XOR E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with E")
+            case 0xAC:    print("DD:AC::"); print ("XOR IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IXH")
+            case 0xAD:    print("DD:AD::"); print ("XOR IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IXL")
+            case 0xAE:    print("DD:AE:d:"); print ("XOR (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with the value pointed to by IX plus $d.")
+            case 0xAF:    print("DD:AF::"); print ("XOR A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with A.")
+            case 0xB0:    print("DD:B0::"); print ("OR B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with B")
+            case 0xB1:    print("DD:B1::"); print ("OR C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with C")
+            case 0xB2:    print("DD:B2::"); print ("OR D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with D")
+            case 0xB3:    print("DD:B3::"); print ("OR E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with E")
+            case 0xB4:    print("DD:B4::"); print ("OR IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IXH")
+            case 0xB5:    print("DD:B5::"); print ("OR IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IXL")
+            case 0xB6:    print("DD:B6:d:"); print ("OR (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with the value pointed to by IX plus $d.")
+            case 0xB7:    print("DD:B7::"); print ("OR A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with A.")
+            case 0xB8:    print("DD:B8::"); print ("CP B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
+            case 0xB9:    print("DD:B9::"); print ("CP C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
+            case 0xBA:    print("DD:BA::"); print ("CP D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
+            case 0xBB:    print("DD:BB::"); print ("CP E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
+            case 0xBC:    print("DD:BC::"); print ("CP IXH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH from A and affects flags according to the result. A is not modified.")
+            case 0xBD:    print("DD:BD::"); print ("CP IXL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL from A and affects flags according to the result. A is not modified.")
+            case 0xBE:    print("DD:BE:d:"); print ("CP (IX+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d from A and affects flags according to the result. A is not modified.")
+            case 0xBF:    print("DD:BF::"); print ("CP A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
+            case 0xCB:
+                switch FourthByte
+                {
+                case 0x00:    print("DD:CB:d:00"); print ("RLC (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in B.")
+                case 0x01:    print("DD:CB:d:01"); print ("RLC (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
+                case 0x02:    print("DD:CB:d:02"); print ("RLC (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
+                case 0x03:    print("DD:CB:d:03"); print ("RLC (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in E.")
+                case 0x04:    print("DD:CB:d:04"); print ("RLC (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in H")
+                case 0x05:    print("DD:CB:d:05"); print ("RLC (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in L")
+                case 0x06:    print("DD:CB:d:06"); print ("RLC (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+                case 0x07:    print("DD:CB:d:07"); print ("RLC (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in A.")
+                case 0x08:    print("DD:CB:d:08"); print ("RRC (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in B")
+                case 0x09:    print("DD:CB:d:09"); print ("RRC (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in C.")
+                case 0x0A:    print("DD:CB:d:0A"); print ("RRC (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in D")
+                case 0x0B:    print("DD:CB:d:0B"); print ("RRC (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in E.")
+                case 0x0C:    print("DD:CB:d:0C"); print ("RRC (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in H")
+                case 0x0D:    print("DD:CB:d:0D"); print ("RRC (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in L")
+                case 0x0E:    print("DD:CB:d:0E"); print ("RRC (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+                case 0x0F:    print("DD:CB:d:0F"); print ("RRC (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in A.")
+                case 0x10:    print("DD:CB:d:10"); print ("RL (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in B")
+                case 0x11:    print("DD:CB:d:11"); print ("RL (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in C")
+                case 0x12:    print("DD:CB:d:12"); print ("RL (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in D")
+                case 0x13:    print("DD:CB:d:13"); print ("RL (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in E")
+                case 0x14:    print("DD:CB:d:14"); print ("RL (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in H")
+                case 0x15:    print("DD:CB:d:15"); print ("RL (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in L")
+                case 0x16:    print("DD:CB:d:16"); print ("RL (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+                case 0x17:    print("DD:CB:d:17"); print ("RL (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in A.")
+                case 0x18:    print("DD:CB:d:18"); print ("RR (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored inB")
+                case 0x19:    print("DD:CB:d:19"); print ("RR (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in C")
+                case 0x1A:    print("DD:CB:d:1A"); print ("RR (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in D")
+                case 0x1B:    print("DD:CB:d:1B"); print ("RR (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in E")
+                case 0x1C:    print("DD:CB:d:1C"); print ("RR (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in H")
+                case 0x1D:    print("DD:CB:d:1D"); print ("RR (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in L")
+                case 0x1E:    print("DD:CB:d:1E"); print ("RR (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+                case 0x1F:    print("DD:CB:d:1F"); print ("RR (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in A.")
+                case 0x20:    print("DD:CB:d:20"); print ("SLA (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in B")
+                case 0x21:    print("DD:CB:d:21"); print ("SLA (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
+                case 0x22:    print("DD:CB:d:22"); print ("SLA (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
+                case 0x23:    print("DD:CB:d:23"); print ("SLA (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
+                case 0x24:    print("DD:CB:d:24"); print ("SLA (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
+                case 0x25:    print("DD:CB:d:25"); print ("SLA (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
+                case 0x26:    print("DD:CB:d:26"); print ("SLA (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+                case 0x27:    print("DD:CB:d:27"); print ("SLA (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in A.")
+                case 0x28:    print("DD:CB:d:28"); print ("SRA (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in B")
+                case 0x29:    print("DD:CB:d:29"); print ("SRA (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
+                case 0x2A:    print("DD:CB:d:2A"); print ("SRA (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
+                case 0x2B:    print("DD:CB:d:2B"); print ("SRA (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
+                case 0x2C:    print("DD:CB:d:2C"); print ("SRA (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
+                case 0x2D:    print("DD:CB:d:2D"); print ("SRA (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
+                case 0x2E:    print("DD:CB:d:2E"); print ("SRA (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+                case 0x2F:    print("DD:CB:d:2F"); print ("SRA (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in A.")
+                case 0x30:    print("DD:CB:d:30"); print ("SLL (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in B")
+                case 0x31:    print("DD:CB:d:31"); print ("SLL (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in C")
+                case 0x32:    print("DD:CB:d:32"); print ("SLL (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in D")
+                case 0x33:    print("DD:CB:d:33"); print ("SLL (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in E")
+                case 0x34:    print("DD:CB:d:34"); print ("SLL (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in H")
+                case 0x35:    print("DD:CB:d:35"); print ("SLL (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in L")
+                case 0x36:    print("DD:CB:d:36"); print ("SLL (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+                case 0x37:    print("DD:CB:d:37"); print ("SLL (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in A.")
+                case 0x38:    print("DD:CB:d:38"); print ("SRL (IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in B")
+                case 0x39:    print("DD:CB:d:39"); print ("SRL (IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in C")
+                case 0x3A:    print("DD:CB:d:3A"); print ("SRL (IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in D")
+                case 0x3B:    print("DD:CB:d:3B"); print ("SRL (IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in E")
+                case 0x3C:    print("DD:CB:d:3C"); print ("SRL (IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in H")
+                case 0x3D:    print("DD:CB:d:3D"); print ("SRL (IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in L")
+                case 0x3E:    print("DD:CB:d:3E"); print ("SRL (IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+                case 0x3F:    print("DD:CB:d:3F"); print ("SRL (IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in A.")
+                case 0x40:    print("DD:CB:d:40"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x41:    print("DD:CB:d:41"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x42:    print("DD:CB:d:42"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x43:    print("DD:CB:d:43"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x44:    print("DD:CB:d:44"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x45:    print("DD:CB:d:45"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x46:    print("DD:CB:d:46"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x47:    print("DD:CB:d:47"); print ("BIT 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x48:    print("DD:CB:d:48"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x49:    print("DD:CB:d:49"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4A:    print("DD:CB:d:4A"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4B:    print("DD:CB:d:4B"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4C:    print("DD:CB:d:4C"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4D:    print("DD:CB:d:4D"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4E:    print("DD:CB:d:4E"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x4F:    print("DD:CB:d:4F"); print ("BIT 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x50:    print("DD:CB:d:50"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x51:    print("DD:CB:d:51"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x52:    print("DD:CB:d:52"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x53:    print("DD:CB:d:53"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x54:    print("DD:CB:d:54"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x55:    print("DD:CB:d:55"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x56:    print("DD:CB:d:56"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x57:    print("DD:CB:d:57"); print ("BIT 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x58:    print("DD:CB:d:58"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x59:    print("DD:CB:d:59"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5A:    print("DD:CB:d:5A"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5B:    print("DD:CB:d:5B"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5C:    print("DD:CB:d:5C"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5D:    print("DD:CB:d:5D"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5E:    print("DD:CB:d:5E"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x5F:    print("DD:CB:d:5F"); print ("BIT 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x60:    print("DD:CB:d:60"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x61:    print("DD:CB:d:61"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x62:    print("DD:CB:d:62"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x63:    print("DD:CB:d:63"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x64:    print("DD:CB:d:64"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x65:    print("DD:CB:d:65"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x66:    print("DD:CB:d:66"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x67:    print("DD:CB:d:67"); print ("BIT 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
+                case 0x68:    print("DD:CB:d:68"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x69:    print("DD:CB:d:69"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6A:    print("DD:CB:d:6A"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6B:    print("DD:CB:d:6B"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6C:    print("DD:CB:d:6C"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6D:    print("DD:CB:d:6D"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6E:    print("DD:CB:d:6E"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x6F:    print("DD:CB:d:6F"); print ("BIT 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
+                case 0x70:    print("DD:CB:d:70"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x71:    print("DD:CB:d:71"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x72:    print("DD:CB:d:72"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x73:    print("DD:CB:d:73"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x74:    print("DD:CB:d:74"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x75:    print("DD:CB:d:75"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x76:    print("DD:CB:d:76"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x77:    print("DD:CB:d:77"); print ("BIT 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
+                case 0x78:    print("DD:CB:d:78"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x79:    print("DD:CB:d:79"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7A:    print("DD:CB:d:7A"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7B:    print("DD:CB:d:7B"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7C:    print("DD:CB:d:7C"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7D:    print("DD:CB:d:7D"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7E:    print("DD:CB:d:7E"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x7F:    print("DD:CB:d:7F"); print ("BIT 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
+                case 0x80:    print("DD:CB:d:80"); print ("RES 0,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x81:    print("DD:CB:d:81"); print ("RES 0,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x82:    print("DD:CB:d:82"); print ("RES 0,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x83:    print("DD:CB:d:83"); print ("RES 0,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x84:    print("DD:CB:d:84"); print ("RES 0,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x85:    print("DD:CB:d:85"); print ("RES 0,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x86:    print("DD:CB:d:86"); print ("RES 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d.")
+                case 0x87:    print("DD:CB:d:87"); print ("RES 0,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0x88:    print("DD:CB:d:88"); print ("RES 1,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x89:    print("DD:CB:d:89"); print ("RES 1,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x8A:    print("DD:CB:d:8A"); print ("RES 1,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x8B:    print("DD:CB:d:8B"); print ("RES 1,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x8C:    print("DD:CB:d:8C"); print ("RES 1,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x8D:    print("DD:CB:d:8D"); print ("RES 1,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0x8E:    print("DD:CB:d:8E"); print ("RES 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d.")
+                case 0x8F:    print("DD:CB:d:8F"); print ("RES 1,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0x90:    print("DD:CB:d:90"); print ("RES 2,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x91:    print("DD:CB:d:91"); print ("RES 2,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x92:    print("DD:CB:d:92"); print ("RES 2,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x93:    print("DD:CB:d:93"); print ("RES 2,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x94:    print("DD:CB:d:94"); print ("RES 2,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x95:    print("DD:CB:d:95"); print ("RES 2,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x96:    print("DD:CB:d:96"); print ("RES 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d.")
+                case 0x97:    print("DD:CB:d:97"); print ("RES 2,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0x98:    print("DD:CB:d:98"); print ("RES 3,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x99:    print("DD:CB:d:99"); print ("RES 3,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x9A:    print("DD:CB:d:9A"); print ("RES 3,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x9B:    print("DD:CB:d:9B"); print ("RES 3,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x9C:    print("DD:CB:d:9C"); print ("RES 3,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x9D:    print("DD:CB:d:9D"); print ("RES 3,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
+                case 0x9E:    print("DD:CB:d:9E"); print ("RES 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d.")
+                case 0x9F:    print("DD:CB:d:9F"); print ("RES 3,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0xA0:    print("DD:CB:d:A0"); print ("RES 4,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA1:    print("DD:CB:d:A1"); print ("RES 4,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA2:    print("DD:CB:d:A2"); print ("RES 4,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA3:    print("DD:CB:d:A3"); print ("RES 4,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA4:    print("DD:CB:d:A4"); print ("RES 4,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA5:    print("DD:CB:d:A5"); print ("RES 4,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA6:    print("DD:CB:d:A6"); print ("RES 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d.")
+                case 0xA7:    print("DD:CB:d:A7"); print ("RES 4,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0xA8:    print("DD:CB:d:A8"); print ("RES 5,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xA9:    print("DD:CB:d:A9"); print ("RES 5,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xAA:    print("DD:CB:d:AA"); print ("RES 5,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xAB:    print("DD:CB:d:AB"); print ("RES 5,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xAC:    print("DD:CB:d:AC"); print ("RES 5,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xAD:    print("DD:CB:d:AD"); print ("RES 5,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xAE:    print("DD:CB:d:AE"); print ("RES 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d.")
+                case 0xAF:    print("DD:CB:d:AF"); print ("RES 5,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0xB0:    print("DD:CB:d:B0"); print ("RES 6,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB1:    print("DD:CB:d:B1"); print ("RES 6,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB2:    print("DD:CB:d:B2"); print ("RES 6,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB3:    print("DD:CB:d:B3"); print ("RES 6,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB4:    print("DD:CB:d:B4"); print ("RES 6,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB5:    print("DD:CB:d:B5"); print ("RES 6,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB6:    print("DD:CB:d:B6"); print ("RES 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d.")
+                case 0xB7:    print("DD:CB:d:B7"); print ("RES 6,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0xB8:    print("DD:CB:d:B8"); print ("RES 7,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xB9:    print("DD:CB:d:B9"); print ("RES 7,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xBA:    print("DD:CB:d:BA"); print ("RES 7,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xBB:    print("DD:CB:d:BB"); print ("RES 7,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xBC:    print("DD:CB:d:BC"); print ("RES 7,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xBD:    print("DD:CB:d:BD"); print ("RES 7,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xBE:    print("DD:CB:d:BE"); print ("RES 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d.")
+                case 0xBF:    print("DD:CB:d:BF"); print ("RES 7,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A.")
+                case 0xC0:    print("DD:CB:d:C0"); print ("SET 0,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xC1:    print("DD:CB:d:C1"); print ("SET 0,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xC2:    print("DD:CB:d:C2"); print ("SET 0,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xC3:    print("DD:CB:d:C3"); print ("SET 0,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xC4:    print("DD:CB:d:C4"); print ("SET 0,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xC5:    print("DD:CB:d:C5"); print ("SET 0,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xC6:    print("DD:CB:d:C6"); print ("SET 0,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d.")
+                case 0xC7:    print("DD:CB:d:C7"); print ("SET 0,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xC8:    print("DD:CB:d:C8"); print ("SET 1,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xC9:    print("DD:CB:d:C9"); print ("SET 1,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xCA:    print("DD:CB:d:CA"); print ("SET 1,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xCB:    print("DD:CB:d:CB"); print ("SET 1,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xCC:    print("DD:CB:d:CC"); print ("SET 1,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xCD:    print("DD:CB:d:CD"); print ("SET 1,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xCE:    print("DD:CB:d:CE"); print ("SET 1,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d.")
+                case 0xCF:    print("DD:CB:d:CF"); print ("SET 1,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xD0:    print("DD:CB:d:D0"); print ("SET 2,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xD1:    print("DD:CB:d:D1"); print ("SET 2,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xD2:    print("DD:CB:d:D2"); print ("SET 2,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xD3:    print("DD:CB:d:D3"); print ("SET 2,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xD4:    print("DD:CB:d:D4"); print ("SET 2,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xD5:    print("DD:CB:d:D5"); print ("SET 2,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xD6:    print("DD:CB:d:D6"); print ("SET 2,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d.")
+                case 0xD7:    print("DD:CB:d:D7"); print ("SET 2,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xD8:    print("DD:CB:d:D8"); print ("SET 3,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xD9:    print("DD:CB:d:D9"); print ("SET 3,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xDA:    print("DD:CB:d:DA"); print ("SET 3,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xDB:    print("DD:CB:d:DB"); print ("SET 3,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xDC:    print("DD:CB:d:DC"); print ("SET 3,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xDD:    print("DD:CB:d:DD"); print ("SET 3,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xDE:    print("DD:CB:d:DE"); print ("SET 3,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d.")
+                case 0xDF:    print("DD:CB:d:DF"); print ("SET 3,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xE0:    print("DD:CB:d:E0"); print ("SET 4,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xE1:    print("DD:CB:d:E1"); print ("SET 4,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xE2:    print("DD:CB:d:E2"); print ("SET 4,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xE3:    print("DD:CB:d:E3"); print ("SET 4,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xE4:    print("DD:CB:d:E4"); print ("SET 4,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xE5:    print("DD:CB:d:E5"); print ("SET 4,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xE6:    print("DD:CB:d:E6"); print ("SET 4,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d.")
+                case 0xE7:    print("DD:CB:d:E7"); print ("SET 4,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xE8:    print("DD:CB:d:E8"); print ("SET 5,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xE9:    print("DD:CB:d:E9"); print ("SET 5,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xEA:    print("DD:CB:d:EA"); print ("SET 5,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xEB:    print("DD:CB:d:EB"); print ("SET 5,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xEC:    print("DD:CB:d:EC"); print ("SET 5,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xED:    print("DD:CB:d:ED"); print ("SET 5,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xEE:    print("DD:CB:d:EE"); print ("SET 5,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d.")
+                case 0xEF:    print("DD:CB:d:EF"); print ("SET 5,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xF0:    print("DD:CB:d:F0"); print ("SET 6,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xF1:    print("DD:CB:d:F1"); print ("SET 6,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xF2:    print("DD:CB:d:F2"); print ("SET 6,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xF3:    print("DD:CB:d:F3"); print ("SET 6,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xF4:    print("DD:CB:d:F4"); print ("SET 6,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xF5:    print("DD:CB:d:F5"); print ("SET 6,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xF6:    print("DD:CB:d:F6"); print ("SET 6,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d.")
+                case 0xF7:    print("DD:CB:d:F7"); print ("SET 6,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus d. The result is then stored in A")
+                case 0xF8:    print("DD:CB:d:F8"); print ("SET 7,(IX+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
+                case 0xF9:    print("DD:CB:d:F9"); print ("SET 7,(IX+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in C")
+                case 0xFA:    print("DD:CB:d:FA"); print ("SET 7,(IX+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in D")
+                case 0xFB:    print("DD:CB:d:FB"); print ("SET 7,(IX+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in E")
+                case 0xFC:    print("DD:CB:d:FC"); print ("SET 7,(IX+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in H")
+                case 0xFD:    print("DD:CB:d:FD"); print ("SET 7,(IX+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in L")
+                case 0xFE:    print("DD:CB:d:FE"); print ("SET 7,(IX+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d.")
+                case 0xFF:    print("DD:CB:d:FF"); print ("SET 7,(IX+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus d. The result is then stored in A")
+                default :
+                    print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
+                }
+            case 0xE1:    print("DD:E1::"); print ("POP IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into IXL and SP is incremented. The memory location pointed to by SP is stored into IXH and SP is incremented again.")
+            case 0xE3:    print("DD:E3::"); print ("EX (SP),IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with IXL, and (SP+1) with IXH.")
+            case 0xE5:    print("DD:E5::"); print ("PUSH IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and IXH is stored into the memory location pointed to by SP. SP is decremented again and IXL is stored into the memory location pointed to by SP.")
+            case 0xE9:    print("DD:E9::"); print ("JP (IX)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IX into PC.")
+            case 0xF9:    print("DD:F9::"); print ("LD SP,IX"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IX into SP.")
             default :
-                print("Unimplemented opcode",FirstByte,SecondByte)
+                print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
             }
-        case 0xDE:
-            print("SBC A,nn")
-        case 0xDF:
-            print("RST 18")
-        case 0xE0:
-            print("RET PO")
-        case 0xE1:
-            print("POP HL")
-        case 0xE2:
-            print("JP PO,nn")
-        case 0xE3:
-            print("EX (SP),HL")
-        case 0xE4:
-            print("CALL PO,nn")
-        case 0xE5:
-            print("PUSH HL")
-        case 0xE6:
-            print("AND nn")
-        case 0xE7:
-            print("RST 20")
-        case 0xE8:
-            print("RET PE")
-        case 0xE9:
-            print("JP (HL)")
-        case 0xEA:
-            print("JP PE,nn")
-        case 0xEB:
-            print("EX DE,HL")
-        case 0xEC:
-            print("CALL P,nn")
+        case 0xDE:        print("DE:n::"); print ("SBC A,N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n and the carry flag from A.")
+        case 0xDF:        print("DF:::"); print ("RST 18H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 18h")
+        case 0xE0:        print("E0:::"); print ("RET PO"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, the top stack entry is popped into PC.")
+        case 0xE1:        print("E1:::"); print ("POP HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into L and SP is incremented. The memory location pointed to by SP is stored into H and SP is incremented again.")
+        case 0xE2:        print("E2:n:n:"); print ("JP PO,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, $nn is copied to PC.")
+        case 0xE3:        print("E3:::"); print ("EX (SP),HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with L, and (SP+1) with H.")
+        case 0xE4:        print("E4:n:n:"); print ("CALL PO,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xE5:        print("E5:::"); print ("PUSH HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and H is stored into the memory location pointed to by SP. SP is decremented again and L is stored into the memory location pointed to by SP.")
+        case 0xE6:        print("E6:n::"); print ("AND N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with $n.")
+        case 0xE7:        print("E7:::"); print ("RST 20H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 20H")
+        case 0xE8:        print("E8:::"); print ("RET PE"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, the top stack entry is popped into PC.")
+        case 0xE9:        print("E9:::"); print ("JP (HL)"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of HL into PC.")
+        case 0xEA:        print("EA:n:n:"); print ("JP PE,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, $nn is copied to PC.")
+        case 0xEB:        print("EB:::"); print ("EX DE,HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of DE and HL.")
+        case 0xEC:        print("EC:n:n:"); print ("CALL PE,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xED:
             switch SecondByte
             {
-            case 0x40 :
-                print("IN B,(C)")
-            case 0x41 :
-                print("OUT (C),B")
-            case 0x42 :
-                print("SBC HL,BC")
-            case 0x43 :
-                print("LD (nn),BC")
-            case 0x44 :
-                print("NEG")
-            case 0x45 :
-                print("RETN")
-            case 0x46 :
-                print("IM 0")
-            case 0x47 :
-                print("LD I,A")
-            case 0x48 :
-                print("IN C,(C)")
-            case 0x49 :
-                print("OUT (C),C")
-            case 0x4A :
-                print("ADC HL,BC")
-            case 0x4B :
-                print("LD BC,(nn)")
-            case 0x4D :
-                print("RETI")
-            case 0x4F :
-                print("LD R,A")
-            case 0x50 :
-                print("IN D,(C)")
-            case 0x51 :
-                print("OUT (C),D")
-            case 0x52 :
-                print("SBC HL,DE")
-            case 0x53 :
-                print("LD (nn),DE")
-            case 0x56 :
-                print("IM 1")
-            case 0x57 :
-                print("LD A,I")
-            case 0x58 :
-                print("IN E,(C)")
-            case 0x59 :
-                print("OUT (C),E")
-            case 0x5A :
-                print("ADC HL,DE")
-            case 0x5B :
-                print("LD DE,(nn)")
-            case 0x5E :
-                print("IM 2")
-            case 0x5F :
-                print("LD A,R")
-            case 0x60 :
-                print("IN H,(C)")
-            case 0x61 :
-                print("OUT (C),H")
-            case 0x62 :
-                print("SBC HL,HL")
-            case 0x63 :
-                print("LD (nn),HL")
-            case 0x67 :
-                print("RRD")
-            case 0x68 :
-                print("IN L,(C)")
-            case 0x69 :
-                print("OUT (C),L")
-            case 0x6A :
-                print("ADC HL,HL")
-            case 0x6B :
-                print("LD HL,(nn)")
-            case 0x6F :
-                print("RLD")
-            case 0x70 :
-                print("IN F,(C)")
-            case 0x71 :
-                print("OUT (C),F")
-            case 0x72 :
-                print("SBC HL,SP")
-            case 0x73 :
-                print("LD (nn),SP")
-            case 0x78 :
-                print("IN A,(C)")
-            case 0x79 :
-                print("OUT (C),A")
-            case 0x7A :
-                print("ADC HL,SP")
-            case 0x7B :
-                print("LD SP,(nn)")
-            case 0xA0 :
-                print("LDI")
-            case 0xA1 :
-                print("CPI")
-            case 0xA2 :
-                print("INI")
-            case 0xA3 :
-                print("OTI")
-            case 0xA8 :
-                print("LDD")
-            case 0xA9 :
-                print("CPD")
-            case 0xAA :
-                print("IND")
-            case 0xAB :
-                print("OTD")
-            case 0xB0 :
-                print("LDIR")
-            case 0xB1 :
-                print("CPIR")
-            case 0xB2 :
-                print("INIR")
-            case 0xB3 :
-                print("OTIR")
-            case 0xB8 :
-                print("LDDR")
-            case 0xB9 :
-                print("CPDR")
-            case 0xBA :
-                print("INDR")
-            case 0xBB :
-                print("OTDR")
+            case 0x40:    print("ED:40::"); print ("IN B,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to B")
+            case 0x41:    print("ED:41::"); print ("OUT (C),B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of B is written to port C.")
+            case 0x42:    print("ED:42::"); print ("SBC HL,BC"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts BC and the carry flag from HL.")
+            case 0x43:    print("ED:43:n:n"); print ("LD (NN),BC"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores BC into the memory location pointed to by $nn.")
+            case 0x44:    print("ED:44::"); print ("NEG"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are negated (two's complement). Operation is the same as subtracting A from zero.")
+            case 0x45:    print("ED:45::"); print ("RETN"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Used at the end of a non-maskable interrupt service routine (located at 0066h) to pop the top stack entry into PC. The value of IFF2 is copied to IFF1 so that maskable interrupts are allowed to continue as before. NMIs are not enabled on the TI.")
+            case 0x46:    print("ED:46::"); print ("IM 0"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 0.")
+            case 0x47:    print("ED:47::"); print ("LD I,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores the value of A into register I.")
+            case 0x48:    print("ED:48::"); print ("IN C,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to C.")
+            case 0x49:    print("ED:49::"); print ("OUT (C),C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of C is written to port C.")
+            case 0x4A:    print("ED:4A::"); print ("ADC HL,BC"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds BC and the carry flag to HL.")
+            case 0x4B:    print("ED:4B:n:n"); print ("LD BC,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into BC.")
+            case 0x4D:    print("ED:4D::"); print ("RETI"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Used at the end of a maskable interrupt service routine. The top stack entry is popped into PC, and signals an I/O device that the interrupt has finished, allowing nested interrupts (not a consideration on the TI).")
+            case 0x4F:    print("ED:4F::"); print ("LD R,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores the value of A into register R.")
+            case 0x50:    print("ED:50::"); print ("IN D,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to D")
+            case 0x51:    print("ED:51::"); print ("OUT (C),D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of D is written to port C.")
+            case 0x52:    print("ED:52::"); print ("SBC HL,DE"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts DE and the carry flag from HL.")
+            case 0x53:    print("ED:53:n:n"); print ("LD (NN),DE"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores DE into the memory location pointed to by $nn.")
+            case 0x56:    print("ED:56::"); print ("IM 1"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 1.")
+            case 0x57:    print("ED:57::"); print ("LD A,I"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Stores the value of register I into A.")
+            case 0x58:    print("ED:58::"); print ("IN E,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to E.")
+            case 0x59:    print("ED:59::"); print ("OUT (C),E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of E is written to port C.")
+            case 0x5A:    print("ED:5A::"); print ("ADC HL,DE"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds DE and the carry flag to HL.")
+            case 0x5B:    print("ED:5B:n:n"); print ("LD DE,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into DE.")
+            case 0x5E:    print("ED:5E::"); print ("IM 2"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 2.")
+            case 0x5F:    print("ED:5F::"); print ("LD A,R"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Stores the value of register R into A.")
+            case 0x60:    print("ED:60::"); print ("IN H,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to H")
+            case 0x61:    print("ED:61::"); print ("OUT (C),H"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of H is written to port C.")
+            case 0x62:    print("ED:62::"); print ("SBC HL,HL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts HL and the carry flag from HL.")
+            case 0x63:    print("ED:63:n:n"); print ("LD (NN),HL"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Stores HL into the memory location pointed to by $nn.")
+            case 0x67:    print("ED:67::"); print ("RRD"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [18], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the low-order nibble of (HL) are copied to the low-order nibble of A. The previous contents are copied to the high-order nibble of (HL). The previous contents are copied to the low-order nibble of (HL).")
+            case 0x68:    print("ED:68::"); print ("IN L,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to L.")
+            case 0x69:    print("ED:69::"); print ("OUT (C),L"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of L is written to port C.")
+            case 0x6A:    print("ED:6A::"); print ("ADC HL,HL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds HL and the carry flag to HL.")
+            case 0x6B:    print("ED:6B:n:n"); print ("LD HL,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads the value pointed to by $nn into HL.")
+            case 0x6F:    print("ED:6F::"); print ("RLD"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [18], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the low-order nibble of (HL) are copied to the high-order nibble of (HL). The previous contents are copied to the low-order nibble of A. The previous contents are copied to the low-order nibble of (HL).")
+            case 0x70:    print("ED:70::"); print ("IN (C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Inputs a byte from port C and affects flags only.")
+            case 0x71:    print("ED:71::"); print ("OUT (C),0"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Outputs a zero (on NMOS Z80s) or 255 (on CMOS Z80s) to port C.")
+            case 0x72:    print("ED:72::"); print ("SBC HL,SP"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts SP and the carry flag from HL.")
+            case 0x73:    print("ED:73:n:n"); print ("LD (NN),SP"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores SP into the memory location pointed to by $nn.")
+            case 0x78:    print("ED:78::"); print ("IN A,(C)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to A.")
+            case 0x79:    print("ED:79::"); print ("OUT (C),A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of A is written to port C.")
+            case 0x7A:    print("ED:7A::"); print ("ADC HL,SP"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds SP and the carry flag to HL.")
+            case 0x7B:    print("ED:7B:n:n"); print ("LD SP,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into SP.")
+            case 0xA0:    print("ED:A0::"); print ("LDI"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL and DE are incremented and BC is decremented. p/v is reset if BC becomes zero and set otherwise.")
+            case 0xA1:    print("ED:A1::"); print ("CPI"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL is incremented and BC is decremented. p/v is reset if BC becomes zero and set otherwise.")
+            case 0xA2:    print("ED:A2::"); print ("INI"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL is incremented and B is decremented.")
+            case 0xA3:    print("ED:A3::"); print ("OUTI"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is incremented.")
+            case 0xA8:    print("ED:A8::"); print ("LDD"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL, DE, and BC are decremented. p/v is reset if BC becomes zero and set otherwise.")
+            case 0xA9:    print("ED:A9::"); print ("CPD"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL and BC are decremented. p/v is reset if BC becomes zero and set otherwise.")
+            case 0xAA:    print("ED:AA::"); print ("IND"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL and B are decremented.")
+            case 0xAB:    print("ED:AB::"); print ("OUTD"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is decremented.")
+            case 0xB0:    print("ED:B0::"); print ("LDIR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "0", PVFlag: "0", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL and DE are incremented and BC is decremented. If BC is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
+            case 0xB1:    print("ED:B1::"); print ("CPIR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL is incremented and BC is decremented. If BC is not zero and z is not set, this operation is repeated. p/v is reset if BC becomes zero and set otherwise, acting as an indicator that HL reached a memory location whose value equalled A before the counter went to zero. Interrupts can trigger while this instruction is processing.")
+            case 0xB2:    print("ED:B2::"); print ("INIR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL is incremented and B is decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
+            case 0xB3:    print("ED:B3::"); print ("OTIR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is incremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
+            case 0xB8:    print("ED:B8::"); print ("LDDR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "0", PVFlag: "0", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL, DE, and BC are decremented. If BC is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
+            case 0xB9:    print("ED:B9::"); print ("CPDR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL and BC are decremented. If BC is not zero and z is not set, this operation is repeated. p/v is reset if BC becomes zero and set otherwise, acting as an indicator that HL reached a memory location whose value equalled A before the counter went to zero. Interrupts can trigger while this instruction is processing.")
+            case 0xBA:    print("ED:BA::"); print ("INDR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL and B are decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
+            case 0xBB:    print("ED:BB::"); print ("OTDR"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             default :
                 print("Unimplemented opcode",FirstByte,SecondByte)
             }
-        case 0xEE:
-            print("XOR nn")
-        case 0xEF:
-            print("RST 28")
-        case 0xF0:
-            print("RET P")
-        case 0xF1:
-            print("POP AF")
-        case 0xF2:
-            print("JP P,nn")
-        case 0xF3:
-            print("DI")
-        case 0xF4:
-            print("CALL P,nn")
-        case 0xF5:
-            print("PUSH AF")
-        case 0xF6:
-            print("OR nn")
-        case 0xF7:
-            print("RST 30")
-        case 0xF8:
-            print("RET M")
-        case 0xF9:
-            print("LD SP,HL")
-        case 0xFA:
-            print("JP M,nn")
-        case 0xFB:
-            print("EI")
-        case 0xFC:
-            print("CALL M,nn")
+        case 0xEE:        print("EE:n::"); print ("XOR N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with $n.")
+        case 0xEF:        print("EF:::"); print ("RST 28H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 28h")
+        case 0xF0:        print("F0:::"); print ("RET P"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, the top stack entry is popped into PC.")
+        case 0xF1:        print("F1:::"); print ("POP AF"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into F and SP is incremented. The memory location pointed to by SP is stored into A and SP is incremented again.")
+        case 0xF2:        print("F2:n:n:"); print ("JP P,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, $nn is copied to PC.")
+        case 0xF3:        print("F3:::"); print ("DI"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets both interrupt flip-flops, thus preventing maskable interrupts from triggering.")
+        case 0xF4:        print("F4:n:n:"); print ("CALL P,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
+        case 0xF5:        print("F5:::"); print ("PUSH AF"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and A is stored into the memory location pointed to by SP. SP is decremented again and F is stored into the memory location pointed to by SP.")
+        case 0xF6:        print("F6:n::"); print ("OR N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with $n.")
+        case 0xF7:        print("F7:::"); print ("RST 30H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 30H")
+        case 0xF8:        print("F8:::"); print ("RET M"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, the top stack entry is popped into PC.")
+        case 0xF9:        print("F9:::"); print ("LD SP,HL"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of HL into SP.")
+        case 0xFA:        print("FA:n:n:"); print ("JP M,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, $nn is copied to PC.")
+        case 0xFB:        print("FB:::"); print ("EI"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets both interrupt flip-flops, thus allowing maskable interrupts to occur. An interrupt will not occur until after the immediately following instruction.")
+        case 0xFC:        print("FC:n:n:"); print ("CALL M,NN"); // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xFD:
             switch SecondByte
             {
-            case 0x09 :
-                print("ADD IY,BC")
-            case 0x19 :
-                print("ADD IY,DE")
-            case 0x21 :
-                print("LD IY,nn")
-            case 0x22 :
-                print("LD (nn),IY")
-            case 0x23 :
-                print("INC IY")
-            case 0x24 :
-                print("INC IYH")
-            case 0x25 :
-                print("DEC IYH")
-            case 0x26 :
-                print("LD IYH,nn")
-            case 0x29 :
-                print("ADD IY,IY")
-            case 0x2A :
-                print("LD IY,(nn)")
-            case 0x2B :
-                print("DEC IY")
-            case 0x2C :
-                print("INC IYL")
-            case 0x2D :
-                print("DEC IYL")
-            case 0x2E :
-                print("LD IYL,nn")
-            case 0x34 :
-                print("INC (IY+nn)")
-            case 0x35 :
-                print("DEC (IY+nn)")
-            case 0x39 :
-                print("ADD IY,SP")
-            case 0x44 :
-                print("LD B,IYH")
-            case 0x45 :
-                print("LD B,IYL")
-            case 0x46 :
-                print("LD B,(IY+nn)")
-            case 0x4C :
-                print("LD C,IYH")
-            case 0x4D :
-                print("LD C,IYL")
-            case 0x4E :
-                print("LD C,(IY+nn)")
-            case 0x54 :
-                print("LD D,IYH")
-            case 0x55 :
-                print("LD D,IYL")
-            case 0x5E :
-                print("LD E,(IY+nn)")
-            case 0x60 :
-                print("LD IYH,B")
-            case 0x61 :
-                print("LD IYH,C")
-            case 0x62 :
-                print("LD IYH,D")
-            case 0x63 :
-                print("LD IYH,E")
-            case 0x64 :
-                print("LD IYH,IYH")
-            case 0x65 :
-                print("LD IYH,IYL")
-            case 0x66 :
-                print("LD H,(IY+nn)")
-            case 0x67 :
-                print("LD IYH,A")
-            case 0x68 :
-                print("LD IYL,B")
-            case 0x69 :
-                print("LD IYL,C")
-            case 0x6A :
-                print("LD IYL,D")
-            case 0x6B :
-                print("LD IYL,E")
-            case 0x6C :
-                print("LD IYL,IYH")
-            case 0x6D :
-                print("LD IYL,IYL")
-            case 0x6E :
-                print("LD L,(IY+nn)")
-            case 0x6F :
-                print("LD IYL,A")
-            case 0x70 :
-                print("LD (IY+nn),B")
-            case 0x71 :
-                print("LD (IY+nn),C")
-            case 0x72 :
-                print("LD (IY+nn),D")
-            case 0x73 :
-                print("LD (IY+nn),E")
-            case 0x74 :
-                print("LD (IY+nn),H")
-            case 0x75 :
-                print("LD (IY+nn),L")
-            case 0x77 :
-                print("LD (IY+nn),A")
-            case 0x7C :
-                print("LD A,IYH")
-            case 0x7D :
-                print("LD A,IYL")
-            case 0x7E :
-                print("LD A,(IY+nn)")
-            case 0x84 :
-                print("ADD A,IYH")
-            case 0x85 :
-                print("ADD A,IYL")
-            case 0x86 :
-                print("ADD A,(IY+nn)")
-            case 0x8C :
-                print("ADC A,IYH")
-            case 0x8D :
-                print("ADC A,IYL")
-            case 0x8E :
-                print("ADC A,(IY+nn)")
-            case 0x94 :
-                print("SUB A,IYH")
-            case 0x95 :
-                print("SUB A,IYL")
-            case 0x96 :
-                print("SUB A,(IY+nn)")
-            case 0x9C :
-                print("SBC A,IYH")
-            case 0x9D :
-                print("SBC A,IYL")
-            case 0x9E :
-                print("SBC A,(IY+nn)")
-            case 0xA4 :
-                print("AND IYH")
-            case 0xA5 :
-                print("AND IYL")
-            case 0xA6 :
-                print("AND (IY+nn)")
-            case 0xAC :
-                print("XOR IYH")
-            case 0xAD :
-                print("XOR IYL")
-            case 0xAE :
-                print("XOR (IY+nn)")
-            case 0xB4 :
-                print("OR IYH")
-            case 0xB5 :
-                print("OR IYL")
-            case 0xB6 :
-                print("OR (IY+nn)")
-            case 0xBC :
-                print("CP IYH")
-            case 0xBD :
-                print("CP IYL")
-            case 0xBE :
-                print("CP (IY+nn)")
-            case 0xE1 :
-                print("POP IY")
-            case 0xE3 :
-                print("EX (SP),IY")
-            case 0xE5 :
-                print("PUSH IY")
-            case 0xE9 :
-                print("JP (IY)")
+            case 0x04:    print("FD:04::"); print ("INC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to B")
+            case 0x05:    print("FD:05::"); print ("DEC B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
+            case 0x06:    print("FD:06:n:"); print ("LD B,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into B")
+            case 0x09:    print("FD:09::"); print ("ADD IY,BC"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to IY.")
+            case 0x0C:    print("FD:0C::"); print ("INC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to C.")
+            case 0x0D:    print("FD:0D::"); print ("DEC C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from C.")
+            case 0x0E:    print("FD:0E:n:"); print ("LD C,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into C.")
+            case 0x14:    print("FD:14::"); print ("INC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to D")
+            case 0x15:    print("FD:15::"); print ("DEC D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
+            case 0x16:    print("FD:16:n:"); print ("LD D,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into D")
+            case 0x19:    print("FD:19::"); print ("ADD IY,DE"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to IY.")
+            case 0x1C:    print("FD:1C::"); print ("INC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to E.")
+            case 0x1D:    print("FD:1D::"); print ("DEC E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from E.")
+            case 0x1E:    print("FD:1E:n:"); print ("LD E,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into E.")
+            case 0x21:    print("FD:21:n:n"); print ("LD IY,NN"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into register IY.")
+            case 0x22:    print("FD:22:n:n"); print ("LD (NN),IY"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores IY into the memory location pointed to by $nn.")
+            case 0x23:    print("FD:23::"); print ("INC IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to IY.")
+            case 0x24:    print("FD:24::"); print ("INC IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IY.")
+            case 0x25:    print("FD:25::"); print ("DEC IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
+            case 0x26:    print("FD:26:n:"); print ("LD IYH,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into IYH")
+            case 0x29:    print("FD:29::"); print ("ADD IY,IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of IY is added to IY.")
+            case 0x2A:    print("FD:2A:n:n"); print ("LD IY,(NN)"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into IY.")
+            case 0x2B:    print("FD:2B::"); print ("DEC IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from IY.")
+            case 0x2C:    print("FD:2C::"); print ("INC IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IYL.")
+            case 0x2D:    print("FD:2D::"); print ("DEC IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IYL.")
+            case 0x2E:    print("FD:2E:n:"); print ("LD IYL,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into IYL.")
+            case 0x34:    print("FD:34:d:"); print ("INC (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to the memory location pointed to by IY plus $d.")
+            case 0x35:    print("FD:35:d:"); print ("DEC (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from the memory location pointed to by IY plus $d.")
+            case 0x36:    print("FD:36:d:n"); print ("LD (IY+D),N"); // OpcodeSize: 2, InstructionSize: 4, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores $n to the memory location pointed to by IY plus $d.")
+            case 0x39:    print("FD:39::"); print ("ADD IY,SP"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to IY.")
+            case 0x3C:    print("FD:3C::"); print ("INC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to A.")
+            case 0x3D:    print("FD:3D::"); print ("DEC A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from A.")
+            case 0x3E:    print("FD:3E:n:"); print ("LD A,N"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into A.")
+            case 0x40:    print("FD:40::"); print ("LD B,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into B")
+            case 0x41:    print("FD:41::"); print ("LD B,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into B")
+            case 0x42:    print("FD:42::"); print ("LD B,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into B")
+            case 0x43:    print("FD:43::"); print ("LD B,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into B")
+            case 0x44:    print("FD:44::"); print ("LD B,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into B")
+            case 0x45:    print("FD:45::"); print ("LD B,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into B")
+            case 0x46:    print("FD:46:d:"); print ("LD B,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into B")
+            case 0x47:    print("FD:47::"); print ("LD B,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into B.")
+            case 0x48:    print("FD:48::"); print ("LD C,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into C.")
+            case 0x49:    print("FD:49::"); print ("LD C,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into C.")
+            case 0x4A:    print("FD:4A::"); print ("LD C,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into C.")
+            case 0x4B:    print("FD:4B::"); print ("LD C,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into C.")
+            case 0x4C:    print("FD:4C::"); print ("LD C,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into C.")
+            case 0x4D:    print("FD:4D::"); print ("LD C,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into C.")
+            case 0x4E:    print("FD:4E:d:"); print ("LD C,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into C.")
+            case 0x4F:    print("FD:4F::"); print ("LD C,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into C.")
+            case 0x50:    print("FD:50::"); print ("LD D,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into D")
+            case 0x51:    print("FD:51::"); print ("LD D,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into D")
+            case 0x52:    print("FD:52::"); print ("LD D,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into D")
+            case 0x53:    print("FD:53::"); print ("LD D,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into D")
+            case 0x54:    print("FD:54::"); print ("LD D,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into D")
+            case 0x55:    print("FD:55::"); print ("LD D,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into D")
+            case 0x56:    print("FD:56:d:"); print ("LD D,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into D")
+            case 0x57:    print("FD:57::"); print ("LD D,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into D.")
+            case 0x58:    print("FD:58::"); print ("LD E,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into E.")
+            case 0x59:    print("FD:59::"); print ("LD E,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into E.")
+            case 0x5A:    print("FD:5A::"); print ("LD E,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into E.")
+            case 0x5B:    print("FD:5B::"); print ("LD E,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into E.")
+            case 0x5C:    print("FD:5C::"); print ("LD E,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into E.")
+            case 0x5D:    print("FD:5D::"); print ("LD E,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into E.")
+            case 0x5E:    print("FD:5E:d:"); print ("LD E,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into E.")
+            case 0x5F:    print("FD:5F::"); print ("LD E,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into E.")
+            case 0x60:    print("FD:60::"); print ("LD IYH,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IYH")
+            case 0x61:    print("FD:61::"); print ("LD IYH,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IYH")
+            case 0x62:    print("FD:62::"); print ("LD IYH,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IYH")
+            case 0x63:    print("FD:63::"); print ("LD IYH,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IYH")
+            case 0x64:    print("FD:64::"); print ("LD IYH,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into IYH")
+            case 0x65:    print("FD:65::"); print ("LD IYH,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into IYH")
+            case 0x66:    print("FD:66:d:"); print ("LD H,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into H")
+            case 0x67:    print("FD:67::"); print ("LD IYH,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IYH.")
+            case 0x68:    print("FD:68::"); print ("LD IYL,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IYL.")
+            case 0x69:    print("FD:69::"); print ("LD IYL,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IYL.")
+            case 0x6A:    print("FD:6A::"); print ("LD IYL,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IYL.")
+            case 0x6B:    print("FD:6B::"); print ("LD IYL,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IYL.")
+            case 0x6C:    print("FD:6C::"); print ("LD IYL,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into IYL.")
+            case 0x6D:    print("FD:6D::"); print ("LD IYL,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into IYL.")
+            case 0x6E:    print("FD:6E:d:"); print ("LD L,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into L.")
+            case 0x6F:    print("FD:6F::"); print ("LD IYL,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IYL.")
+            case 0x70:    print("FD:70:d:"); print ("LD (IY+D),B"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores B to the memory location pointed to by IY plus $d.")
+            case 0x71:    print("FD:71:d:"); print ("LD (IY+D),C"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores C to the memory location pointed to by IY plus $d.")
+            case 0x72:    print("FD:72:d:"); print ("LD (IY+D),D"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores D to the memory location pointed to by IY plus $d.")
+            case 0x73:    print("FD:73:d:"); print ("LD (IY+D),E"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores E to the memory location pointed to by IY plus $d.")
+            case 0x74:    print("FD:74:d:"); print ("LD (IY+D),H"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores H to the memory location pointed to by IY plus $d.")
+            case 0x75:    print("FD:75:d:"); print ("LD (IY+D),L"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores L to the memory location pointed to by IY plus $d.")
+            case 0x77:    print("FD:77:d:"); print ("LD (IY+D),A"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A to the memory location pointed to by IY plus d.")
+            case 0x78:    print("FD:78::"); print ("LD A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into A.")
+            case 0x79:    print("FD:79::"); print ("LD A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into A.")
+            case 0x7A:    print("FD:7A::"); print ("LD A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into A.")
+            case 0x7B:    print("FD:7B::"); print ("LD A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into A.")
+            case 0x7C:    print("FD:7C::"); print ("LD A,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into A.")
+            case 0x7D:    print("FD:7D::"); print ("LD A,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into A.")
+            case 0x7E:    print("FD:7E:d:"); print ("LD A,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into A.")
+            case 0x7F:    print("FD:7F::"); print ("LD A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into A.")
+            case 0x80:    print("FD:80::"); print ("ADD A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B to A.")
+            case 0x81:    print("FD:81::"); print ("ADD A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C to A.")
+            case 0x82:    print("FD:82::"); print ("ADD A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D to A.")
+            case 0x83:    print("FD:83::"); print ("ADD A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E to A.")
+            case 0x84:    print("FD:84::"); print ("ADD A,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYH to A.")
+            case 0x85:    print("FD:85::"); print ("ADD A,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYL to A.")
+            case 0x86:    print("FD:86:d:"); print ("ADD A,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IY plus $d to A.")
+            case 0x87:    print("FD:87::"); print ("ADD A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A to A.")
+            case 0x88:    print("FD:88::"); print ("ADC A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B and the carry flag to A.")
+            case 0x89:    print("FD:89::"); print ("ADC A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C and the carry flag to A.")
+            case 0x8A:    print("FD:8A::"); print ("ADC A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D and the carry flag to A.")
+            case 0x8B:    print("FD:8B::"); print ("ADC A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E and the carry flag to A.")
+            case 0x8C:    print("FD:8C::"); print ("ADC A,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYH and the carry flag to A.")
+            case 0x8D:    print("FD:8D::"); print ("ADC A,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYL and the carry flag to A.")
+            case 0x8E:    print("FD:8E:d:"); print ("ADC A,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IY plus $d and the carry flag to A.")
+            case 0x8F:    print("FD:8F::"); print ("ADC A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A and the carry flag to A.")
+            case 0x90:    print("FD:90::"); print ("SUB B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
+            case 0x91:    print("FD:91::"); print ("SUB C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
+            case 0x92:    print("FD:92::"); print ("SUB D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A.")
+            case 0x93:    print("FD:93::"); print ("SUB E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A.")
+            case 0x94:    print("FD:94::"); print ("SUB IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH from A.")
+            case 0x95:    print("FD:95::"); print ("SUB IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "SubtractsIYLfrom A.")
+            case 0x96:    print("FD:96:d:"); print ("SUB (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d from A.")
+            case 0x97:    print("FD:97::"); print ("SUB A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A.")
+            case 0x98:    print("FD:98::"); print ("SBC A,B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B and the carry flag from A.")
+            case 0x99:    print("FD:99::"); print ("SBC A,C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C and the carry flag from A.")
+            case 0x9A:    print("FD:9A::"); print ("SBC A,D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D and the carry flag from A.")
+            case 0x9B:    print("FD:9B::"); print ("SBC A,E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E and the carry flag from A.")
+            case 0x9C:    print("FD:9C::"); print ("SBC A,IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH and the carry flag from A.")
+            case 0x9D:    print("FD:9D::"); print ("SBC A,IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYL and the carry flag from A.")
+            case 0x9E:    print("FD:9E:d:"); print ("SBC A,(IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d and the carry flag from A.")
+            case 0x9F:    print("FD:9F::"); print ("SBC A,A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A and the carry flag from A.")
+            case 0xA0:    print("FD:A0::"); print ("AND B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with B")
+            case 0xA1:    print("FD:A1::"); print ("AND C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with C")
+            case 0xA2:    print("FD:A2::"); print ("AND D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with D")
+            case 0xA3:    print("FD:A3::"); print ("AND E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with E")
+            case 0xA4:    print("FD:A4::"); print ("AND IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IYH")
+            case 0xA5:    print("FD:A5::"); print ("AND IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IYL")
+            case 0xA6:    print("FD:A6:d:"); print ("AND (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with the value pointed to by IY plus $d.")
+            case 0xA7:    print("FD:A7::"); print ("AND A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with A.")
+            case 0xA8:    print("FD:A8::"); print ("XOR B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with B")
+            case 0xA9:    print("FD:A9::"); print ("XOR C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with C")
+            case 0xAA:    print("FD:AA::"); print ("XOR D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with D")
+            case 0xAB:    print("FD:AB::"); print ("XOR E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with E")
+            case 0xAC:    print("FD:AC::"); print ("XOR IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IYH")
+            case 0xAD:    print("FD:AD::"); print ("XOR IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IYL")
+            case 0xAE:    print("FD:AE:d:"); print ("XOR (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with the value pointed to by IY plus $d.")
+            case 0xAF:    print("FD:AF::"); print ("XOR A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with A.")
+            case 0xB0:    print("FD:B0::"); print ("OR B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with B")
+            case 0xB1:    print("FD:B1::"); print ("OR C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with C")
+            case 0xB2:    print("FD:B2::"); print ("OR D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with D")
+            case 0xB3:    print("FD:B3::"); print ("OR E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with E")
+            case 0xB4:    print("FD:B4::"); print ("OR IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IYH")
+            case 0xB5:    print("FD:B5::"); print ("OR IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IYL")
+            case 0xB6:    print("FD:B6:d:"); print ("OR (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with the value pointed to by IY plus $d.")
+            case 0xB7:    print("FD:B7::"); print ("OR A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with A.")
+            case 0xB8:    print("FD:B8::"); print ("CP B"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
+            case 0xB9:    print("FD:B9::"); print ("CP C"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
+            case 0xBA:    print("FD:BA::"); print ("CP D"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
+            case 0xBB:    print("FD:BB::"); print ("CP E"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
+            case 0xBC:    print("FD:BC::"); print ("CP IYH"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH from A and affects flags according to the result. A is not modified.")
+            case 0xBD:    print("FD:BD::"); print ("CP IYL"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYL from A and affects flags according to the result. A is not modified.")
+            case 0xBE:    print("FD:BE:d:"); print ("CP (IY+D)"); // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d from A and affects flags according to the result. A is not modified.")
+            case 0xBF:    print("FD:BF::"); print ("CP A"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
+            case 0xCB:
+                switch FourthByte
+                {
+                case 0x00:    print("FD:CB:d:00"); print ("RLC (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in B")
+                case 0x01:    print("FD:CB:d:01"); print ("RLC (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
+                case 0x02:    print("FD:CB:d:02"); print ("RLC (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in D")
+                case 0x03:    print("FD:CB:d:03"); print ("RLC (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in E")
+                case 0x04:    print("FD:CB:d:04"); print ("RLC (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in H")
+                case 0x05:    print("FD:CB:d:05"); print ("RLC (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in L")
+                case 0x06:    print("FD:CB:d:06"); print ("RLC (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
+                case 0x07:    print("FD:CB:d:07"); print ("RLC (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in A")
+                case 0x08:    print("FD:CB:d:08"); print ("RRC (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in B")
+                case 0x09:    print("FD:CB:d:09"); print ("RRC (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in C")
+                case 0x0A:    print("FD:CB:d:0A"); print ("RRC (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored inD")
+                case 0x0B:    print("FD:CB:d:0B"); print ("RRC (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in E")
+                case 0x0C:    print("FD:CB:d:0C"); print ("RRC (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in H")
+                case 0x0D:    print("FD:CB:d:0D"); print ("RRC (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in L")
+                case 0x0E:    print("FD:CB:d:0E"); print ("RRC (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
+                case 0x0F:    print("FD:CB:d:0F"); print ("RRC (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in A.")
+                case 0x10:    print("FD:CB:d:10"); print ("RL (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in B")
+                case 0x11:    print("FD:CB:d:11"); print ("RL (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in C")
+                case 0x12:    print("FD:CB:d:12"); print ("RL (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in D")
+                case 0x13:    print("FD:CB:d:13"); print ("RL (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in E")
+                case 0x14:    print("FD:CB:d:14"); print ("RL (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in H")
+                case 0x15:    print("FD:CB:d:15"); print ("RL (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in L")
+                case 0x16:    print("FD:CB:d:16"); print ("RL (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
+                case 0x17:    print("FD:CB:d:17"); print ("RL (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in A.")
+                case 0x18:    print("FD:CB:d:18"); print ("RR (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in B")
+                case 0x19:    print("FD:CB:d:19"); print ("RR (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in C")
+                case 0x1A:    print("FD:CB:d:1A"); print ("RR (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in D")
+                case 0x1B:    print("FD:CB:d:1B"); print ("RR (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in E")
+                case 0x1C:    print("FD:CB:d:1C"); print ("RR (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in H")
+                case 0x1D:    print("FD:CB:d:1D"); print ("RR (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in L")
+                case 0x1E:    print("FD:CB:d:1E"); print ("RR (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
+                case 0x1F:    print("FD:CB:d:1F"); print ("RR (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in A.")
+                case 0x20:    print("FD:CB:d:20"); print ("SLA (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in B")
+                case 0x21:    print("FD:CB:d:21"); print ("SLA (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in C")
+                case 0x22:    print("FD:CB:d:22"); print ("SLA (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in D")
+                case 0x23:    print("FD:CB:d:23"); print ("SLA (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in E")
+                case 0x24:    print("FD:CB:d:24"); print ("SLA (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in H.")
+                case 0x25:    print("FD:CB:d:25"); print ("SLA (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in L")
+                case 0x26:    print("FD:CB:d:26"); print ("SLA (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
+                case 0x27:    print("FD:CB:d:27"); print ("SLA (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in A")
+                case 0x28:    print("FD:CB:d:28"); print ("SRA (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in B")
+                case 0x29:    print("FD:CB:d:29"); print ("SRA (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
+                case 0x2A:    print("FD:CB:d:2A"); print ("SRA (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
+                case 0x2B:    print("FD:CB:d:2B"); print ("SRA (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
+                case 0x2C:    print("FD:CB:d:2C"); print ("SRA (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
+                case 0x2D:    print("FD:CB:d:2D"); print ("SRA (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
+                case 0x2E:    print("FD:CB:d:2E"); print ("SRA (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
+                case 0x2F:    print("FD:CB:d:2F"); print ("SRA (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in A.")
+                case 0x30:    print("FD:CB:d:30"); print ("SLL (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in B")
+                case 0x31:    print("FD:CB:d:31"); print ("SLL (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in C")
+                case 0x32:    print("FD:CB:d:32"); print ("SLL (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in D")
+                case 0x33:    print("FD:CB:d:33"); print ("SLL (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in E")
+                case 0x34:    print("FD:CB:d:34"); print ("SLL (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in H")
+                case 0x35:    print("FD:CB:d:35"); print ("SLL (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in L")
+                case 0x36:    print("FD:CB:d:36"); print ("SLL (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
+                case 0x37:    print("FD:CB:d:37"); print ("SLL (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in A.")
+                case 0x38:    print("FD:CB:d:38"); print ("SRL (IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in B")
+                case 0x39:    print("FD:CB:d:39"); print ("SRL (IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in C")
+                case 0x3A:    print("FD:CB:d:3A"); print ("SRL (IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in D")
+                case 0x3B:    print("FD:CB:d:3B"); print ("SRL (IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in E")
+                case 0x3C:    print("FD:CB:d:3C"); print ("SRL (IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in H")
+                case 0x3D:    print("FD:CB:d:3D"); print ("SRL (IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in L")
+                case 0x3E:    print("FD:CB:d:3E"); print ("SRL (IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
+                case 0x3F:    print("FD:CB:d:3F"); print ("SRL (IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in A.")
+                case 0x40:    print("FD:CB:d:40"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x41:    print("FD:CB:d:41"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x42:    print("FD:CB:d:42"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x43:    print("FD:CB:d:43"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x44:    print("FD:CB:d:44"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x45:    print("FD:CB:d:45"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x46:    print("FD:CB:d:46"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x47:    print("FD:CB:d:47"); print ("BIT 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x48:    print("FD:CB:d:48"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x49:    print("FD:CB:d:49"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4A:    print("FD:CB:d:4A"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4B:    print("FD:CB:d:4B"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4C:    print("FD:CB:d:4C"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4D:    print("FD:CB:d:4D"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4E:    print("FD:CB:d:4E"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x4F:    print("FD:CB:d:4F"); print ("BIT 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x50:    print("FD:CB:d:50"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x51:    print("FD:CB:d:51"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x52:    print("FD:CB:d:52"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x53:    print("FD:CB:d:53"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x54:    print("FD:CB:d:54"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x55:    print("FD:CB:d:55"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x56:    print("FD:CB:d:56"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x57:    print("FD:CB:d:57"); print ("BIT 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x58:    print("FD:CB:d:58"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x59:    print("FD:CB:d:59"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5A:    print("FD:CB:d:5A"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5B:    print("FD:CB:d:5B"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5C:    print("FD:CB:d:5C"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5D:    print("FD:CB:d:5D"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5E:    print("FD:CB:d:5E"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x5F:    print("FD:CB:d:5F"); print ("BIT 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x60:    print("FD:CB:d:60"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x61:    print("FD:CB:d:61"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x62:    print("FD:CB:d:62"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x63:    print("FD:CB:d:63"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x64:    print("FD:CB:d:64"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x65:    print("FD:CB:d:65"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x66:    print("FD:CB:d:66"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x67:    print("FD:CB:d:67"); print ("BIT 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
+                case 0x68:    print("FD:CB:d:68"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x69:    print("FD:CB:d:69"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6A:    print("FD:CB:d:6A"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6B:    print("FD:CB:d:6B"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6C:    print("FD:CB:d:6C"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6D:    print("FD:CB:d:6D"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6E:    print("FD:CB:d:6E"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x6F:    print("FD:CB:d:6F"); print ("BIT 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
+                case 0x70:    print("FD:CB:d:70"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x71:    print("FD:CB:d:71"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x72:    print("FD:CB:d:72"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x73:    print("FD:CB:d:73"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x74:    print("FD:CB:d:74"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x75:    print("FD:CB:d:75"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x76:    print("FD:CB:d:76"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x77:    print("FD:CB:d:77"); print ("BIT 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
+                case 0x78:    print("FD:CB:d:78"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x79:    print("FD:CB:d:79"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7A:    print("FD:CB:d:7A"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7B:    print("FD:CB:d:7B"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7C:    print("FD:CB:d:7C"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7D:    print("FD:CB:d:7D"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7E:    print("FD:CB:d:7E"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x7F:    print("FD:CB:d:7F"); print ("BIT 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
+                case 0x80:    print("FD:CB:d:80"); print ("RES 0,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0x81:    print("FD:CB:d:81"); print ("RES 0,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0x82:    print("FD:CB:d:82"); print ("RES 0,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0x83:    print("FD:CB:d:83"); print ("RES 0,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0x84:    print("FD:CB:d:84"); print ("RES 0,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0x85:    print("FD:CB:d:85"); print ("RES 0,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0x86:    print("FD:CB:d:86"); print ("RES 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d.")
+                case 0x87:    print("FD:CB:d:87"); print ("RES 0,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0x88:    print("FD:CB:d:88"); print ("RES 1,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0x89:    print("FD:CB:d:89"); print ("RES 1,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0x8A:    print("FD:CB:d:8A"); print ("RES 1,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0x8B:    print("FD:CB:d:8B"); print ("RES 1,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0x8C:    print("FD:CB:d:8C"); print ("RES 1,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0x8D:    print("FD:CB:d:8D"); print ("RES 1,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0x8E:    print("FD:CB:d:8E"); print ("RES 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d.")
+                case 0x8F:    print("FD:CB:d:8F"); print ("RES 1,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0x90:    print("FD:CB:d:90"); print ("RES 2,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0x91:    print("FD:CB:d:91"); print ("RES 2,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0x92:    print("FD:CB:d:92"); print ("RES 2,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0x93:    print("FD:CB:d:93"); print ("RES 2,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0x94:    print("FD:CB:d:94"); print ("RES 2,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0x95:    print("FD:CB:d:95"); print ("RES 2,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0x96:    print("FD:CB:d:96"); print ("RES 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d.")
+                case 0x97:    print("FD:CB:d:97"); print ("RES 2,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0x98:    print("FD:CB:d:98"); print ("RES 3,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0x99:    print("FD:CB:d:99"); print ("RES 3,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0x9A:    print("FD:CB:d:9A"); print ("RES 3,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0x9B:    print("FD:CB:d:9B"); print ("RES 3,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0x9C:    print("FD:CB:d:9C"); print ("RES 3,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0x9D:    print("FD:CB:d:9D"); print ("RES 3,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0x9E:    print("FD:CB:d:9E"); print ("RES 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d.")
+                case 0x9F:    print("FD:CB:d:9F"); print ("RES 3,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xA0:    print("FD:CB:d:A0"); print ("RES 4,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xA1:    print("FD:CB:d:A1"); print ("RES 4,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xA2:    print("FD:CB:d:A2"); print ("RES 4,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xA3:    print("FD:CB:d:A3"); print ("RES 4,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xA4:    print("FD:CB:d:A4"); print ("RES 4,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xA5:    print("FD:CB:d:A5"); print ("RES 4,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xA6:    print("FD:CB:d:A6"); print ("RES 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d.")
+                case 0xA7:    print("FD:CB:d:A7"); print ("RES 4,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xA8:    print("FD:CB:d:A8"); print ("RES 5,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xA9:    print("FD:CB:d:A9"); print ("RES 5,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xAA:    print("FD:CB:d:AA"); print ("RES 5,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xAB:    print("FD:CB:d:AB"); print ("RES 5,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xAC:    print("FD:CB:d:AC"); print ("RES 5,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xAD:    print("FD:CB:d:AD"); print ("RES 5,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xAE:    print("FD:CB:d:AE"); print ("RES 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d.")
+                case 0xAF:    print("FD:CB:d:AF"); print ("RES 5,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xB0:    print("FD:CB:d:B0"); print ("RES 6,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xB1:    print("FD:CB:d:B1"); print ("RES 6,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xB2:    print("FD:CB:d:B2"); print ("RES 6,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xB3:    print("FD:CB:d:B3"); print ("RES 6,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xB4:    print("FD:CB:d:B4"); print ("RES 6,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xB5:    print("FD:CB:d:B5"); print ("RES 6,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xB6:    print("FD:CB:d:B6"); print ("RES 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d.")
+                case 0xB7:    print("FD:CB:d:B7"); print ("RES 6,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xB8:    print("FD:CB:d:B8"); print ("RES 7,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xB9:    print("FD:CB:d:B9"); print ("RES 7,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xBA:    print("FD:CB:d:BA"); print ("RES 7,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xBB:    print("FD:CB:d:BB"); print ("RES 7,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xBC:    print("FD:CB:d:BC"); print ("RES 7,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xBD:    print("FD:CB:d:BD"); print ("RES 7,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xBE:    print("FD:CB:d:BE"); print ("RES 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d.")
+                case 0xBF:    print("FD:CB:d:BF"); print ("RES 7,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xC0:    print("FD:CB:d:C0"); print ("SET 0,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xC1:    print("FD:CB:d:C1"); print ("SET 0,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xC2:    print("FD:CB:d:C2"); print ("SET 0,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xC3:    print("FD:CB:d:C3"); print ("SET 0,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xC4:    print("FD:CB:d:C4"); print ("SET 0,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xC5:    print("FD:CB:d:C5"); print ("SET 0,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xC6:    print("FD:CB:d:C6"); print ("SET 0,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d.")
+                case 0xC7:    print("FD:CB:d:C7"); print ("SET 0,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xC8:    print("FD:CB:d:C8"); print ("SET 1,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xC9:    print("FD:CB:d:C9"); print ("SET 1,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xCA:    print("FD:CB:d:CA"); print ("SET 1,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xCB:    print("FD:CB:d:CB"); print ("SET 1,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xCC:    print("FD:CB:d:CC"); print ("SET 1,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xCD:    print("FD:CB:d:CD"); print ("SET 1,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xCE:    print("FD:CB:d:CE"); print ("SET 1,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d.")
+                case 0xCF:    print("FD:CB:d:CF"); print ("SET 1,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xD0:    print("FD:CB:d:D0"); print ("SET 2,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xD1:    print("FD:CB:d:D1"); print ("SET 2,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xD2:    print("FD:CB:d:D2"); print ("SET 2,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xD3:    print("FD:CB:d:D3"); print ("SET 2,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xD4:    print("FD:CB:d:D4"); print ("SET 2,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xD5:    print("FD:CB:d:D5"); print ("SET 2,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xD6:    print("FD:CB:d:D6"); print ("SET 2,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d.")
+                case 0xD7:    print("FD:CB:d:D7"); print ("SET 2,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xD8:    print("FD:CB:d:D8"); print ("SET 3,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in B")
+                case 0xD9:    print("FD:CB:d:D9"); print ("SET 3,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in C")
+                case 0xDA:    print("FD:CB:d:DA"); print ("SET 3,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in D")
+                case 0xDB:    print("FD:CB:d:DB"); print ("SET 3,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in E")
+                case 0xDC:    print("FD:CB:d:DC"); print ("SET 3,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in H")
+                case 0xDD:    print("FD:CB:d:DD"); print ("SET 3,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in L")
+                case 0xDE:    print("FD:CB:d:DE"); print ("SET 3,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d.")
+                case 0xDF:    print("FD:CB:d:DF"); print ("SET 3,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xE0:    print("FD:CB:d:E0"); print ("SET 4,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xE1:    print("FD:CB:d:E1"); print ("SET 4,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xE2:    print("FD:CB:d:E2"); print ("SET 4,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xE3:    print("FD:CB:d:E3"); print ("SET 4,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xE4:    print("FD:CB:d:E4"); print ("SET 4,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xE5:    print("FD:CB:d:E5"); print ("SET 4,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xE6:    print("FD:CB:d:E6"); print ("SET 4,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d.")
+                case 0xE7:    print("FD:CB:d:E7"); print ("SET 4,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xE8:    print("FD:CB:d:E8"); print ("SET 5,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in B")
+                case 0xE9:    print("FD:CB:d:E9"); print ("SET 5,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in C")
+                case 0xEA:    print("FD:CB:d:EA"); print ("SET 5,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in D")
+                case 0xEB:    print("FD:CB:d:EB"); print ("SET 5,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in E")
+                case 0xEC:    print("FD:CB:d:EC"); print ("SET 5,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in H")
+                case 0xED:    print("FD:CB:d:ED"); print ("SET 5,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in L")
+                case 0xEE:    print("FD:CB:d:EE"); print ("SET 5,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d.")
+                case 0xEF:    print("FD:CB:d:EF"); print ("SET 5,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xF0:    print("FD:CB:d:F0"); print ("SET 6,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in B")
+                case 0xF1:    print("FD:CB:d:F1"); print ("SET 6,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in C")
+                case 0xF2:    print("FD:CB:d:F2"); print ("SET 6,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in D")
+                case 0xF3:    print("FD:CB:d:F3"); print ("SET 6,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in E")
+                case 0xF4:    print("FD:CB:d:F4"); print ("SET 6,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in H")
+                case 0xF5:    print("FD:CB:d:F5"); print ("SET 6,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in L")
+                case 0xF6:    print("FD:CB:d:F6"); print ("SET 6,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d.")
+                case 0xF7:    print("FD:CB:d:F7"); print ("SET 6,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                case 0xF8:    print("FD:CB:d:F8"); print ("SET 7,(IY+D),B"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in B")
+                case 0xF9:    print("FD:CB:d:F9"); print ("SET 7,(IY+D),C"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in C.")
+                case 0xFA:    print("FD:CB:d:FA"); print ("SET 7,(IY+D),D"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in D")
+                case 0xFB:    print("FD:CB:d:FB"); print ("SET 7,(IY+D),E"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in E")
+                case 0xFC:    print("FD:CB:d:FC"); print ("SET 7,(IY+D),H"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in H")
+                case 0xFD:    print("FD:CB:d:FD"); print ("SET 7,(IY+D),L"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in L")
+                case 0xFE:    print("FD:CB:d:FE"); print ("SET 7,(IY+D)"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d.")
+                case 0xFF:    print("FD:CB:d:FF"); print ("SET 7,(IY+D),A"); // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in A.")
+                default :
+                    print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
+                }
+            case 0xE1:    print("FD:E1::"); print ("POP IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into IYL and SP is incremented. The memory location pointed to by SP is stored into IYH and SP is incremented again.")
+            case 0xE3:    print("FD:E3::"); print ("EX (SP),IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with IYL, and (SP+1) with IYH.")
+            case 0xE5:    print("FD:E5::"); print ("PUSH IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and IYH is stored into the memory location pointed to by SP. SP is decremented again and IYL is stored into the memory location pointed to by SP.")
+            case 0xE9:    print("FD:E9::"); print ("JP (IY)"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IY into PC.")
+            case 0xF9:    print("FD:F9::"); print ("LD SP,IY"); // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IY into SP.")
             default :
-                print("Unimplemented opcode",FirstByte,SecondByte)
+                print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
             }
-        case 0xFE:
-            print("CP nn")
-        case 0xFF:
-            print("RST 38")
+        case 0xFE:        print("FE:n::"); print ("CP N"); // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n from A and affects flags according to the result. A is not modified.")
+        case 0xFF:        print("FF:::"); print ("RST 38H"); // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 38h")
         default:
-            print("Unimplemented opcode",FirstByte)
+            print("Unimplemented opcode",FirstByte,SecondByte,ThirdByte,FourthByte)
         }
     }
     
