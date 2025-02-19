@@ -92,26 +92,39 @@ class Microbee : ObservableObject
     {
         if (MyZ80.CPURunning) // && (ExecCount < 1)
         {
-            let clock = ContinuousClock()
-            let result = clock.measure {
-                for MyIndex in 1...1000
+            #if DEBUG_CODE
+                let clock = ContinuousClock()
+                let result = clock.measure
+                {
+                    for MyIndex in 1...100
+                    {
+                        MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
+                    }
+                    print(result)
+                    print(result/100)
+                }
+            #else
+                for MyIndex in 1...100
                 {
                     MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
                 }
-            }
-            print(result)
-            print(result/1000)
+            #endif
             ExecCount = ExecCount + 1
         }
     }
     
     func StepInstruction( JumpValue : Int )
     {
+    #if DEBUG_CODE
         let clock = ContinuousClock()
-        let result = clock.measure {
+        let result = clock.measure
+        {
             MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
         }
         print(result)
+    #else
+        MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
+    #endif
     }
     
     

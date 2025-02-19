@@ -334,7 +334,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0.191;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -347,12 +347,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.190;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 0.191;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -365,7 +365,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0.191;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -378,12 +378,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.190;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 0.191;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
