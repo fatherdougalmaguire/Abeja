@@ -1527,15 +1527,14 @@ class Z80 : ObservableObject {
             
         case 0x00:
             #if DEBUG_CODE
-                print("00:::")
-                print("NOP")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - NOP - 0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "No operation is performed.")
         case 0x01:
             #if DEBUG_CODE
-                print("01:n:n:")
-                print("LD BC,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD BC,NN - 01:n:n:")
+
             #endif
             TheseRegisters.B = ThirdByte
             TheseRegisters.C = SecondByte
@@ -1543,8 +1542,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into BC.")
         case 0x02:
             #if DEBUG_CODE
-                print("02:::")
-                print("LD (BC),A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (BC),A - 02:::")
             #endif
             MemoryAddress = Int(TheseRegisters.B)*0x100+Int(TheseRegisters.C)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
@@ -1556,13 +1554,12 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by BC.")
         case 0x03:
             #if DEBUG_CODE
-                print("03:::")
-                print("INC BC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC BC - 03:::")
             #endif
             if TheseRegisters.C == 0xFF
             {
                 TheseRegisters.C = 0
-                TheseRegisters.B = TheseRegisters.B + 1
+                TheseRegisters.B = TheseRegisters.B &+ 1 // **** revisit behaviour
             }
             else
             {
@@ -1572,37 +1569,32 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to BC")
         case 0x04: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("04:::")
-                print("INC B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC B - 04:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to B")
         case 0x05: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("05:::")
-                print("DEC B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC B - 05:::")
             #endif
              TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from B")
         case 0x06:
             #if DEBUG_CODE
-                print("06:n::")
-                print("LD B,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,N - 06:n::")
             #endif
             TheseRegisters.B = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into B.")
         case 0x07: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("07:::")
-                print("RLCA")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLCA - 07:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
         case 0x08:
             #if DEBUG_CODE
-                print("08:::")
-                print("EX AF,AF'")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EX AF,AF' - 08:::")
             #endif
             (TheseRegisters.A,TheseRegisters.AltA) = (TheseRegisters.AltA,TheseRegisters.A)
             (TheseRegisters.F,TheseRegisters.AltF) = (TheseRegisters.AltF,TheseRegisters.F)
@@ -1610,15 +1602,13 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of AF and AF'.")
         case 0x09: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("09:::")
-                print("ADD HL,BC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC)),"ADD HL,BC - 09:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to HL.")
         case 0x0A:
             #if DEBUG_CODE
-                print("0A:::")
-                print("LD A,(BC)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(BC) - 0A:::")
             #endif
             MemoryAddress = Int(TheseRegisters.B)*0x100+Int(TheseRegisters.C)
             TheseRegisters.A = ThisMemory.AddressSpace[MemoryAddress]
@@ -1626,51 +1616,44 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by BC into A.")
         case 0x0B: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("0B:::")
-                print("DEC BC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC BC - 0B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from BC")
         case 0x0C: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("0C:::")
-                print("INC C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC C - 0C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to C.")
         case 0x0D: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("0D:::")
-                print("DEC C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC C - 0D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from C.")
         case 0x0E:
             #if DEBUG_CODE
-                print("0E:n::")
-                print("LD C,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,N - 0E:n::")
             #endif
             TheseRegisters.C = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into C")
         case 0x0F: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("0F:::")
-                print("RRCA")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRCA - 0F:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
         case 0x10: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("10:d::")
-                print("DJNZ D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC)),"DJNZ D - 10:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [13,8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The B register is decremented, and if not zero, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x11:
             #if DEBUG_CODE
-                print("11:n:n:")
-                print("LD DE,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD DE,NN - 11:n:n:")
             #endif
             TheseRegisters.D = ThirdByte
             TheseRegisters.E = SecondByte
@@ -1678,8 +1661,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into DE.")
         case 0x12:
             #if DEBUG_CODE
-                print("12:::")
-                print("LD (DE),A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (DE),A - 12:::")
             #endif
             MemoryAddress = Int(TheseRegisters.D)*0x100+Int(TheseRegisters.E)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
@@ -1691,13 +1673,12 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by DE.")
         case 0x13:
             #if DEBUG_CODE
-                print("13:::")
-                print("INC DE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC DE - 13:::")
             #endif
             if TheseRegisters.E == 0xFF
             {
                 TheseRegisters.E = 0
-                TheseRegisters.D = TheseRegisters.D + 1
+                TheseRegisters.D = TheseRegisters.D &+ 1 // **** revisit behaviour
             }
             else
             {
@@ -1707,51 +1688,44 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to DE")
         case 0x14: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("14:::")
-                print("INC D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC D - 14:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
              // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to D")
         case 0x15: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("15:::")
-                print("DEC D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC D - 15:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from D")
         case 0x16:
             #if DEBUG_CODE
-                print("16:::")
-                print("LD D,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,N - 16:::")
             #endif
             TheseRegisters.D = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into D")
         case 0x17:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("17:::")
-                print("RLA")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLA - 17:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
         case 0x18:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("18:d::")
-                print("JR D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JR D 18:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x19:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("19:::")
-                print("ADD HL,DE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD HL,DE - 19:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to HL.")
         case 0x1A:
             #if DEBUG_CODE
-                print("1A:::")
-                print("LD A,(DE)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(DE) - 1A:::")
             #endif
             MemoryAddress = Int(TheseRegisters.D)*0x100+Int(TheseRegisters.E)
             TheseRegisters.A = ThisMemory.AddressSpace[MemoryAddress]
@@ -1759,51 +1733,44 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by DE into A.")
         case 0x1B:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("1B:::")
-                print("DEC DE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC DE - 1B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from DE")
         case 0x1C:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("1C:::")
-                print("INC E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC E - 1C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to E.")
         case 0x1D:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("1D:::")
-                print("DEC E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC E - 1D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from E.")
         case 0x1E:
             #if DEBUG_CODE
-                print("1E:n::")
-                print("LD E,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,N - 1E:n::")
             #endif
             TheseRegisters.E = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into E.")
         case 0x1F:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("1F:::")
-                print("RRA")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRA - 1F:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
         case 0x20:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("20:d::")
-                print("JR NZ,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JR NZ,D - 20:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x21:
             #if DEBUG_CODE
-                print("21:n:n:")
-                print("LD HL,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD HL,NN - 21:n:n:")
             #endif
             TheseRegisters.H = ThirdByte
             TheseRegisters.L = SecondByte
@@ -1811,8 +1778,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into HL.")
         case 0x22:
             #if DEBUG_CODE
-                print("22:n:n:")
-                print("LD (NN),HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),HL - 22:n:n:")
             #endif
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.L
@@ -1830,13 +1796,12 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [16], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores HL into the memory location pointed to by $nn.")
         case 0x23:
             #if DEBUG_CODE
-                print("23:::")
-                print("INC HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC HL - 23:::")
             #endif
             if TheseRegisters.L == 0xFF
             {
                 TheseRegisters.L = 0
-                TheseRegisters.H = TheseRegisters.H + 1
+                TheseRegisters.H = TheseRegisters.H &+ 1 // **** revisit behaviour
             }
             else
             {
@@ -1846,111 +1811,97 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to HL")
         case 0x24: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("24:::")
-                print("INC H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC H - 24:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to HL")
         case 0x25: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("25:::")
-                print("DEC H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC H - 25:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from HL")
         case 0x26:
             #if DEBUG_CODE
-                print("26:::")
-                print("LD H,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,N - 26:::")
             #endif
             TheseRegisters.H = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into H")
         case 0x27: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("27:::")
-                print("DAA")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DAA - 27:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "*", NFlag: "-", PVFlag: "p", HFlag: "*", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adjusts A for BCD addition and subtraction operations.")
         case 0x28: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("28:d::")
-                print("JR Z,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JR Z,D - 28:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x29: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("29:::")
-                print("ADD HL,HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD HL,HL - 29:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of HL is added to HL.")
         case 0x2A:
             #if DEBUG_CODE
-                print("2A:n:n:")
-                print("LD HL,(NN)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD HL,(NN) - 2A:n:n:")
             #endif
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             TheseRegisters.L = ThisMemory.AddressSpace[MemoryAddress]
             TheseRegisters.H = ThisMemory.AddressSpace[MemoryAddress+1]
+            TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [16], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into HL.")
         case 0x2B: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("2B:::")
-                print("DEC HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC HL - 2B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from HL")
         case 0x2C: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("2C:::")
-                print("INC L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC L - 2C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to L.")
         case 0x2D: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("2D:::")
-                print("DEC L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC L - 2D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from L.")
         case 0x2E:
             #if DEBUG_CODE
-                print("2E:::")
-                print("LD L,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,N - 2E:::")
             #endif
             TheseRegisters.L = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into L.")
         case 0x2F: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("2F:::")
-                print("CPL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CPL - 2F:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "1", PVFlag: "-", HFlag: "1", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are inverted (one's complement).")
         case 0x30: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("30:d::")
-                print("JR NC,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JR NC,D - 30:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x31:
             #if DEBUG_CODE
-                print("31:n:n:")
-                print("LD SP,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD SP,NN - 31:n:n:")
             #endif
             TheseRegisters.SP = UInt16(ThirdByte)*0x100 + UInt16(SecondByte)
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into SP.")
         case 0x32:
             #if DEBUG_CODE
-                print("32:n:n:")
-                print("LD (NN),A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),A - 32:n:n:")
             #endif
             MemoryAddress = Int(ThirdByte)*0x100+Int(SecondByte)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
@@ -1962,30 +1913,26 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [13], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A into the memory location pointed to by $nn.")
         case 0x33:
             #if DEBUG_CODE
-                print("33:::")
-                print("INC SP")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC SP - 33:::")
             #endif
             TheseRegisters.SP = TheseRegisters.SP + 1
             TheseRegisters.PC = TheseRegisters.PC + 1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to SP")
         case 0x34: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("34:::")
-                print("INC (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC (HL) - 34:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to (HL).")
         case 0x35: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("35:::")
-                print("DEC (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC (HL) - 35:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from (HL).")
         case 0x36:
             #if DEBUG_CODE
-                print("36:n::")
-                print("LD (HL),N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),N - 36:n::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  SecondByte
@@ -1997,119 +1944,103 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $n into (HL).")
         case 0x37: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("37:::")
-                print("SCF")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SCF - 37:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "1", NFlag: "0", PVFlag: "-", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets the carry flag.")
         case 0x38: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("38:d::")
-                print("JR C,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JR C,D - 38:d::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x39:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("39:::")
-                print("ADD HL,SP")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD HL,SP - 39:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to HL.")
         case 0x3A:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("3A:n:n:")
-                print("LD A,(NN)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(NN) - 3A:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [13], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into A.")
         case 0x3B:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("3B:::")
-                print("DEC SP")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC SP - 3B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from SP")
         case 0x3C: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("3C:::")
-                print("INC A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC A - 3C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to A.")
         case 0x3D:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("3D:::")
-                print("DEC A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC A - 3D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from A.")
         case 0x3E:
             #if DEBUG_CODE
-                print("3E:n::")
-                print("LD A,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,N - 3E:n::")
             #endif
             TheseRegisters.A = SecondByte
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads n into A.")
         case 0x3F: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("3F:::")
-                print("CCF")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CCF - 3F:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "*", NFlag: "0", PVFlag: "-", HFlag: "*", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Inverts the carry flag.")
         case 0x40:
             #if DEBUG_CODE
-                print("40:::")
-                print("LD B,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,B - 40:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into B")
         case 0x41:
             #if DEBUG_CODE
-                print("41:::")
-                print("LD B,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,C - 41:::")
             #endif
             TheseRegisters.B = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into B")
         case 0x42:
             #if DEBUG_CODE
-                print("42:::")
-                print("LD B,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,D - 42:::")
             #endif
             TheseRegisters.B = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into B")
         case 0x43:
             #if DEBUG_CODE
-                print("43:::")
-                print("LD B,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,E - 43:::")
             #endif
             TheseRegisters.B = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into B")
         case 0x44:
             #if DEBUG_CODE
-                print("44:::")
-                print("LD B,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,H - 44:::")
             #endif
             TheseRegisters.B = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into B")
         case 0x45:
             #if DEBUG_CODE
-                print("45:::")
-                print("LD B,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,L - 45:::")
             #endif
             TheseRegisters.B = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into B")
         case 0x46:
             #if DEBUG_CODE
-                print("46:::")
-                print("LD B,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,(HL) - 46:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.B = ThisMemory.AddressSpace[MemoryAddress]
@@ -2117,63 +2048,55 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into B")
         case 0x47:
             #if DEBUG_CODE
-                print("47:::")
-                print("LD B,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,A - 47:::")
             #endif
             TheseRegisters.B = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into B.")
         case 0x48:
             #if DEBUG_CODE
-                print("48:::")
-                print("LD C,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,B - 48:::")
             #endif
             TheseRegisters.C = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into C.")
         case 0x49:
             #if DEBUG_CODE
-                print("49:::")
-                print("LD C,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,C - 49:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into C.")
         case 0x4A:
             #if DEBUG_CODE
-                print("4A:::")
-                print("LD C,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,D - 4A:::")
             #endif
             TheseRegisters.C = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
         case 0x4B:
             #if DEBUG_CODE
-                print("4B:::")
-                print("LD C,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,E - 4B:::")
             #endif
             TheseRegisters.C = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
         case 0x4C:
             #if DEBUG_CODE
-                print("4C:::")
-                print("LD C,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,H - 4C:::")
             #endif
             TheseRegisters.C = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
         case 0x4D:
             #if DEBUG_CODE
-                print("4D:::")
-                print("LD C,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,L - 4D:::")
             #endif
             TheseRegisters.C = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
         case 0x4E:
             #if DEBUG_CODE
-                print("4E:::")
-                print("LD C,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,(HL) - 4E:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.C = ThisMemory.AddressSpace[MemoryAddress]
@@ -2181,63 +2104,55 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into C.")
         case 0x4F:
             #if DEBUG_CODE
-                print("4F:::")
-                print("LD C,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,A - 4F:::")
             #endif
             TheseRegisters.C = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into C.")
         case 0x50:
             #if DEBUG_CODE
-                print("50:::")
-                print("LD D,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,B - 50:::")
             #endif
             TheseRegisters.D = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into D")
         case 0x51:
             #if DEBUG_CODE
-                print("51:::")
-                print("LD D,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,C - 51:::")
             #endif
             TheseRegisters.D = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into D")
         case 0x52:
             #if DEBUG_CODE
-                print("52:::")
-                print("LD D,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,D - 52:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into D")
         case 0x53:
             #if DEBUG_CODE
-                print("53:::")
-                print("LD D,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,E - 53:::")
             #endif
             TheseRegisters.D = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into D")
         case 0x54:
             #if DEBUG_CODE
-                print("54:::")
-                print("LD D,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,H - 54:::")
             #endif
             TheseRegisters.D = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into D")
         case 0x55:
             #if DEBUG_CODE
-                print("55:::")
-                print("LD D,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,L - 55:::")
             #endif
             TheseRegisters.D = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into D")
         case 0x56:
             #if DEBUG_CODE
-                print("56:::")
-                print("LD D,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,(HL) - 56:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.D = ThisMemory.AddressSpace[MemoryAddress]
@@ -2245,63 +2160,55 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into D")
         case 0x57:
             #if DEBUG_CODE
-                print("57:::")
-                print("LD D,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,A - 57:::")
             #endif
             TheseRegisters.D = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into D.")
         case 0x58:
             #if DEBUG_CODE
-                print("58:::")
-                print("LD E,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,B - 58:::")
             #endif
             TheseRegisters.E = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into E.")
         case 0x59:
             #if DEBUG_CODE
-                print("59:::")
-                print("LD E,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,C - 59:::")
             #endif
             TheseRegisters.E = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into E.")
         case 0x5A:
             #if DEBUG_CODE
-                print("5A:::")
-                print("LD E,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,D - 5A:::")
             #endif
             TheseRegisters.E = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
         case 0x5B:
             #if DEBUG_CODE
-                print("5B:::")
-                print("LD E,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,E - 5B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into E")
         case 0x5C:
             #if DEBUG_CODE
-                print("5C:::")
-                print("LD E,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,H - 5C:::")
             #endif
             TheseRegisters.E = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into E")
         case 0x5D:
             #if DEBUG_CODE
-                print("5D:::")
-                print("LD E,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,L - 5D:::")
             #endif
             TheseRegisters.E = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into E")
         case 0x5E:
             #if DEBUG_CODE
-                print("5E:::")
-                print("LD E,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,(HL) - 5E:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.E = ThisMemory.AddressSpace[MemoryAddress]
@@ -2309,63 +2216,55 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into E")
         case 0x5F:
             #if DEBUG_CODE
-                print("5F:::")
-                print("LD E,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,A - 5F:::")
             #endif
             TheseRegisters.E = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into E")
         case 0x60:
             #if DEBUG_CODE
-                print("60:::")
-                print("LD H,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,B - 60:::")
             #endif
             TheseRegisters.H = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into H")
         case 0x61:
             #if DEBUG_CODE
-                print("61:::")
-                print("LD H,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,C - 61:::")
             #endif
             TheseRegisters.H = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into H")
         case 0x62:
             #if DEBUG_CODE
-                print("62:::")
-                print("LD H,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,D - 62:::")
             #endif
             TheseRegisters.H = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of  D are loaded into H")
         case 0x63:
             #if DEBUG_CODE
-                print("63:::")
-                print("LD H,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,E - 63:::")
             #endif
             TheseRegisters.H = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into H")
         case 0x64:
             #if DEBUG_CODE
-                print("64:::")
-                print("LD H,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,H - 64:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into H")
         case 0x65:
             #if DEBUG_CODE
-                print("65:::")
-                print("LD H,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,L - 65:::")
             #endif
             TheseRegisters.H = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into H")
         case 0x66:
             #if DEBUG_CODE
-                print("66:::")
-                print("LD H,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,(HL) - 66:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.H = ThisMemory.AddressSpace[MemoryAddress]
@@ -2373,63 +2272,55 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into H")
         case 0x67:
             #if DEBUG_CODE
-                print("67:::")
-                print("LD H,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,A - 67:::")
             #endif
             TheseRegisters.H = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into H.")
         case 0x68:
             #if DEBUG_CODE
-                print("68:::")
-                print("LD L,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,B - 68:::")
             #endif
             TheseRegisters.L = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into L.")
         case 0x69:
             #if DEBUG_CODE
-                print("69:::")
-                print("LD L,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,C - 69:::")
             #endif
             TheseRegisters.L = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into L.")
         case 0x6A:
             #if DEBUG_CODE
-                print("6A:::")
-                print("LD L,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,D - 6A:::")
             #endif
             TheseRegisters.L = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into L")
         case 0x6B:
             #if DEBUG_CODE
-                print("6B:::")
-                print("LD L,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,E - 6B:::")
             #endif
             TheseRegisters.L = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into L")
         case 0x6C:
             #if DEBUG_CODE
-                print("6C:::")
-                print("LD L,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,H - 6C:::")
             #endif
             TheseRegisters.L = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into L")
         case 0x6D:
             #if DEBUG_CODE
-                print("6D:::")
-                print("LD L,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,L - 6D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into L")
         case 0x6E:
             #if DEBUG_CODE
-                print("6E:::")
-                print("LD L,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,(HL) - 6E:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.L = ThisMemory.AddressSpace[MemoryAddress]
@@ -2437,16 +2328,14 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into L")
         case 0x6F:
             #if DEBUG_CODE
-                print("6F:::")
-                print("LD L,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,A - 6F:::")
             #endif
             TheseRegisters.L = TheseRegisters.A
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into L")
         case 0x70:
             #if DEBUG_CODE
-                print("70:::")
-                print("LD (HL),B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),B - 70:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.B
@@ -2458,8 +2347,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into (HL).")
         case 0x71:
             #if DEBUG_CODE
-                print("71:::")
-                print("LD (HL),C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),C - 71:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.C
@@ -2471,8 +2359,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into (HL).")
         case 0x72:
             #if DEBUG_CODE
-                print("72:::")
-                print("LD (HL),D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),D - 72:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.D
@@ -2484,8 +2371,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into (HL).")
         case 0x73:
             #if DEBUG_CODE
-                print("73:::")
-                print("LD (HL),E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),E - 73:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.E
@@ -2493,11 +2379,11 @@ class Z80 : ObservableObject {
             {
                 ThisScreenMemory[MemoryAddress-0xF000] =  Float(TheseRegisters.E)
             }
+            TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into (HL).")
         case 0x74:
             #if DEBUG_CODE
-                print("74:::")
-                print("LD (HL),H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),H - 74:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
@@ -2510,8 +2396,7 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into (HL).")
         case 0x75:
             #if DEBUG_CODE
-                print("75:::")
-                print("LD (HL),L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),L - 75:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.L
@@ -2523,15 +2408,13 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into (HL).")
         case 0x76: // partial - needs haltstate code somewhere in emulator
             #if DEBUG_CODE
-                print("76:::")
-                print("HALT")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - HALT - 76:::")
             #endif
             CPUHaltState = true
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Suspends CPU operation until an interrupt or reset occurs.")
         case 0x77:
             #if DEBUG_CODE
-                print("77:::")
-                print("LD (HL),A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (HL),A - 77:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             ThisMemory.AddressSpace[MemoryAddress] =  TheseRegisters.A
@@ -2543,56 +2426,49 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into (HL).")
         case 0x78:
             #if DEBUG_CODE
-                print("78:::")
-                print("LD A,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,B - 78:::")
             #endif
             TheseRegisters.A = TheseRegisters.B
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of B are loaded into A.")
         case 0x79:
             #if DEBUG_CODE
-                print("79:::")
-                print("LD A,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,C - 79:::")
             #endif
             TheseRegisters.A = TheseRegisters.C
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of C are loaded into A.")
         case 0x7A:
             #if DEBUG_CODE
-                print("7A:::")
-                print("LD A,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,D - 7A:::")
             #endif
             TheseRegisters.A = TheseRegisters.D
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of D are loaded into A")
         case 0x7B:
             #if DEBUG_CODE
-                print("7B:::")
-                print("LD A,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,E - 7B:::")
             #endif
             TheseRegisters.A = TheseRegisters.E
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of E are loaded into A")
         case 0x7C:
             #if DEBUG_CODE
-                print("7C:::")
-                print("LD A,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,H - 7C:::")
             #endif
             TheseRegisters.A = TheseRegisters.H
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of H are loaded into A")
         case 0x7D:
             #if DEBUG_CODE
-                print("7D:::")
-                print("LD A,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,L - 7D:::")
             #endif
             TheseRegisters.A = TheseRegisters.L
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of L are loaded into A")
         case 0x7E:
             #if DEBUG_CODE
-                print("7E:::")
-                print("LD A,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(HL) - 7E:::")
             #endif
             MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
             TheseRegisters.A = ThisMemory.AddressSpace[MemoryAddress]
@@ -2600,532 +2476,457 @@ class Z80 : ObservableObject {
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are loaded into A")
         case 0x7F:
             #if DEBUG_CODE
-                print("7F:::")
-                print("LD A,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,A - 7F:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The contents of A are loaded into A")
         case 0x80: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("80:::")
-                print("ADD A,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,B - 80:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds B to A.")
         case 0x81: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("81:::")
-                print("ADD A,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,C - 81:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds C to A.")
         case 0x82: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("82:::")
-                print("ADD A,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,D - 82:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds D to A.")
         case 0x83: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("83:::")
-                print("ADD A,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,E - 83:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds E to A.")
         case 0x84: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("84:::")
-                print("ADD A,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,H - 84:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds H to A.")
         case 0x85: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("85:::")
-                print("ADD A,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,L - 85:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds L to A.")
         case 0x86: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("86:::")
-                print("ADD A,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,(HL) - 86:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds (HL) to A.")
             case 0x87: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("87:::")
-                print("ADD A,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,A - 87:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds A to A.")
         case 0x88: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("88:::")
-                print("ADC A,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,B - 88:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds B and the carry flag to A.")
         case 0x89: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("89:::")
-                print("ADC A,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,C - 89:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds C and the carry flag to A.")
         case 0x8A: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8A:::")
-                print("ADC A,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,D - 8A:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds D and the carry flag to A.")
         case 0x8B: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8B:::")
-                print("ADC A,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,E - 8B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds E and the carry flag to A.")
         case 0x8C: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8C:::")
-                print("ADC A,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,H - 8C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds H and the carry flag to A.")
         case 0x8D: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8D:::")
-                print("ADC A,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,L - 8D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds L and the carry flag to A.")
         case 0x8E: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8E:::")
-                print("ADC A,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,(HL) - 8E:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds (HL) and the carry flag to A.")
         case 0x8F: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("8F:::")
-                print("ADC A,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,A - 8F:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds A and the carry flag to A.")
         case 0x90: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("90:::")
-                print("SUB B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB B - 90:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x91: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("91:::")
-                print("SUB C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB C - 91:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x92: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("92:::")
-                print("SUB D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB D - 92:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x93: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("93:::")
-                print("SUB E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB E - 93:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x94: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("94:::")
-                print("SUB H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB H - 94:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x95: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("95:::")
-                print("SUB L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB L - 95:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $r from A.")
         case 0x96: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("96:::")
-                print("SUB (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB (HL) - 96:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) from A.")
         case 0x97: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("97:::")
-                print("SUB A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB A - 97:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A from A.")
         case 0x98: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("98:::")
-                print("SBC A,B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,B - 98:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts B and the carry flag from A.")
         case 0x99: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("99:::")
-                print("SBC A,C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,C - 99:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts C and the carry flag from A.")
         case 0x9A: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9A:::")
-                print("SBC A,D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,D - 9A:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts D and the carry flag from A.")
         case 0x9B: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9B:::")
-                print("SBC A,E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,E - 9B:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts E and the carry flag from A.")
         case 0x9C: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9C:::")
-                print("SBC A,H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,H - 9C:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts H and the carry flag from A.")
         case 0x9D: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9D:::")
-                print("SBC A,L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,L - 9D:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts L and the carry flag from A.")
         case 0x9E: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9E:::")
-                print("SBC A,(HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,(HL) - 9E:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) and the carry flag from A.")
         case 0x9F: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("9F:::")
-                print("SBC A,A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,A - 9F:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A and the carry flag from A.")
         case 0xA0: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A0:::")
-                print("AND B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND B - A0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with B")
         case 0xA1: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A1:::")
-                print("AND C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND C - A1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with C")
         case 0xA2: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A2:::")
-                print("AND D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND D - A2:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with D")
         case 0xA3: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A3:::")
-                print("AND E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND E - A3:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with E")
         case 0xA4: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A4:::")
-                print("AND H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND H - A4:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with H")
         case 0xA5: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A5:::")
-                print("AND L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND L - A5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with L")
         case 0xA6: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A6:::")
-                print("AND (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND (HL) - A6:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with (HL).")
         case 0xA7:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A7:::")
-                print("AND A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND A - A7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with A.")
         case 0xA8:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A8:::")
-                print("XOR B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR B - A8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with B")
         case 0xA9:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("A9:::")
-                print("XOR C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR C - A9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with C")
         case 0xAA:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AA:::")
-                print("XOR D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR D - AA:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with D")
         case 0xAB:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AB:::")
-                print("XOR E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR E - AB:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with E")
         case 0xAC:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AC:::")
-                print("XOR H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR H - AC:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with H")
         case 0xAD:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AD:::")
-                print("XOR L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR L - AD:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with L")
         case 0xAE:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AE:::")
-                print("XOR (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR (HL) - AE:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with (HL).")
         case 0xAF:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("AF:::")
-                print("XOR A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR A - AF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with A.")
         case 0xB0:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B0:::")
-                print("OR B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR B - B0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with B")
         case 0xB1:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B1:::"); print("OR C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR C - B1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with C")
         case 0xB2:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B2:::")
-                print("OR D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR D - B2:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with D")
         case 0xB3:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B3:::")
-                print("OR E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR E - B3:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with E")
         case 0xB4:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B4:::")
-                print("OR H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR H - B4:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with H")
         case 0xB5:   // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B5:::")
-                print("OR L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR L - B5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with L")
         case 0xB6:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B6:::")
-                print("OR (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR (HL) - B6:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with (HL).")
         case 0xB7:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B7:::")
-                print("OR A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR A - B7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with A.")
         case 0xB8:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B8:::")
-                print("CP B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP B - B8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
         case 0xB9:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("B9:::")
-                print("CP C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP C - B9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
         case 0xBA:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BA:::")
-                print("CP D")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP D - BA:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
         case 0xBB:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BB:::")
-                print("CP E")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP E - BB:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
         case 0xBC:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BC:::")
-                print("CP H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP H - BC:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts H from A and affects flags according to the result. A is not modified.")
         case 0xBD:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BD:::")
-                print("CP L")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP L - BD:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts L from A and affects flags according to the result. A is not modified.")
         case 0xBE:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BE:::")
-                print("CP (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP (HL) - BE:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts (HL) from A and affects flags according to the result. A is not modified.")
         case 0xBF: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("BF:::")
-                print("CP A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP A - BF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
         case 0xC0: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C0:::")
-                print("RET NZ")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET NZ - C0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the top stack entry is popped into PC.")
         case 0xC1:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C1:::")
-                print("POP BC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP BC - C1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into C and SP is incremented. The memory location pointed to by SP is stored into B and SP is incremented again.")
         case 0xC2: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C2:n:n:")
-                print("JP NZ,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP NZ,NN - C2:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, $nn is copied to PC.")
         case 0xC3:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C3:n:n:")
-                print("JP NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP NN - C3:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "$nn is copied to PC.")
         case 0xC4: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C4:n:n:")
-                print("CALL NZ,NN");
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL NZ,NN - C4:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xC5:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C5:::")
-                print("PUSH BC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH BC - C5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and B is stored into the memory location pointed to by SP. SP is decremented again and C is stored into the memory location pointed to by SP.")
         case 0xC6:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C6:n::")
-                print("ADD A,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,N - C6:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds $n to A.")
         case 0xC7:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C7:::")
-                print("RST 00H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 00H - C7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 00H.")
         case 0xC8:   // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C8:::")
-                print("RET Z")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET Z - C8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the top stack entry is popped into PC.")
         case 0xC9:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("C9:::")
-                print("RET")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET - C9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The top stack entry is popped into PC.")
         case 0xCA:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CA:n:n:")
-                print("JP Z,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP Z,NN - CA:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, $nn is copied to PC.")
@@ -3134,950 +2935,815 @@ class Z80 : ObservableObject {
             {
             case 0x00: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CB:00::")
-                print("RLC B")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC B - CB:00::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x01: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CB:01::")
-                print("RLC C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC C - CB:01::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x02:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:02::")
-                    print("RLC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC D - CB:02::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x03:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:03::")
-                    print("RLC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC E - CB:03::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x04: // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:04::")
-                    print("RLC H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC H - CB:04::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x05: // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:05::")
-                    print("RLC L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC L - CB:05::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x06:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:06::")
-                    print("RLC (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (HL) - CB:06::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x07:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:07::")
-                    print("RLC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC A - CB:07::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
             case 0x08:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:08::")
-                    print("RRC B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC B - CB:08::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x09:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:09::")
-                    print("RRC C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC C - CB:09::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0A::")
-                    print("RRC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC D - CB:0A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0B::")
-                    print("RRC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC E - CB:0B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0C::")
-                    print("RRC H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC H - CB:0C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0D::")
-                    print("RRC L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC L - CB:0D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0E::")
-                    print("RRC (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (HL) - CB:0E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x0F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:0F::")
-                    print("RRC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC A - CB:0F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
             case 0x10:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:10::")
-                    print("RL B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL B - CB:10::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x11:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:11::")
-                    print("RL C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL C - CB:11::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x12:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:12::")
-                    print("RL D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL D - CB:12::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x13:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:13::")
-                    print("RL E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL E - CB:13::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x14:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:14::")
-                    print("RL H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL H - CB:14::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x15:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:15::")
-                    print("RL L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL L - CB:15::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x16:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:16::")
-                    print("RL (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (HL) - CB:16::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x17:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:17::")
-                    print("RL A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL A - CB:17::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
             case 0x18:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:18::")
-                    print("RR B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR B - CB:18::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x19:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:19::")
-                    print("RR C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR C - CB:19::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1A::")
-                    print("RR D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR D - CB:1A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1B::")
-                    print("RR E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR E - CB:1B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1C::")
-                    print("RR H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR H - CB:1C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1D::")
-                    print("RR L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR L - CB:1D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1E::")
-                    print("RR (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (HL) - CB:1E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x1F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:1F::")
-                    print("RR A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR A - CB:1F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
             case 0x20:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:20::")
-                    print("SLA B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA B - CB:20::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x21:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:21::")
-                    print("SLA C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA C - CB:21::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x22:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:22::")
-                    print("SLA D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA D - CB:22::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x23:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:23::")
-                    print("SLA E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA E - CB:23::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x24:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:24::")
-                    print("SLA H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA H - CB:24::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x25:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:25::")
-                    print("SLA L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA L - CB:25::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x26:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:26::")
-                    print("SLA (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (HL) - CB:26::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x27:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:27::")
-                    print("SLA A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA A - CB:27::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
             case 0x28:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:28::")
-                    print("SRA B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA B - CB:28::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x29:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:29::")
-                    print("SRA C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA C - CB:29::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2A::")
-                    print("SRA D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA D - CB:2A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2B::")
-                    print("SRA E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA E - CB:2B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2C::")
-                    print("SRA H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA H - CB:2C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2D::")
-                    print("SRA L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA L - CB:2D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2E::")
-                    print("SRA (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (HL) - CB:2E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x2F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:2F::")
-                    print("SRA A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA A - CB:2F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
             case 0x30:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:30::")
-                    print("SLL B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL B - CB:30::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of B are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x31:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:31::")
-                    print("SLL C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL C - CB:31::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of C are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x32:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:32::")
-                    print("SLL D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL D - CB:32::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of D are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x33:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:33::")
-                    print("SLL E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL E - CB:33::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of E are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x34:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:34::")
-                    print("SLL H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL H - CB:34::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of H are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x35:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:35::")
-                    print("SLL L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL L - CB:35::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of L are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x36:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:36::")
-                    print("SLL (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (HL) - CB:36::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of (HL) are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x37:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:37::")
-                    print("SLL A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL A - CB:37::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of A are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
             case 0x38:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:38::")
-                    print("SRL B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL B - CB:38::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of B are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x39:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:39::")
-                    print("SRL C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL C - CB:39::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of C are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3A::")
-                    print("SRL D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL D - CB:3A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of D are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3B::")
-                    print("SRL E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL E - CB:3B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of E are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3C::")
-                    print("SRL H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL H - CB:3C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of H are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3D::")
-                    print("SRL L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL L - CB:3D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of L are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3E::")
-                    print("SRL (HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (HL) - CB:3E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of (HL) are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x3F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:3F::")
-                    print("SRL A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL A - CB:3F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
             case 0x40:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:40::")
-                    print("BIT 0,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,B - CB:40::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of B")
             case 0x41:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:41::")
-                    print("BIT 0,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,C - CB:41::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of C")
             case 0x42:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:42::")
-                    print("BIT 0,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,D - CB:42::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of D")
             case 0x43:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:43::")
-                    print("BIT 0,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,E - CB:43::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of E")
             case 0x44:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:44::")
-                    print("BIT 0,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,H - CB:44::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of H")
             case 0x45:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:45::")
-                    print("BIT 0,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,L - CB:45::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of L")
             case 0x46:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:46::")
-                    print("BIT 0,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(HL) - CB:46::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of (HL).")
             case 0x47:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:47::")
-                    print("BIT 0,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,A - CB:47::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of A.")
             case 0x48:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:48::")
-                    print("BIT 1,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,B - CB:48::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of B.")
             case 0x49:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:49::")
-                    print("BIT 1,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,C - CB:49::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of C")
             case 0x4A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4A::")
-                    print("BIT 1,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,D - CB:4A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of D")
             case 0x4B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4B::")
-                    print("BIT 1,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,E - CB:4B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of E")
             case 0x4C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4C::")
-                    print("BIT 1,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,H - CB:4C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of H")
             case 0x4D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4D::")
-                    print("BIT 1,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,L - CB:4D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of L")
             case 0x4E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4E::")
-                    print("BIT 1,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(HL) - CB:4E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of (HL).")
             case 0x4F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:4F::")
-                    print("BIT 1,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,A - CB:4F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of A")
             case 0x50:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:50::")
-                    print("BIT 2,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,B - CB:50::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of B")
             case 0x51:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:51::")
-                    print("BIT 2,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,C - CB:51::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of C")
             case 0x52:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:52::")
-                    print("BIT 2,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,D - CB:52::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of D")
             case 0x53:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:53::")
-                    print("BIT 2,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,E - CB:53::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of E")
             case 0x54:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:54::")
-                    print("BIT 2,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,H - CB:54::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of H")
             case 0x55: // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:55::")
-                    print("BIT 2,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,L - CB:55::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of L")
             case 0x56:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:56::")
-                    print("BIT 2,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(HL) - CB:56::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of (HL).")
             case 0x57:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:57::")
-                    print("BIT 2,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,A - CB:57::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of A")
             case 0x58:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:58::")
-                    print("BIT 3,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,B - CB:58::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of B")
             case 0x59:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:59::")
-                    print("BIT 3,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,C - CB:59::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of C")
             case 0x5A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5A::")
-                    print("BIT 3,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,D - CB:5A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of D")
             case 0x5B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5B::")
-                    print("BIT 3,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,E - CB:5B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of E")
             case 0x5C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5C::")
-                    print("BIT 3,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,H - CB:5C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of H")
             case 0x5D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5D::")
-                    print("BIT 3,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,L - CB:5D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of L")
             case 0x5E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5E::")
-                    print("BIT 3,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(HL) - CB:5E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of (HL).")
             case 0x5F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:5F::")
-                    print("BIT 3,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,A - CB:5F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of A")
             case 0x60:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:60::")
-                    print("BIT 4,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,B - CB:60::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of B")
             case 0x61:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:61::")
-                    print("BIT 4,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,C - CB:61::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of C")
             case 0x62:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:62::")
-                    print("BIT 4,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,D - CB:62::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of D")
             case 0x63:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:63::")
-                    print("BIT 4,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,E - CB:63::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of E")
             case 0x64:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:64::")
-                    print("BIT 4,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,H - CB:64::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of H")
             case 0x65:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:65::")
-                    print("BIT 4,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,L - CB:65::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of L")
             case 0x66:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:66::")
-                    print("BIT 4,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(HL) - CB:66::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of (HL).")
             case 0x67:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:67::")
-                    print("BIT 4,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,A - CB:67::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of A")
             case 0x68:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:68::")
-                    print("BIT 5,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,B - CB:68::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of B")
             case 0x69:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:69::")
-                    print("BIT 5,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,C - CB:69::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of C")
             case 0x6A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6A::")
-                    print("BIT 5,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,D - CB:6A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of D")
             case 0x6B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6B::")
-                    print("BIT 5,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,E - CB:6B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of E")
             case 0x6C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6C::")
-                    print("BIT 5,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,H - CB:6C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of H")
             case 0x6D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6D::")
-                    print("BIT 5,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,L - CB:6D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of L")
             case 0x6E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6E::")
-                    print("BIT 5,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(HL) - CB:6E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of (HL).")
             case 0x6F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:6F::")
-                    print("BIT 5,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,A - CB:6F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of A")
             case 0x70:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:70::")
-                    print("BIT 6,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,B - CB:70::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of B")
             case 0x71:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:71::")
-                    print("BIT 6,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,C - CB:71::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of C")
             case 0x72:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:72::")
-                    print("BIT 6,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,D - CB:72::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of D")
             case 0x73:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:73::")
-                    print("BIT 6,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,E - CB:73::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of E")
             case 0x74:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:74::")
-                    print("BIT 6,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,H - CB:74::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of H")
             case 0x75:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:75::")
-                    print("BIT 6,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,L - CB:75::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of L")
             case 0x76:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:76::")
-                    print("BIT 6,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(HL) - CB:76::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of (HL).")
             case 0x77:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:77::")
-                    print("BIT 6,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,A - CB:77::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of A")
             case 0x78:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:78::")
-                    print("BIT 7,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,B - CB:78::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of B")
             case 0x79:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:79::")
-                    print("BIT 7,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,C - CB:79::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of C")
             case 0x7A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7A::")
-                    print("BIT 7,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,D - CB:7A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of D")
             case 0x7B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7B::")
-                    print("BIT 7,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,E - CB:7B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of E")
             case 0x7C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7C::")
-                    print("BIT 7,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,H - CB:7C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of H")
             case 0x7D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7D::")
-                    print("BIT 7,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,L - CB:7D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of L")
             case 0x7E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7E::")
-                    print("BIT 7,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(HL) - CB:7E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of (HL).")
             case 0x7F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:7F::")
-                    print("BIT 7,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,A - CB:7F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of A")
             case 0x80:
                 #if DEBUG_CODE
-                    print("CB:80::")
-                    print("RES 0,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,B - CB:80::")
                 #endif
                 TheseRegisters.B = TheseRegisters.B & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of B.")
             case 0x81:
                 #if DEBUG_CODE
-                    print("CB:81::")
-                    print("RES 0,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,C - CB:81::")
                 #endif
                 TheseRegisters.C = TheseRegisters.C & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of C.")
             case 0x82:
                 #if DEBUG_CODE
-                    print("CB:82::")
-                    print("RES 0,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,D - CB:82::")
                 #endif
                 TheseRegisters.D = TheseRegisters.D & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of D.")
             case 0x83:
                 #if DEBUG_CODE
-                    print("CB:83::")
-                    print("RES 0,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,E - CB:83::")
                 #endif
                 TheseRegisters.E = TheseRegisters.E & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of E.")
             case 0x84:
                 #if DEBUG_CODE
-                    print("CB:84::")
-                    print("RES 0,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,H - CB:84::")
                 #endif
                 TheseRegisters.E = TheseRegisters.E & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of H.")
             case 0x85:
                 #if DEBUG_CODE
-                    print("CB:85::")
-                    print("RES 0,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,L - CB:85::")
                 #endif
                 TheseRegisters.L = TheseRegisters.L & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of L.")
             case 0x86:
                 #if DEBUG_CODE
-                    print("CB:86::")
-                    print("RES 0,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(HL) - CB:86::")
                 #endif
                 MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
                 ThisMemory.AddressSpace[MemoryAddress] =  ThisMemory.AddressSpace[MemoryAddress] & ~(1 << 0)
@@ -4089,64 +3755,56 @@ class Z80 : ObservableObject {
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of (HL).")
             case 0x87:
                 #if DEBUG_CODE
-                    print("CB:87::")
-                    print("RES 0,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,A - CB:87::")
                 #endif
                 TheseRegisters.A = TheseRegisters.A & ~(1 << 0);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of A.")
             case 0x88:
                 #if DEBUG_CODE
-                    print("CB:88::")
-                    print("RES 1,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,B - CB:88::")
                 #endif
                 TheseRegisters.B = TheseRegisters.B & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of B.")
             case 0x89:
                 #if DEBUG_CODE
-                    print("CB:89::")
-                    print("RES 1,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,C - CB:89::")
                 #endif
                 TheseRegisters.C = TheseRegisters.C & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of C.")
             case 0x8A:
                 #if DEBUG_CODE
-                    print("CB:8A::")
-                    print("RES 1,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,D - CB:8A::")
                 #endif
                 TheseRegisters.D = TheseRegisters.D & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of D.")
             case 0x8B:
                 #if DEBUG_CODE
-                    print("CB:8B::")
-                    print("RES 1,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,E - CB:8B::")
                 #endif
                 TheseRegisters.E = TheseRegisters.E & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of E.")
             case 0x8C:
                 #if DEBUG_CODE
-                    print("CB:8C::")
-                    print("RES 1,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,H - CB:8C::")
                 #endif
                 TheseRegisters.H = TheseRegisters.H & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of H.")
             case 0x8D:
                 #if DEBUG_CODE
-                    print("CB:8D::")
-                    print("RES 1,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,L - CB:8D::")
                 #endif
                 TheseRegisters.L = TheseRegisters.L & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of L.")
             case 0x8E:
                 #if DEBUG_CODE
-                    print("CB:8E::")
-                    print("RES 1,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(HL) - CB:8E::")
                 #endif
                 MemoryAddress = Int(TheseRegisters.H)*0x100+Int(TheseRegisters.L)
                 ThisMemory.AddressSpace[MemoryAddress] =  ThisMemory.AddressSpace[MemoryAddress] & ~(1 << 0)
@@ -4158,917 +3816,787 @@ class Z80 : ObservableObject {
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of (HL).")
             case 0x8F:
                 #if DEBUG_CODE
-                    print("CB:8F::")
-                    print("RES 1,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,A - CB:8F::")
                 #endif
                 TheseRegisters.A = TheseRegisters.A & ~(1 << 1);
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of A.")
             case 0x90:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:90::")
-                    print("RES 2,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,B - CB:90::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of B.")
             case 0x91:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:91::")
-                    print("RES 2,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,C - CB:91::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of C.")
             case 0x92:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:92::")
-                    print("RES 2,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,D - CB:92::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of D.")
             case 0x93:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:93::")
-                    print("RES 2,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,E - CB:93::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of E.")
             case 0x94:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:94::")
-                    print("RES 2,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,H - CB:94::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of H.")
             case 0x95:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:95::")
-                    print("RES 2,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,L - CB:95::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of L.")
             case 0x96:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:96::")
-                    print("RES 2,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(HL) - CB:96::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of (HL).")
             case 0x97:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:97::")
-                    print("RES 2,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,A - CB:97::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of A.")
             case 0x98:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:98::")
-                    print("RES 3,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,B - CB:98::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of B.")
             case 0x99:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:99::")
-                    print("RES 3,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,C - CB:99::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of C.")
             case 0x9A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9A::")
-                    print("RES 3,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,D - CB:9A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of D.")
             case 0x9B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9B::")
-                    print("RES 3,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,E - CB:9B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of E.")
             case 0x9C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9C::")
-                    print("RES 3,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,H - CB:9C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of H.")
             case 0x9D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9D::")
-                    print("RES 3,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,L - CB:9D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of L.")
             case 0x9E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9E::")
-                    print("RES 3,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(HL) - CB:9E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of (HL).")
             case 0x9F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:9F::")
-                    print("RES 3,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,A - CB:9F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of A.")
             case 0xA0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A0::")
-                    print("RES 4,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,B - CB:A0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of B.")
             case 0xA1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A1::")
-                    print("RES 4,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,C - CB:A1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of C.")
             case 0xA2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A2::")
-                    print("RES 4,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,D - CB:A2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of D.")
             case 0xA3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A3::")
-                    print("RES 4,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,E - CB:A3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of E.")
             case 0xA4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A4::")
-                    print("RES 4,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,H - CB:A4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of H.")
             case 0xA5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A5::")
-                    print("RES 4,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,L - CB:A5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of L.")
             case 0xA6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A6::")
-                    print("RES 4,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(HL) - CB:A6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of (HL).")
             case 0xA7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A7::")
-                    print("RES 4,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,A - CB:A7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of A.")
             case 0xA8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A8::")
-                    print("RES 5,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,B - CB:A8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of B.")
             case 0xA9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:A9::")
-                    print("RES 5,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,C - CB:A9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of C.")
             case 0xAA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AA::")
-                    print("RES 5,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,D - CB:AA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of D.")
             case 0xAB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AB::")
-                    print("RES 5,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,E - CB:AB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of E.")
             case 0xAC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AC::")
-                    print("RES 5,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,H - CB:AC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of H.")
             case 0xAD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AD::")
-                    print("RES 5,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,L - CB:AD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of L.")
             case 0xAE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AE::")
-                    print("RES 5,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(HL) - CB:AE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of (HL).")
             case 0xAF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:AF::")
-                    print("RES 5,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,A - CB:AF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of A.")
             case 0xB0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B0::")
-                    print("RES 6,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,B - CB:B0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of B.")
             case 0xB1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B1::")
-                    print("RES 6,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,C - CB:B1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of C.")
             case 0xB2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B2::")
-                    print("RES 6,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,D - CB:B2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of D.")
             case 0xB3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B3::")
-                    print("RES 6,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,E - CB:B3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of E.")
             case 0xB4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B4::")
-                    print("RES 6,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,H - CB:B4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of H.")
             case 0xB5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B5::")
-                    print("RES 6,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,L - CB:B5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of L.")
             case 0xB6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B6::")
-                    print("RES 6,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(HL) - CB:B6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of (HL).")
             case 0xB7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B7::")
-                    print("RES 6,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,A - CB:B7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of A.")
             case 0xB8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B8::")
-                    print("RES 7,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,B - CB:B8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of B.")
             case 0xB9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:B9::")
-                    print("RES 7,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,C - CB:B9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of C.")
             case 0xBA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BA::")
-                    print("RES 7,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,D - CB:BA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of D.")
             case 0xBB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BB::")
-                    print("RES 7,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,E - CB:BB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of E.")
             case 0xBC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BC::")
-                    print("RES 7,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,H - CB:BC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of H.")
             case 0xBD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BD::")
-                    print("RES 7,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,L - CB:BD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of L.")
             case 0xBE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BE::")
-                    print("RES 7,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(HL) - CB:BE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of (HL).")
             case 0xBF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:BF::")
-                    print("RES 7,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,A - CB:BF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of A.")
             case 0xC0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C0::")
-                    print("SET 0,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,B - CB:C0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of B.")
             case 0xC1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C1::")
-                    print("SET 0,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,C - CB:C1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of C.")
             case 0xC2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C2::")
-                    print("SET 0,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,D - CB:C2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of D.")
             case 0xC3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C3::")
-                    print("SET 0,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,E - CB:C3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of E.")
             case 0xC4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C4::")
-                    print("SET 0,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,H - CB:C4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of H.")
             case 0xC5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C5::")
-                    print("SET 0,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,L - CB:C5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of L.")
             case 0xC6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C6::")
-                    print("SET 0,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(HL) - CB:C6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of (HL).")
             case 0xC7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C7::")
-                    print("SET 0,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,A - CB:C7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of A.")
             case 0xC8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C8::")
-                    print("SET 1,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,B - CB:C8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of B.")
             case 0xC9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:C9::")
-                    print("SET 1,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,C - CB:C9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of C.")
             case 0xCA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CA::")
-                    print("SET 1,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,D - CB:CA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of D.")
             case 0xCB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CB::")
-                    print("SET 1,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,E - CB:CB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of E.")
             case 0xCC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CC::")
-                    print("SET 1,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,H - CB:CC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of H.")
             case 0xCD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CD::")
-                    print("SET 1,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,L - CB:CD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of L.")
             case 0xCE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CE::")
-                    print("SET 1,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(HL) - CB:CE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of (HL).")
             case 0xCF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:CF::")
-                    print("SET 1,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,A - CB:CF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of A.")
             case 0xD0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D0::")
-                    print("SET 2,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,B - CB:D0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of B.")
             case 0xD1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D1::")
-                    print("SET 2,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,C - CB:D1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of C.")
             case 0xD2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D2::")
-                    print("SET 2,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,D - CB:D2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of D.")
             case 0xD3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D3::")
-                    print("SET 2,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,E - CB:D3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of E.")
             case 0xD4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D4::")
-                    print("SET 2,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,H - CB:D4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of H.")
             case 0xD5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D5::")
-                    print("SET 2,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,L - CB:D5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of L.")
             case 0xD6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D6::")
-                    print("SET 2,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(HL) - CB:D6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of (HL).")
             case 0xD7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D7::")
-                    print("SET 2,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,A - CB:D7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of A.")
             case 0xD8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D8::")
-                    print("SET 3,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,B - CB:D8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of B.")
             case 0xD9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:D9::")
-                    print("SET 3,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,C - CB:D9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of C.")
             case 0xDA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DA::")
-                    print("SET 3,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,D - CB:DA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of D.")
             case 0xDB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DB::")
-                    print("SET 3,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,E - CB:DB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of E.")
             case 0xDC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DC::")
-                    print("SET 3,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,H - CB:DC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of H.")
             case 0xDD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DD::")
-                    print("SET 3,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,L - CB:DD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of L.")
             case 0xDE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DE::")
-                    print("SET 3,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(HL) - CB:DE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of (HL).")
             case 0xDF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:DF::")
-                    print("SET 3,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,A - CB:DF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of A.")
             case 0xE0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E0::")
-                    print("SET 4,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,B - CB:E0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of B.")
             case 0xE1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E1::")
-                    print("SET 4,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,C - CB:E1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of C.")
             case 0xE2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E2::")
-                    print("SET 4,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,D - CB:E2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of D.")
             case 0xE3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E3::")
-                    print("SET 4,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,E - CB:E3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of E.")
             case 0xE4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E4::")
-                    print("SET 4,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,H - CB:E4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of H.")
             case 0xE5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E5::")
-                    print("SET 4,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,L - CB:E5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of L.")
             case 0xE6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E6::")
-                    print("SET 4,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(HL) - CB:E6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of (HL).")
             case 0xE7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E7::")
-                    print("SET 4,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,A - CB:E7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of A.")
             case 0xE8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E8::")
-                    print("SET 5,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,B - CB:E8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of B.")
             case 0xE9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:E9::")
-                    print("SET 5,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,C - CB:E9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of C.")
             case 0xEA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:EA::")
-                    print("SET 5,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,D - CB:EA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of D.")
             case 0xEB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:EB::")
-                    print("SET 5,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,E - CB:EB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of E.")
             case 0xEC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:EC::")
-                    print("SET 5,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,H - CB:EC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of H.")
             case 0xED:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:ED::")
-                    print("SET 5,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,L - CB:ED::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of L.")
             case 0xEE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:EE::")
-                    print("SET 5,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(HL) - CB:EE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of (HL).")
             case 0xEF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:EF::")
-                    print("SET 5,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,A - CB:EF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of A.")
             case 0xF0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F0::")
-                    print("SET 6,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,B - CB:F0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of B.")
             case 0xF1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F1::")
-                    print("SET 6,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,C - CB:F1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of C.")
             case 0xF2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F2::")
-                    print("SET 6,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,D - CB:F2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of D.")
             case 0xF3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F3::")
-                    print("SET 6,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,E - CB:F3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of E.")
             case 0xF4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F4::")
-                    print("SET 6,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,H - CB:F4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of H.")
             case 0xF5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F5::")
-                    print("SET 6,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,L - CB:F5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of L.")
             case 0xF6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F6::")
-                    print("SET 6,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(HL) - CB:F6::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of (HL).")
             case 0xF7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F7::")
-                    print("SET 6,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,A - CB:F7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6of A.")
             case 0xF8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F8::")
-                    print("SET 7,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,B - CB:F8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of B.")
             case 0xF9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:F9::")
-                    print("SET 7,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,C - CB:F9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of C.")
             case 0xFA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FA::")
-                    print("SET 7,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,D - CB:FA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of D.")
             case 0xFB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FB::")
-                    print("SET 7,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,E - CB:FB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of E.")
             case 0xFC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FC::")
-                    print("SET 7,H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,H - CB:FC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of H.")
             case 0xFD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FD::")
-                    print("SET 7,L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,L - CB:FD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of L.")
             case 0xFE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FE::")
-                    print("SET 7,(HL)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(HL) - CB:FE::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of (HL).")
             case 0xFF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("CB:FF::")
-                    print("SET 7,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,A - CB:FF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of A.")
             default : // **** Confirm what PC count jump should be
                 #if DEBUG_CODE
-                    print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+1
             }
         case 0xCC:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CC:n:n:")
-                print("CALL Z,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL Z,NN - CC:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xCD:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CD:n:n:")
-                print("CALL NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL NN - CD:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xCE: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CE:n::")
-                print("ADC A,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,N - CE:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds $n and the carry flag to A.")
         case 0xCF: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CF:::")
-                print("RST 08H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 08H - CF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 8.")
         case 0xD0: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D0:::")
-                print("RET NC")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET NC - D0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the top stack entry is popped into PC.")
         case 0xD1:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D1:::")
-                print("POP DE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP DE - D1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into E and SP is incremented. The memory location pointed to by SP is stored into D and SP is incremented again.")
         case 0xD2: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D2:n:n:")
-                print("JP NC,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP NC,NN - D2:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, $nn is copied to PC.")
         case 0xD3: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D3:n::")
-                print("OUT (N),A")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (N),A - D3:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of A is written to port $n.")
         case 0xD4: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D4:n:n:")
-                print("CALL NC,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL NC,NN - D4:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xD5:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D5:::")
-                print("PUSH DE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH DE - D5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and D is stored into the memory location pointed to by SP. SP is decremented again and E is stored into the memory location pointed to by SP.")
         case 0xD6:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D6:n::")
-                print("SUB N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB N - D6:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n from A.")
         case 0xD7:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D7:::")
-                print("RST 10H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 10H - D7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 10H.")
         case 0xD8:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D8:::")
-                print("RET C")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET C - D8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the top stack entry is popped into PC.")
         case 0xD9:   // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("D9:::")
-                print("EXX")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EXX - D9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of BC, DE, and HL with BC', DE', and HL'.")
         case 0xDA: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("DA:n:n:")
-                print("JP C,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP C,NN - DA:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, $nn is copied to PC.")
         case 0xDB: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("DB:n::")
-                print("IN A,(N)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN A,(N) - DB:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "A byte from port $n is written to A.")
         case 0xDC: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("DC:n:n:")
-                print("CALL C,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL C,NN - DC:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the carry flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
@@ -5077,1121 +4605,961 @@ class Z80 : ObservableObject {
             {
             case 0x04:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:04::")
-                        print("INC B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC B - DD:04::")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+2
                     // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to B")
             case 0x05:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:05::")
-                    print("DEC B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC B - DD:05::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from B")
             case 0x06:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:06:n:")
-                    print("LD B,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,N - DD:06:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into B")
             case 0x09:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:09::")
-                    print("ADD IX,BC")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IX,BC - DD:09::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to IX.")
             case 0x0C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:0C::")
-                    print("INC C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC C - DD:0C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to C")
             case 0x0D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:0D::")
-                    print("DEC C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC C - DD:0D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from C")
             case 0x0E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:0E:n:")
-                    print("LD C,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,N - DD:0E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into C")
             case 0x14:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:14::")
-                    print("INC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC D - DD:14::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to D")
             case 0x15:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:15::")
-                    print("DEC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC D - DD:15::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from D")
             case 0x16:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:16:n:")
-                    print("LD D,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,N - DD:16:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into D")
             case 0x19:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:19::")
-                    print("ADD IX,DE")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IX,DE - DD:19::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to IX.")
             case 0x1C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:1C::")
-                    print("INC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC E - DD:1C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to E.")
             case 0x1D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:1D::")
-                    print("DEC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC E - DD:1D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from E")
             case 0x1E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:1E:n:")
-                    print("LD E,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,N - DD:1E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into E")
             case 0x21:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:21:n:n")
-                    print("LD IX,NN")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IX,NN - DD:21:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into register IX.")
             case 0x22:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:22:n:n")
-                    print("LD (NN),IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),IX - DD:22:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores IX into the memory location pointed to by $nn.")
             case 0x23:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:23::")
-                    print("INC IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IX - DD:23::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to IX.")
             case 0x24:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:24::")
-                    print("INC IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IXH - DD:24::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IXH")
             case 0x25:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:25::")
-                    print("DEC IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IXH - DD:25::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IXH")
             case 0x26:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:26:n:")
-                    print("LD IHX,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IHX,N - DD:26:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into IXH")
             case 0x29:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:29::")
-                    print("ADD IX,IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IX,IX - DD:29::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of IX is added to IX.")
             case 0x2A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:2A:n:n")
-                    print("LD IX,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IX,(NN) - DD:2A:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into IX.")
             case 0x2B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:2B::")
-                    print("DEC IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IX - DD:2B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from IX.")
             case 0x2C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:2C::")
-                    print("INC IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IXL - DD:2C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IXL.")
             case 0x2D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:2D::")
-                    print("DEC IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IXL - DD:2D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IXL.")
             case 0x2E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:2E:n:")
-                    print("LD IXL,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,N - DD:2E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into IXL.")
             case 0x34:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:34:d:")
-                    print("INC (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC (IX+D) - DD:34:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to the memory location pointed to by IX plus $d.")
             case 0x35:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:35:d:")
-                    print("DEC (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC (IX+D) - DD:35:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from the memory location pointed to by IX plus $d.")
             case 0x36:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:36:d:n")
-                    print("LD (IX+D),N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),N - DD:36:d:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores $n to the memory location pointed to by IX plus $d.")
             case 0x39:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:39::")
-                    print("ADD IX,SP")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IX,SP - DD:39::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to IX.")
             case 0x3C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:3C::")
-                    print("INC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC A - DD:3C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to A.")
             case 0x3D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:3D::")
-                    print("DEC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC A - DD:3D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from A.")
             case 0x3E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:3E:N:")
-                    print("LD A,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,N - DD:3E:N:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into A.")
             case 0x40:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:40::")
-                    print("LD B,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,B - DD:40::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into B")
             case 0x41:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:41::")
-                    print("LD B,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,C - DD:41::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into B")
             case 0x42:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:42::")
-                    print("LD B,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,D - DD:42::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into B")
             case 0x43:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:43::")
-                    print("LD B,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,E - DD:43::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into B")
             case 0x44:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:44::")
-                    print("LD B,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,IXH - DD:44::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into B")
             case 0x45:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:45::")
-                    print("LD B,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,IXL - DD:45::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into B")
             case 0x46:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:46:d:")
-                    print("LD B,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,(IX+D) - DD:46:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into B")
             case 0x47:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:47::")
-                    print("LD B,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,A - DD:47::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into B")
             case 0x48:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:48::")
-                    print("LD C,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,B - DD:48::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into C")
             case 0x49:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:49::")
-                    print("LD C,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,C - DD:49::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into C")
             case 0x4A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4A::")
-                    print("LD C,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,D - DD:4A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into C")
             case 0x4B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4B::")
-                    print("LD C,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,E - DD:4B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into C")
             case 0x4C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4C::")
-                    print("LD C,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,IXH - DD:4C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into C")
             case 0x4D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4D::")
-                    print("LD C,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,IXL - DD:4D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into C")
             case 0x4E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4E:d:")
-                    print("LD C,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,(IX+D) - DD:4E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into C.")
             case 0x4F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:4F::")
-                    print("LD C,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,A - DD:4F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into C.")
             case 0x50:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:50::")
-                    print("LD D,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,B - DD:50::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into D")
             case 0x51:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:51::")
-                    print("LD D,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,C - DD:51::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into D")
             case 0x52:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:52::")
-                    print("LD D,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,D - DD:52::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into D")
             case 0x53:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:53::")
-                    print("LD D,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,E - DD:53::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into D")
             case 0x54:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:54::")
-                    print("LD D,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,IXH - DD:54::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into D")
             case 0x55:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:55::")
-                    print("LD D,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,IXL - DD:55::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into D")
             case 0x56:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:56:d:")
-                    print("LD D,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,(IX+D) - DD:56:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into D")
             case 0x57:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:57::")
-                    print("LD D,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,A - DD:57::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into D")
             case 0x58:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:58::")
-                    print("LD E,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,B - DD:58::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into E")
             case 0x59:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:59::")
-                    print("LD E,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,C - DD:59::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into E")
             case 0x5A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5A::")
-                    print("LD E,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,D - DD:5A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into E")
             case 0x5B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5B::")
-                    print("LD E,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,E - DD:5B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into E")
             case 0x5C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5C::")
-                    print("LD E,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,IXH - DD:5C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into E")
             case 0x5D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5D::")
-                    print("LD E,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,IXL - DD:5D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into E")
             case 0x5E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5E:d:")
-                    print("LD E,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,(IX+D) - DD:5E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into E")
             case 0x5F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:5F::")
-                    print("LD E,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,A - DD:5F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into E.")
             case 0x60:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:60::")
-                    print("LD IXH,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,B - DD:60::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IXH")
             case 0x61:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:61::")
-                    print("LD IXH,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,C - DD:61::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IXH")
             case 0x62:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:62::")
-                    print("LD IXH,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,D - DD:62::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IXH")
             case 0x63:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:63::")
-                    print("LD IXH,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,E - DD:63::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IXH")
             case 0x64:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:64::")
-                    print("LD IXH,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,IXH - DD:64::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXH")
             case 0x65:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:65::")
-                    print("LD IXH,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,IXL - DD:65::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXH")
             case 0x66:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:66:d:")
-                    print("LD H,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,(IX+D) - DD:66:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus $d into H")
             case 0x67:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:67::")
-                    print("LD IXH,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXH,A - DD:67::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IXH.")
             case 0x68:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:68::")
-                    print("LD IXL,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,B - DD:68::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IXL.")
             case 0x69:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:69::")
-                    print("LD IXL,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,C - DD:69::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IXL.")
             case 0x6A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6A::")
-                    print("LD IXL,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,D - DD:6A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IXL.")
             case 0x6B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6B::")
-                    print("LD IXL,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,E - DD:6B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IXL.")
             case 0x6C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6C::")
-                    print("LD IXL,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,IXH - DD:6C::")
                 #endif
                     TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into IXL.")
             case 0x6D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6D::")
-                    print("LD IXL,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,IXL - DD:6D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into IXL.")
             case 0x6E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6E::")
-                    print("LD L,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,(IX+D) - DD:6E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into L.")
             case 0x6F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:6F::")
-                    print("LD IXL,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IXL,A - DD:6F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IXL.")
             case 0x70:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:70:d:")
-                    print("LD (IX+D),B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),B - DD:70:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores B to the memory location pointed to by IX plus $d.")
             case 0x71:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:71:d:")
-                    print("LD (IX+D),C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),C - DD:71:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores C to the memory location pointed to by IX plus $d.")
             case 0x72:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:72:d:")
-                    print("LD (IX+D),D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),D - DD:72:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores D to the memory location pointed to by IX plus $d.")
             case 0x73:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:73:d:")
-                    print("LD (IX+D),E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),E - DD:73:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores E to the memory location pointed to by IX plus $d.")
             case 0x74:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:74:d:")
-                    print("LD (IX+D),H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),H - DD:74:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores H to the memory location pointed to by IX plus $d.")
             case 0x75:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:75:d:")
-                    print("LD (IX+D),L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),L - DD:75:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores L to the memory location pointed to by IX plus $d.")
             case 0x77:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:77:d:")
-                    print("LD (IX+D),A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IX+D),A - DD:77:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A to the memory location pointed to by IX plus d.")
             case 0x78:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:78::")
-                    print("LD A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,B - DD:78::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into A.")
             case 0x79:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:79::")
-                    print("LD A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,C - DD:79::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into A.")
             case 0x7A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7A::")
-                    print("LD A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,D - DD:7A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into A.")
             case 0x7B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7B::")
-                    print("LD A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,E - DD:7B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into A.")
             case 0x7C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7C::")
-                    print("LD A,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,IXH - DD:7C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXH are loaded into A.")
             case 0x7D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7D::")
-                    print("LD A,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,IXL - DD:7D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IXL are loaded into A.")
             case 0x7E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7E:d:")
-                    print("LD A,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(IX+D) - DD:7E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IX plus d into A.")
             case 0x7F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:7F::")
-                    print("LD A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,A - DD:7F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into A.")
             case 0x80:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:80::")
-                    print("ADD A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,B - DD:80::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B to A.")
             case 0x81:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:81::")
-                    print("ADD A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,C - DD:81::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C to A.")
             case 0x82:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:82::")
-                    print("ADD A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,D - DD:82::")
                 #endif
             TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D to A.")
             case 0x83:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:83::")
-                    print("ADD A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,E - DD:83::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E to A.")
             case 0x84:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:84::")
-                    print("ADD A,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,IXH - DD:84::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXH to A.")
             case 0x85:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:85::")
-                    print("ADD A,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,IXL - DD:85::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXL to A.")
             case 0x86:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:86:d:")
-                    print("ADD A,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,(IX+D) - DD:86:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IX plus $d to A.")
             case 0x87:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:87::")
-                    print("ADD A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,A - DD:87::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A to A.")
             case 0x88:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:88::")
-                    print("ADC A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,B - DD:88::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B and the carry flag to A.")
             case 0x89:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:89::")
-                    print("ADC A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,C - DD:89::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C and the carry flag to A.")
             case 0x8A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8A::")
-                    print("ADC A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,D - DD:8A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D and the carry flag to A.")
             case 0x8B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8B::")
-                    print("ADC A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,E - DD:8B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E and the carry flag to A.")
             case 0x8C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8C::")
-                    print("ADC A,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,IXH - DD:8C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXH and the carry flag to A.")
             case 0x8D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8D::")
-                    print("ADC A,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,IXL - DD:8D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IXL and the carry flag to A.")
             case 0x8E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8E:d:")
-                    print("ADC A,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,(IX+D) - DD:8E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IX plus $d and the carry flag to A.")
             case 0x8F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:8F::")
-                    print("ADC A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,A - DD:8F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A and the carry flag to A.")
             case 0x90:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:90::")
-                    print("SUB B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB B - DD:90::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
             case 0x91:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:91::")
-                    print("SUB C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB C - DD:91::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A.")
             case 0x92:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:92::")
-                    print("SUB D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB D - DD:92::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A.")
             case 0x93:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:93::")
-                    print("SUB E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB E - DD:93::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A.")
             case 0x94:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:94::")
-                    print("SUB IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB IXH - DD:94::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH from A.")
             case 0x95:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:95::")
-                    print("SUB IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB IXL - DD:95::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL from A.")
             case 0x96:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:96:d:")
-                    print("SUB (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB (IX+D) - DD:96:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d from A.")
             case 0x97:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:97::")
-                    print("SUB A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB A - DD:97::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A.")
             case 0x98:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:98::")
-                    print("SBC A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,B - DD:98::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B and the carry flag from A.")
             case 0x99:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:99::")
-                    print("SBC A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,C - DD:99::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C and the carry flag from A.")
             case 0x9A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9A::")
-                    print("SBC A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,D - DD:9A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D and the carry flag from A.")
             case 0x9B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9B::")
-                    print("SBC A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,E - DD:9B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E and the carry flag from A.")
             case 0x9C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9C::")
-                    print("SBC A,IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,IXH - DD:9C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH and the carry flag from A.")
             case 0x9D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9D::")
-                    print("SBC A,IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,IXL - DD:9D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL and the carry flag from A.")
             case 0x9E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9E:d:")
-                    print("SBC A,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,(IX+D) - DD:9E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d and the carry flag from A.")
             case 0x9F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:9F::")
-                    print("SBC A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,A - DD:9F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A and the carry flag from A.")
             case 0xA0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A0::")
-                    print("AND B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND B - DD:A0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with B")
             case 0xA1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A1::")
-                    print("AND C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND C - DD:A1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with C")
             case 0xA2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A2::")
-                    print("AND D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND D - DD:A2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with D")
             case 0xA3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A3::")
-                    print("AND E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND E - DD:A3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with E")
             case 0xA4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A4::")
-                    print("AND IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND IXH - DD:A4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IXH")
             case 0xA5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A5::")
-                    print("AND IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND IXL - DD:A5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IXL")
             case 0xA6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A6:d:")
-                    print("AND (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND (IX+D) - DD:A6:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with the value pointed to by IX plus $d.")
             case 0xA7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A7::")
-                    print("AND A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND A - DD:A7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with A.")
             case 0xA8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A8::")
-                    print("XOR B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR B - DD:A8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with B")
             case 0xA9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:A9::")
-                    print("XOR C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR C - DD:A9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with C")
             case 0xAA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AA::")
-                    print("XOR D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR D - DD:AA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with D")
             case 0xAB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AB::")
-                    print("XOR E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR E - DD:AB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with E")
             case 0xAC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AC::")
-                    print("XOR IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR IXH - DD:AC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IXH")
             case 0xAD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AD::")
-                    print("XOR IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR IXL - DD:AD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IXL")
             case 0xAE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AE:d:")
-                    print("XOR (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR (IX+D) - DD:AE:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with the value pointed to by IX plus $d.")
             case 0xAF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:AF::")
-                    print("XOR A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR A - DD:AF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with A.")
             case 0xB0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B0::")
-                    print("OR B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR B - DD:B0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with B")
             case 0xB1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B1::")
-                    print("OR C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR C - DD:B1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with C")
             case 0xB2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B2::")
-                    print("OR D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR D - DD:B2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with D")
             case 0xB3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B3::")
-                    print("OR E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR E - DD:B3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with E")
             case 0xB4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B4::")
-                    print("OR IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR IXH - DD:B4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IXH")
             case 0xB5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B5::")
-                    print("OR IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR IXL - DD:B5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IXL")
             case 0xB6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B6:d:")
-                    print("OR (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR (IX+D) - DD:B6:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with the value pointed to by IX plus $d.")
             case 0xB7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B7::")
-                    print("OR A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR A - DD:B7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with A.")
             case 0xB8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B8::")
-                    print("CP B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP B - DD:B8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
             case 0xB9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:B9::")
-                    print("CP C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP C - DD:B9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
             case 0xBA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BA::")
-                    print("CP D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP D - DD:BA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
             case 0xBB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BB::")
-                    print("CP E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP E - DD:BB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
             case 0xBC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BC::")
-                    print("CP IXH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP IXH - DD:BC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXH from A and affects flags according to the result. A is not modified.")
             case 0xBD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BD::")
-                    print("CP IXL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP IXL - DD:BD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IXL from A and affects flags according to the result. A is not modified.")
             case 0xBE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BE:d:")
-                    print("CP (IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP (IX+D) - DD:BE:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IX plus $d from A and affects flags according to the result. A is not modified.")
             case 0xBF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:BF::")
-                    print("CP A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP A - DD:BF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
@@ -6200,1945 +5568,1669 @@ class Z80 : ObservableObject {
                 {
                 case 0x00:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:00")
-                        print("RLC (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),B - DD:CB:d:00")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in B.")
                 case 0x01:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:01")
-                        print("RLC (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),C - DD:CB:d:01")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
                 case 0x02:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:02")
-                        print("RLC (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),D - DD:CB:d:02")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
                 case 0x03:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:03")
-                        print("RLC (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),E - DD:CB:d:03")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in E.")
                 case 0x04:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:04")
-                        print("RLC (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),H - DD:CB:d:04")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in H")
                 case 0x05:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:05")
-                        print("RLC (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),L - DD:CB:d:05")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in L")
                 case 0x06:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:06")
-                        print("RLC (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D) - DD:CB:d:06")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
                 case 0x07:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:07")
-                        print("RLC (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IX+D),A - DD:CB:d:07")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in A.")
                 case 0x08:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:08")
-                        print("RRC (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),B - DD:CB:d:08")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in B")
                 case 0x09:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:09")
-                        print("RRC (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),C - DD:CB:d:09")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in C.")
                 case 0x0A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0A")
-                        print("RRC (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),D - DD:CB:d:0A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in D")
                 case 0x0B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0B")
-                        print("RRC (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),E - DD:CB:d:0B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in E.")
                 case 0x0C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0C")
-                        print("RRC (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),H - DD:CB:d:0C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in H")
                 case 0x0D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0D")
-                        print("RRC (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),L - DD:CB:d:0D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in L")
                 case 0x0E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0E")
-                        print("RRC (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D) - DD:CB:d:0E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
                 case 0x0F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:0F")
-                        print("RRC (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IX+D),A - DD:CB:d:0F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in A.")
                 case 0x10:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:10")
-                        print("RL (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),B - DD:CB:d:10")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in B")
                 case 0x11:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:11")
-                        print("RL (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),C - DD:CB:d:11")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in C")
                 case 0x12:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:12")
-                        print("RL (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),D - DD:CB:d:12")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in D")
                 case 0x13:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:13")
-                        print("RL (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),E - DD:CB:d:13")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in E")
                 case 0x14:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:14")
-                        print("RL (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),H - DD:CB:d:14")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in H")
                 case 0x15:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:15")
-                        print("RL (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),L - DD:CB:d:15")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in L")
                 case 0x16:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:16")
-                        print("RL (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D) - DD:CB:d:16")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
                 case 0x17:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:17")
-                        print("RL (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IX+D),A - DD:CB:d:17")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in A.")
                 case 0x18:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:18")
-                        print("RR (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),B - DD:CB:d:18")
                     #endif
                         TheseRegisters.PC = TheseRegisters.PC+4
                         // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored inB")
                 case 0x19:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:19")
-                        print("RR (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),C - DD:CB:d:19")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in C")
                 case 0x1A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1A")
-                        print("RR (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),D - DD:CB:d:1A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in D")
                 case 0x1B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1B")
-                        print("RR (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),E - DD:CB:d:1B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in E")
                 case 0x1C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1C")
-                        print("RR (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),H - DD:CB:d:1C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in H")
                 case 0x1D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1D")
-                        print("RR (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),L - DD:CB:d:1D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in L")
                 case 0x1E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1E")
-                        print("RR (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D) - DD:CB:d:1E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
                 case 0x1F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:1F")
-                        print("RR (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IX+D),A - DD:CB:d:1F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in A.")
                 case 0x20:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:20")
-                        print("SLA (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),B - DD:CB:d:20")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in B")
                 case 0x21:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:21")
-                        print("SLA (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),C - DD:CB:d:21")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
                 case 0x22:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:22")
-                        print("SLA (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),D - DD:CB:d:22")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
                 case 0x23:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:23")
-                        print("SLA (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),E - DD:CB:d:23")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
                 case 0x24:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:24")
-                        print("SLA (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),H - DD:CB:d:24")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
                 case 0x25:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:25")
-                        print("SLA (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),L - DD:CB:d:25")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
                 case 0x26:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:26")
-                        print("SLA (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D) - DD:CB:d:26")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
                 case 0x27:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:27")
-                        print("SLA (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IX+D),A - DD:CB:d:27")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in A.")
                 case 0x28:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:28")
-                        print("SRA (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),B - DD:CB:d:28")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in B")
                 case 0x29:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:29")
-                        print("SRA (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),C - DD:CB:d:29")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
                 case 0x2A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2A")
-                        print("SRA (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),D - DD:CB:d:2A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
                 case 0x2B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2B")
-                        print("SRA (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),E - DD:CB:d:2B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
                 case 0x2C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2C")
-                        print("SRA (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),H - DD:CB:d:2C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
                 case 0x2D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2D")
-                        print("SRA (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),L - DD:CB:d:2D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
                 case 0x2E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2E")
-                        print("SRA (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D) - DD:CB:d:2E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
                 case 0x2F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:2F")
-                        print("SRA (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IX+D),A - DD:CB:d:2F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in A.")
                 case 0x30:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:30")
-                        print("SLL (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),B - DD:CB:d:30")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in B")
                 case 0x31:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:31")
-                        print("SLL (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),C - DD:CB:d:31")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in C")
                 case 0x32:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:32")
-                        print("SLL (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),D - DD:CB:d:32")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in D")
                 case 0x33:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:33")
-                        print("SLL (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),E - DD:CB:d:33")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in E")
                 case 0x34:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:34")
-                        print("SLL (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),H - DD:CB:d:34")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in H")
                 case 0x35:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:35")
-                        print("SLL (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),L - DD:CB:d:35")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in L")
                 case 0x36:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:36")
-                        print("SLL (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D) - DD:CB:d:36")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
                 case 0x37:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:37")
-                        print("SLL (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IX+D),A - DD:CB:d:37")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in A.")
                 case 0x38:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:38")
-                        print("SRL (IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),B - DD:CB:d:38")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in B")
                 case 0x39:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:39")
-                        print("SRL (IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),C - DD:CB:d:39")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in C")
                 case 0x3A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3A")
-                        print("SRL (IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),D - DD:CB:d:3A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in D")
                 case 0x3B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3B")
-                        print("SRL (IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),E - DD:CB:d:3B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in E")
                 case 0x3C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3C")
-                        print("SRL (IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),H - DD:CB:d:3C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in H")
                 case 0x3D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3D")
-                        print("SRL (IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),L - DD:CB:d:3D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in L")
                 case 0x3E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3E")
-                        print("SRL (IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D) - DD:CB:d:3E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IX plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
                 case 0x3F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:3F")
-                        print("SRL (IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IX+D),A - DD:CB:d:3F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IX plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in A.")
                 case 0x40:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:40")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:40")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x41:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:41")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:41")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x42:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:42")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:42")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x43:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:43")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:43")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x44:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:44")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:44")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x45:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:45")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:45")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x46:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:46")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:46")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x47:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:47")
-                        print("BIT 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IX+D) - DD:CB:d:47")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x48:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:CB:d:48")
-                    print("BIT 1,(IX+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:48")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x49:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:49")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:49")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4A")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4B")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4C")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4D")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4E")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x4F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:4F")
-                        print("BIT 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IX+D) - DD:CB:d:4F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x50:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:50")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:50")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x51:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:51")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:51")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x52:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:52")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:52")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x53:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:53")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:53")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x54:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:54")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:54")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x55:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:55")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:55")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x56:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:56")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:56")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x57:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:57")
-                        print("BIT 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IX+D) - DD:CB:d:57")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x58:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:58")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:58")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x59:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:59")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:59")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5A")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5B")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5C")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5D")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5E")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x5F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:5F")
-                        print("BIT 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IX+D) - DD:CB:d:5F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+3
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x60:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:60")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:60")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x61:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:61")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:61")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x62:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:62")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:62")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x63:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:63")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:63")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x64:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:64")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:64")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x65:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:65")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:65")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x66:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:66")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:66")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x67:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:67")
-                        print("BIT 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IX+D) - DD:CB:d:67")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IX plus $d.")
                 case 0x68:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:68")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:68")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x69:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:69")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:69")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6A")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6B")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6C")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6D")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6E")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x6F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:6F")
-                        print("BIT 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IX+D) - DD:CB:d:6F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IX plus $d.")
                 case 0x70:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:70")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:70")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x71:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:71")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:71")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x72:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:72")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:72")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x73:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:73")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:73")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x74:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:74")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:74")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x75:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:75")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:75")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x76:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:76")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:76")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x77:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:77")
-                        print("BIT 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IX+D) - DD:CB:d:77")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IX plus $d.")
                 case 0x78:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:78")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:78")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x79:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:79")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:79")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7A")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7B")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7C")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7D")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7E")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x7F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:7F")
-                        print("BIT 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IX+D) - DD:CB:d:7F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IX plus $d.")
                 case 0x80:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:80")
-                        print("RES 0,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),B - DD:CB:d:80")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x81:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:81")
-                        print("RES 0,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),C - DD:CB:d:81")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x82:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:82")
-                        print("RES 0,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),D - DD:CB:d:82")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x83:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:83")
-                        print("RES 0,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),E - DD:CB:d:83")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x84:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:84")
-                        print("RES 0,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),H - DD:CB:d:84")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x85:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:85")
-                        print("RES 0,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),L - DD:CB:d:85")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x86:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:86")
-                        print("RES 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D) - DD:CB:d:86")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus $d.")
                 case 0x87:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:87")
-                        print("RES 0,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IX+D),A - DD:CB:d:87")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0x88:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:88")
-                        print("RES 1,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),B - DD:CB:d:88")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x89:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:89")
-                        print("RES 1,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),C - DD:CB:d:89")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x8A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8A")
-                        print("RES 1,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),D - DD:CB:d:8A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x8B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8B")
-                        print("RES 1,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),E - DD:CB:d:8B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x8C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8C")
-                        print("RES 1,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),H - DD:CB:d:8C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x8D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8D")
-                        print("RES 1,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),L - DD:CB:d:8D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0x8E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8E")
-                        print("RES 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D) - DD:CB:d:8E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus $d.")
                 case 0x8F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:8F")
-                        print("RES 1,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IX+D),A - DD:CB:d:8F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0x90:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:90")
-                        print("RES 2,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),B - DD:CB:d:90")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x91:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:91")
-                        print("RES 2,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),C - DD:CB:d:91")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x92:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:92")
-                        print("RES 2,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),D - DD:CB:d:92")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x93:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:93")
-                        print("RES 2,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),E - DD:CB:d:93")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x94:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:94")
-                        print("RES 2,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),H - DD:CB:d:94")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x95:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:95")
-                        print("RES 2,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),L - DD:CB:d:95")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x96:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:96")
-                        print("RES 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D) - DD:CB:d:96")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus $d.")
                 case 0x97:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:97")
-                        print("RES 2,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IX+D),A - DD:CB:d:97")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0x98:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:98")
-                        print("RES 3,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),B - DD:CB:d:98")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x99:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:99")
-                        print("RES 3,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),C - DD:CB:d:99")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x9A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9A")
-                        print("RES 3,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),D - DD:CB:d:9A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x9B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9B")
-                        print("RES 3,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),E - DD:CB:d:9B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x9C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9C")
-                        print("RES 3,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),H - DD:CB:d:9C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x9D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9D")
-                        print("RES 3,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),L - DD:CB:d:9D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B.")
                 case 0x9E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9E")
-                        print("RES 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D) - DD:CB:d:9E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus $d.")
                 case 0x9F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:9F")
-                        print("RES 3,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IX+D),A - DD:CB:d:9F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0xA0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A0")
-                        print("RES 4,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),B - DD:CB:d:A0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A1")
-                        print("RES 4,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),C - DD:CB:d:A1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A2")
-                        print("RES 4,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),D - DD:CB:d:A2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A3")
-                        print("RES 4,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),E - DD:CB:d:A3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A4")
-                        print("RES 4,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),H - DD:CB:d:A4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A5")
-                        print("RES 4,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),L - DD:CB:d:A5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A6")
-                        print("RES 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D) - DD:CB:d:A6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus $d.")
                 case 0xA7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A7")
-                        print("RES 4,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IX+D),A - DD:CB:d:A7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0xA8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A8")
-                        print("RES 5,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),B - DD:CB:d:A8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xA9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:A9")
-                        print("RES 5,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),C - DD:CB:d:A9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xAA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:AA")
-                        print("RES 5,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),D - DD:CB:d:AA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xAB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                    print("DD:CB:d:AB")
-                    print("RES 5,(IX+D),E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),E - DD:CB:d:AB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xAC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:AC")
-                        print("RES 5,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),H - DD:CB:d:AC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xAD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:AD")
-                        print("RES 5,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),L - DD:CB:d:AD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xAE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:AE")
-                        print("RES 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D) - DD:CB:d:AE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus $d.")
                 case 0xAF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:AF")
-                        print("RES 5,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IX+D),A - DD:CB:d:AF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0xB0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B0")
-                        print("RES 6,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),B - DD:CB:d:B0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B1")
-                        print("RES 6,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),C - DD:CB:d:B1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B2")
-                        print("RES 6,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),D - DD:CB:d:B2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B3")
-                        print("RES 6,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),E - DD:CB:d:B3")
                     #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B4")
-                        print("RES 6,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),H - DD:CB:d:B4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B5")
-                        print("RES 6,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),L - DD:CB:d:B5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B6")
-                        print("RES 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D) - DD:CB:d:B6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus $d.")
                 case 0xB7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B7")
-                        print("RES 6,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IX+D),A - DD:CB:d:B7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0xB8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B8")
-                        print("RES 7,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),B - DD:CB:d:B8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xB9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:B9")
-                        print("RES 7,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),C - DD:CB:d:B9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xBA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BA")
-                        print("RES 7,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),D - DD:CB:d:BA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xBB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BB")
-                        print("RES 7,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),E - DD:CB:d:BB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xBC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BC")
-                        print("RES 7,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),H - DD:CB:d:BC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xBD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BD")
-                        print("RES 7,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),L - DD:CB:d:BD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xBE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BE")
-                        print("RES 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D) - DD:CB:d:BE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IX plus $d.")
                 case 0xBF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:BF")
-                        print("RES 7,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IX+D),A - DD:CB:d:BF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A.")
                 case 0xC0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C0")
-                        print("SET 0,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),B - DD:CB:d:C0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xC1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C1")
-                        print("SET 0,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),C - DD:CB:d:C1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xC2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C2")
-                        print("SET 0,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),D - DD:CB:d:C2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xC3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C3")
-                        print("SET 0,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),E - DD:CB:d:C3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xC4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C4")
-                        print("SET 0,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),H - DD:CB:d:C4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xC5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C5")
-                        print("SET 0,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),L - DD:CB:d:C5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xC6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C6")
-                        print("SET 0,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D) - DD:CB:d:C6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus $d.")
                 case 0xC7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C7")
-                        print("SET 0,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IX+D),A - DD:CB:d:C7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xC8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C8")
-                        print("SET 1,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),B - DD:CB:d:C8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xC9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:C9")
-                        print("SET 1,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),C - DD:CB:d:C9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xCA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CA")
-                        print("SET 1,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),D - DD:CB:d:CA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xCB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CB")
-                        print("SET 1,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),E - DD:CB:d:CB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xCC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CC")
-                        print("SET 1,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),H - DD:CB:d:CC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xCD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CD")
-                        print("SET 1,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),L - DD:CB:d:CD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xCE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CE")
-                        print("SET 1,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D) - DD:CB:d:CE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus $d.")
                 case 0xCF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:CF")
-                        print("SET 1,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IX+D),A - DD:CB:d:CF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xD0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D0")
-                        print("SET 2,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),B - DD:CB:d:D0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xD1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D1")
-                        print("SET 2,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),C - DD:CB:d:D1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xD2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D2")
-                        print("SET 2,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),D - DD:CB:d:D2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xD3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D3")
-                        print("SET 2,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),E - DD:CB:d:D3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xD4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D4")
-                        print("SET 2,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),H - DD:CB:d:D4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xD5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D5")
-                        print("SET 2,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),L - DD:CB:d:D5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xD6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D6")
-                        print("SET 2,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D) - DD:CB:d:D6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus $d.")
                 case 0xD7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D7")
-                        print("SET 2,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IX+D),A - DD:CB:d:D7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xD8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D8")
-                        print("SET 3,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),B - DD:CB:d:D8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xD9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:D9")
-                        print("SET 3,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),C - DD:CB:d:D9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xDA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DA")
-                        print("SET 3,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),D - DD:CB:d:DA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xDB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DB")
-                        print("SET 3,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),E - DD:CB:d:DB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xDC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DC")
-                        print("SET 3,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),H - DD:CB:d:DC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xDD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DD")
-                        print("SET 3,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),L - DD:CB:d:DD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xDE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DE")
-                        print("SET 3,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D) - DD:CB:d:DE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus $d.")
                 case 0xDF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:DF")
-                        print("SET 3,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IX+D),A - DD:CB:d:DF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xE0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E0")
-                        print("SET 4,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),B - DD:CB:d:E0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xE1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E1")
-                        print("SET 4,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),C - DD:CB:d:E1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xE2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E2")
-                        print("SET 4,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),D - DD:CB:d:E2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xE3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E3")
-                        print("SET 4,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),E - DD:CB:d:E3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xE4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E4")
-                        print("SET 4,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),H - DD:CB:d:E4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xE5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E5")
-                        print("SET 4,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),L - DD:CB:d:E5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xE6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E6")
-                        print("SET 4,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D) - DD:CB:d:E6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus $d.")
                 case 0xE7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E7")
-                        print("SET 4,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IX+D),A - DD:CB:d:E7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xE8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E8")
-                        print("SET 5,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),B - DD:CB:d:E8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xE9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:E9")
-                        print("SET 5,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),C - DD:CB:d:E9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xEA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:EA")
-                        print("SET 5,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),D - DD:CB:d:EA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xEB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:EB")
-                        print("SET 5,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),E - DD:CB:d:EB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xEC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:EC")
-                        print("SET 5,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),H - DD:CB:d:EC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xED:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:ED")
-                        print("SET 5,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),L - DD:CB:d:ED")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xEE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:EE")
-                        print("SET 5,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D) - DD:CB:d:EE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus $d.")
                 case 0xEF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:EF")
-                        print("SET 5,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IX+D),A - DD:CB:d:EF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xF0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F0")
-                        print("SET 6,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),B - DD:CB:d:F0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xF1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F1")
-                        print("SET 6,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),C - DD:CB:d:F1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xF2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F2")
-                        print("SET 6,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),D - DD:CB:d:F2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xF3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F3")
-                        print("SET 6,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),E - DD:CB:d:F3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xF4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:CB:d:F4")
-                    print("SET 6,(IX+D),H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),H - DD:CB:d:F4")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xF5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F5")
-                        print("SET 6,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),L - DD:CB:d:F5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xF6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F6")
-                        print("SET 6,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D) - DD:CB:d:F6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus $d.")
                 case 0xF7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F7")
-                        print("SET 6,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IX+D),A - DD:CB:d:F7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IX plus d. The result is then stored in A")
                 case 0xF8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F8")
-                        print("SET 7,(IX+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),B - DD:CB:d:F8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in B")
                 case 0xF9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:F9")
-                        print("SET 7,(IX+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),C - DD:CB:d:F9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in C")
                 case 0xFA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FA")
-                        print("SET 7,(IX+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),D - DD:CB:d:FA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in D")
                 case 0xFB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FB")
-                        print("SET 7,(IX+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),E - DD:CB:d:FB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in E")
                 case 0xFC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FC")
-                        print("SET 7,(IX+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),H - DD:CB:d:FC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in H")
                 case 0xFD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FD")
-                        print("SET 7,(IX+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),L - DD:CB:d:FD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d. The result is then stored in L")
                 case 0xFE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FE")
-                        print("SET 7,(IX+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D) - DD:CB:d:FE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus $d.")
                 case 0xFF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("DD:CB:d:FF")
-                        print("SET 7,(IX+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IX+D),A - DD:CB:d:FF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IX plus d. The result is then stored in A")
                 default : // **** Confirm what PC count jump should be
                     #if DEBUG_CODE
-                        print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+1
                 }
             case 0xE1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:E1::")
-                    print("POP IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP IX - DD:E1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into IXL and SP is incremented. The memory location pointed to by SP is stored into IXH and SP is incremented again.")
             case 0xE3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:E3::")
-                    print("EX (SP),IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EX (SP),IX - DD:E3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with IXL, and (SP+1) with IXH.")
             case 0xE5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:E5::")
-                    print("PUSH IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH IX - DD:E5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and IXH is stored into the memory location pointed to by SP. SP is decremented again and IXL is stored into the memory location pointed to by SP.")
             case 0xE9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:E9::")
-                    print("JP (IX)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP (IX) - DD:E9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IX into PC.")
             case 0xF9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("DD:F9::")
-                    print("LD SP,IX")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD SP,IX - DD:F9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IX into SP.")
             default : // **** Confirm what PC count jump should be
                 #if DEBUG_CODE
-                    print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+1
             }
         case 0xDE: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("DE:n::")
-                print("SBC A,N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,N - DE:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n and the carry flag from A.")
         case 0xDF: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("DF:::")
-                print("RST 18H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 18H - DF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 18h")
         case 0xE0:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E0:::")
-                print("RET PO")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET PO - E0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, the top stack entry is popped into PC.")
         case 0xE1: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E1:::")
-                print("POP HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP HL - E1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into L and SP is incremented. The memory location pointed to by SP is stored into H and SP is incremented again.")
         case 0xE2: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E2:n:n:")
-                print("JP PO,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP PO,NN - E2:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, $nn is copied to PC.")
         case 0xE3: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E3:::")
-                print("EX (SP),HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EX (SP),HL - E3:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with L, and (SP+1) with H.")
         case 0xE4: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E4:n:n:")
-                print("CALL PO,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL PO,NN - E4:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xE5: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E5:::")
-                print("PUSH HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH HL - E5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and H is stored into the memory location pointed to by SP. SP is decremented again and L is stored into the memory location pointed to by SP.")
         case 0xE6: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E6:n::")
-                print("AND N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND N - E6:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with $n.")
         case 0xE7: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E7:::")
-                print("RST 20H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 20H - E7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 20H")
         case 0xE8: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E8:::")
-                print("RET PE")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET PE - E8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, the top stack entry is popped into PC.")
         case 0xE9: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("E9:::")
-                print("JP (HL)")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP (HL) - E9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of HL into PC.")
         case 0xEA: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("EA:n:n:")
-                print("JP PE,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP PE,NN - EA:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, $nn is copied to PC.")
         case 0xEB: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("EB:::")
-                print("EX DE,HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EX DE,HL - EB:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges the 16-bit contents of DE and HL.")
         case 0xEC: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("EC:n:n:")
-                print("CALL PE,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL PE,NN - EC:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the parity/overflow flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
@@ -8147,532 +7239,457 @@ class Z80 : ObservableObject {
             {
             case 0x40:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:40::")
-                    print("IN B,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN B,(C) - ED:40::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to B")
             case 0x41:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:41::")
-                    print("OUT (C),B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),B - ED:41::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of B is written to port C.")
             case 0x42:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:42::")
-                    print("SBC HL,BC")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC HL,BC - ED:42::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts BC and the carry flag from HL.")
             case 0x43:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:43:n:n")
-                    print("LD (NN),BC")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),BC - ED:43:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores BC into the memory location pointed to by $nn.")
             case 0x44:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:44::")
-                    print("NEG")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - NEG - ED:44:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of A are negated (two's complement). Operation is the same as subtracting A from zero.")
             case 0x45:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:45::")
-                    print("RETN")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RETN - ED:45::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Used at the end of a non-maskable interrupt service routine (located at 0066h) to pop the top stack entry into PC. The value of IFF2 is copied to IFF1 so that maskable interrupts are allowed to continue as before. NMIs are not enabled on the TI.")
             case 0x46:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:46::")
-                    print("IM 0")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IM 0 - ED:46::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 0.")
             case 0x47:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:47::")
-                    print("LD I,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD I,A - ED:47::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores the value of A into register I.")
             case 0x48:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:48::")
-                    print("IN C,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN C,(C) - ED:48::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to C.")
             case 0x49:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:49::")
-                    print("OUT (C),C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),C - ED:49::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of C is written to port C.")
             case 0x4A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:4A::")
-                    print("ADC HL,BC")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC HL,BC - ED:4A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds BC and the carry flag to HL.")
             case 0x4B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:4B:n:n")
-                    print("LD BC,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD BC,(NN) - ED:4B:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into BC.")
             case 0x4D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:4D::")
-                    print("RETI")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RETI - ED:4D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Used at the end of a maskable interrupt service routine. The top stack entry is popped into PC, and signals an I/O device that the interrupt has finished, allowing nested interrupts (not a consideration on the TI).")
             case 0x4F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:4F::")
-                    print("LD R,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD R,A - ED:4F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores the value of A into register R.")
             case 0x50:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:50::")
-                    print("IN D,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN D,(C) - ED:50::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to D")
             case 0x51:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:51::")
-                    print("OUT (C),D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),D - ED:51::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of D is written to port C.")
             case 0x52:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:52::")
-                    print("SBC HL,DE")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC HL,DE - ED:52::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts DE and the carry flag from HL.")
             case 0x53:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:53:n:n")
-                    print("LD (NN),DE")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),DE - ED:53:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores DE into the memory location pointed to by $nn.")
             case 0x56:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:56::")
-                    print("IM 1")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IM 1 - ED:56::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 1.")
             case 0x57:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:57::")
-                    print("LD A,I")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,I - ED:57::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Stores the value of register I into A.")
             case 0x58:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:58::")
-                    print("IN E,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN E,(C) - ED:58::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to E.")
             case 0x59:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:59::")
-                    print("OUT (C),E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),E - ED:59::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of E is written to port C.")
             case 0x5A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:5A::")
-                    print("ADC HL,DE")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC HL,DE - ED:5A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds DE and the carry flag to HL.")
             case 0x5B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:5B:n:n")
-                    print("LD DE,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD DE,(NN) - ED:5B:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into DE.")
             case 0x5E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:5E::")
-                    print("IM 2")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IM 2 - ED:5E::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets interrupt mode 2.")
             case 0x5F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:5F::")
-                    print("LD A,R")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,R - ED:5F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [9], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Stores the value of register R into A.")
             case 0x60:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:60::")
-                    print("IN H,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN H,(C) - ED:60::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to H")
             case 0x61:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:61::")
-                    print("OUT (C),H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),H - ED:61::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of H is written to port C.")
             case 0x62:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:62::")
-                    print("SBC HL,HL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC HL,HL - ED:62::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts HL and the carry flag from HL.")
             case 0x63:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:63:n:n")
-                    print("LD (NN),HL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),HL - ED:63:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Stores HL into the memory location pointed to by $nn.")
             case 0x67:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:67::")
-                    print("RRD")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRD - ED:67::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [18], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the low-order nibble of (HL) are copied to the low-order nibble of A. The previous contents are copied to the high-order nibble of (HL). The previous contents are copied to the low-order nibble of (HL).")
             case 0x68:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:68::")
-                    print("IN L,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN L,(C) - ED:68::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to L.")
             case 0x69:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:69::")
-                    print("OUT (C),L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),L - ED:69::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of L is written to port C.")
             case 0x6A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:6A::")
-                    print("ADC HL,HL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC HL,HL - ED:6A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds HL and the carry flag to HL.")
             case 0x6B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:6B:n:n")
-                    print("LD HL,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD HL,(NN) - ED:6B:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads the value pointed to by $nn into HL.")
             case 0x6F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:6F::")
-                    print("RLD")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLD - ED:6F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [18], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the low-order nibble of (HL) are copied to the high-order nibble of (HL). The previous contents are copied to the low-order nibble of A. The previous contents are copied to the low-order nibble of (HL).")
             case 0x70:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:70::")
-                    print("IN (C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN (C) - ED:70::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Inputs a byte from port C and affects flags only.")
             case 0x71:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:71::")
-                    print("OUT (C),0")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),0 - ED:71::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Outputs a zero (on NMOS Z80s) or 255 (on CMOS Z80s) to port C.")
             case 0x72:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:72::")
-                    print("SBC HL,SP")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC HL,SP - ED:72::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts SP and the carry flag from HL.")
             case 0x73:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:73:n:n")
-                    print("LD (NN),SP")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),SP - ED:73:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores SP into the memory location pointed to by $nn.")
             case 0x78:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:78::")
-                    print("IN A,(C)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IN A,(C) - ED:78::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "0", PVFlag: "v", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to A.")
             case 0x79:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:79::")
-                    print("OUT (C),A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUT (C),A - ED:79::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [12], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of A is written to port C.")
             case 0x7A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:7A::")
-                    print("ADC HL,SP")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC HL,SP - ED:7A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds SP and the carry flag to HL.")
             case 0x7B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:7B:n:n")
-                    print("LD SP,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD SP,(NN) - ED:7B:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into SP.")
             case 0xA0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A0::")
-                    print("LDI")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LDI - ED:A0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL and DE are incremented and BC is decremented. p/v is reset if BC becomes zero and set otherwise.")
             case 0xA1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A1::")
-                    print("CPI")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CPI - ED:A1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL is incremented and BC is decremented. p/v is reset if BC becomes zero and set otherwise.")
             case 0xA2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A2::")
-                    print("INI")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INI - ED:A2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL is incremented and B is decremented.")
             case 0xA3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A3::")
-                    print("OUTI")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUTI - ED:A3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is incremented.")
             case 0xA8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A8::")
-                    print("LDD")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LDD - ED:A8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "0", PVFlag: "*", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL, DE, and BC are decremented. p/v is reset if BC becomes zero and set otherwise.")
             case 0xA9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:A9::")
-                    print("CPD")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CPD - ED:A9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL and BC are decremented. p/v is reset if BC becomes zero and set otherwise.")
             case 0xAA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:AA::")
-                    print("IND")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - IND - ED:AA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL and B are decremented.")
             case 0xAB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:AB::")
-                    print("OUTD")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OUTD - ED:AB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "*", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is decremented.")
             case 0xB0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B0::")
-                    print("LDIR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LDIR - ED:B0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "0", PVFlag: "0", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL and DE are incremented and BC is decremented. If BC is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             case 0xB1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B1::")
-                    print("CPIR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CPIR - ED:B1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL is incremented and BC is decremented. If BC is not zero and z is not set, this operation is repeated. p/v is reset if BC becomes zero and set otherwise, acting as an indicator that HL reached a memory location whose value equalled A before the counter went to zero. Interrupts can trigger while this instruction is processing.")
             case 0xB2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B2::")
-                    print("INIR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INIR - ED:B2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL is incremented and B is decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             case 0xB3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B3::")
-                    print("OTIR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OTIR - ED:B3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is incremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             case 0xB8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B8::")
-                    print("LDDR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LDDR - ED:B8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "0", PVFlag: "0", HFlag: "0", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Transfers a byte of data from the memory location pointed to by HL to the memory location pointed to by DE. Then HL, DE, and BC are decremented. If BC is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             case 0xB9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:B9::")
-                    print("CPDR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CPDR - ED:B9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: "*", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Compares the value of the memory location pointed to by HL with A. Then HL and BC are decremented. If BC is not zero and z is not set, this operation is repeated. p/v is reset if BC becomes zero and set otherwise, acting as an indicator that HL reached a memory location whose value equalled A before the counter went to zero. Interrupts can trigger while this instruction is processing.")
             case 0xBA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:BA::")
-                    print("INDR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INDR - ED:BA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "A byte from port C is written to the memory location pointed to by HL. Then HL and B are decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             case 0xBB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("ED:BB::")
-                    print("OTDR")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OTDR - ED:BB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [21,16], CFlag: "-", NFlag: "1", PVFlag: " ", HFlag: " ", ZFlag: "1", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "B is decremented. A byte from the memory location pointed to by HL is written to port C. Then HL is decremented. If B is not zero, this operation is repeated. Interrupts can trigger while this instruction is processing.")
             default : // **** Confirm what PC count jump should be
                 #if DEBUG_CODE
-                    print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+1
             }
         case 0xEE:  // **** Still need to implement this opco
             #if DEBUG_CODE
-                print("EE:n::")
-                print("XOR N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR N - EE:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with $n.")
         case 0xEF:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("EF:::")
-                print("RST 28H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 28H - EF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 28h")
         case 0xF0:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F0:::")
-                print("RET P")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET P - F0:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, the top stack entry is popped into PC.")
         case 0xF1:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F1:::")
-                print("POP AF")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP AF - F1:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into F and SP is incremented. The memory location pointed to by SP is stored into A and SP is incremented again.")
         case 0xF2:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F2:n:n:")
-                print("JP P,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP P,NN - F2:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, $nn is copied to PC.")
         case 0xF3:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F3:::")
-                print("DI")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DI - F3:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets both interrupt flip-flops, thus preventing maskable interrupts from triggering.")
         case 0xF4:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F4:n:n:")
-                print("CALL P,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL P,NN - F4:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is unset, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xF5:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F5:::")
-                print("PUSH AF")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH AF - F5:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and A is stored into the memory location pointed to by SP. SP is decremented again and F is stored into the memory location pointed to by SP.")
         case 0xF6:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F6:n::")
-                print("OR N")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR N - F6:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with $n.")
         case 0xF7:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F7:::")
-                print("RST 30H")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 30H - F7:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 30H")
         case 0xF8:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F8:::")
-                print("RET M")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RET M - F8:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11,5], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, the top stack entry is popped into PC.")
         case 0xF9:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("F9:::")
-                print("LD SP,HL")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD SP,HL - F9:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [6], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of HL into SP.")
         case 0xFA:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("FA:n:n:")
-                print("JP M,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP M,NN - FA:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, $nn is copied to PC.")
         case 0xFB:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("FB:::")
-                print("EI")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - EI - FB:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets both interrupt flip-flops, thus allowing maskable interrupts to occur. An interrupt will not occur until after the immediately following instruction.")
         case 0xFC:  // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("FC:n:n:")
-                print("CALL M,NN")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CALL M,NN - FC:n:n:")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the sign flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
@@ -8681,1121 +7698,961 @@ class Z80 : ObservableObject {
             {
             case 0x04:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:04::")
-                    print("INC B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC B - FD:04::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to B")
             case 0x05:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:05::")
-                    print("DEC B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC B - FD:05::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
             case 0x06:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:06:n:")
-                    print("LD B,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,N - FD:06:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into B")
             case 0x09:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:09::")
-                    print("ADD IY,BC")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IY,BC - FD:09::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of BC is added to IY.")
             case 0x0C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:0C::")
-                    print("INC C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC C - FD:0C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to C.")
             case 0x0D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:0D::")
-                    print("DEC C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC C - FD:0D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from C.")
             case 0x0E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:0E:n:")
-                    print("LD C,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,N - FD:0E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into C.")
             case 0x14:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:14::")
-                    print("INC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC D - FD:14::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to D")
             case 0x15:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:15::")
-                    print("DEC D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC D - FD:15::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
             case 0x16:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:16:n:")
-                    print("LD D,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,N - FD:16:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into D")
             case 0x19:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:19::")
-                    print("ADD IY,DE")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IY,DE - FD:19::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of DE is added to IY.")
             case 0x1C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:1C::")
-                    print("INC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC E - FD:1C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to E.")
             case 0x1D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:1D::")
-                    print("DEC E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC E - FD:1D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from E.")
             case 0x1E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:1E:n:")
-                    print("LD E,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,N - FD:1E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into E.")
             case 0x21:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:21:n:n")
-                    print("LD IY,NN")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IY,NN - FD:21:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads $nn into register IY.")
             case 0x22:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:22:n:n")
-                    print("LD (NN),IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (NN),IY - FD:22:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores IY into the memory location pointed to by $nn.")
             case 0x23:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:23::")
-                    print("INC IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IY - FD:23::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Adds one to IY.")
             case 0x24:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:24::")
-                    print("INC IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IYH - FD:24::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IY.")
             case 0x25:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:25::")
-                    print("DEC IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IYH - FD:25::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from $r.")
             case 0x26:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:26:n:")
-                    print("LD IYH,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,N - FD:26:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads $n into IYH")
             case 0x29:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:29::")
-                    print("ADD IY,IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IY,IY - FD:29::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of IY is added to IY.")
             case 0x2A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:2A:n:n")
-                    print("LD IY,(NN)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IY,(NN) - FD:2A:n:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into IY.")
             case 0x2B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:2B::")
-                    print("DEC IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IY - FD:2B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from IY.")
             case 0x2C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:2C::")
-                    print("INC IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC IYL - FD:2C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to IYL.")
             case 0x2D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:2D::")
-                    print("DEC IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC IYL - FD:2D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from IYL.")
             case 0x2E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:2E:n:")
-                    print("LD IYL,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,N - FD:2E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into IYL.")
             case 0x34:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:34:d:")
-                    print("INC (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC (IY+D) - FD:34:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds one to the memory location pointed to by IY plus $d.")
             case 0x35:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:35:d:")
-                    print("DEC (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC (IY+D) - FD:35:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [23], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts one from the memory location pointed to by IY plus $d.")
             case 0x36:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:36:d:n")
-                    print("LD (IY+D),N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),N - FD:36:d:n")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores $n to the memory location pointed to by IY plus $d.")
             case 0x39:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:39::")
-                    print("ADD IY,SP")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD IY,SP - FD:39::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "+", NFlag: "+", PVFlag: "-", HFlag: "+", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The value of SP is added to IY.")
             case 0x3C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:3C::")
-                    print("INC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - INC A - FD:3C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds one to A.")
             case 0x3D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:3D::")
-                    print("DEC A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - DEC A - FD:3D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts one from A.")
             case 0x3E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:3E:n:")
-                    print("LD A,N")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,N - FD:3E:n:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Loads n into A.")
             case 0x40:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:40::")
-                    print("LD B,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,B - FD:40::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into B")
             case 0x41:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:41::")
-                    print("LD B,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,C - FD:41::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into B")
             case 0x42:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:42::")
-                    print("LD B,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,D - FD:42::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into B")
             case 0x43:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:43::")
-                    print("LD B,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,E - FD:43::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into B")
             case 0x44:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:44::")
-                    print("LD B,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,IYH - FD:44::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into B")
             case 0x45:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                          print("FD:45::")
-                          print("LD B,IYL")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,IYL - FD:45::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into B")
             case 0x46:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:46:d:")
-                    print("LD B,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,(IY+D) - FD:46:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into B")
             case 0x47:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:47::")
-                    print("LD B,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD B,A - FD:47::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into B.")
             case 0x48:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:48::")
-                    print("LD C,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,B - FD:48::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into C.")
             case 0x49:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:49::")
-                    print("LD C,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,C - FD:49::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into C.")
             case 0x4A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4A::")
-                    print("LD C,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,D - FD:4A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into C.")
             case 0x4B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4B::")
-                    print("LD C,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,E - FD:4B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into C.")
             case 0x4C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4C::")
-                    print("LD C,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,IYH - FD:4C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into C.")
             case 0x4D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4D::")
-                    print("LD C,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,IYL - FD:4D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into C.")
             case 0x4E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4E:d:")
-                    print("LD C,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,(IY+D) - FD:4E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into C.")
             case 0x4F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:4F::")
-                    print("LD C,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD C,A - FD:4F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into C.")
             case 0x50:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:50::")
-                    print("LD D,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,B - FD:50::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into D")
             case 0x51:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:51::")
-                    print("LD D,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,C - FD:51::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into D")
             case 0x52:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:52::")
-                    print("LD D,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,D - FD:52::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into D")
             case 0x53:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:53::")
-                    print("LD D,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,E - FD:53::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into D")
             case 0x54:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:54::")
-                    print("LD D,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,IYH - FD:54::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into D")
             case 0x55:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:55::")
-                    print("LD D,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,IYL - FD:55::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into D")
             case 0x56:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:56:d:")
-                    print("LD D,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,(IY+D) - FD:56:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into D")
             case 0x57:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:57::")
-                    print("LD D,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD D,A - FD:57::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into D.")
             case 0x58:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:58::")
-                    print("LD E,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,B - FD:58::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into E.")
             case 0x59:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:59::")
-                    print("LD E,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,C - FD:59::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into E.")
             case 0x5A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5A::")
-                    print("LD E,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,D - FD:5A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into E.")
             case 0x5B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5B::")
-                    print("LD E,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,E - FD:5B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into E.")
             case 0x5C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5C::")
-                    print("LD E,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,IYH - FD:5C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into E.")
             case 0x5D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5D::")
-                    print("LD E,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,IYL - FD:5D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into E.")
             case 0x5E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5E:d:")
-                    print("LD E,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,(IY+D) - FD:5E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into E.")
             case 0x5F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:5F::")
-                    print("LD E,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD E,A - FD:5F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into E.")
             case 0x60:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:60::")
-                    print("LD IYH,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,B - FD:60::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IYH")
             case 0x61:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:61::")
-                    print("LD IYH,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,C - FD:61::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IYH")
             case 0x62:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:62::")
-                    print("LD IYH,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,D - FD:62::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IYH")
             case 0x63:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:63::")
-                    print("LD IYH,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,E - FD:63::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IYH")
             case 0x64:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:64::")
-                    print("LD IYH,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,IYH - FD:64::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into IYH")
             case 0x65:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:65::")
-                    print("LD IYH,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,IYL - FD:65::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into IYH")
             case 0x66:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:66:d:")
-                    print("LD H,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD H,(IY+D) - FD:66:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus $d into H")
             case 0x67:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:67::")
-                    print("LD IYH,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYH,A - FD:67::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IYH.")
             case 0x68:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:68::")
-                    print("LD IYL,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,B - FD:68::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into IYL.")
             case 0x69:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:69::")
-                    print("LD IYL,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,C - FD:69::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into IYL.")
             case 0x6A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6A::")
-                    print("LD IYL,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,D - FD:6A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into IYL.")
             case 0x6B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6B::")
-                    print("LD IYL,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,E - FD:6B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into IYL.")
             case 0x6C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6C::")
-                    print("LD IYL,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,IYH - FD:6C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into IYL.")
             case 0x6D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6D::")
-                    print("LD IYL,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,IYL - FD:6D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into IYL.")
             case 0x6E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6E:d:")
-                    print("LD L,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD L,(IY+D) - FD:6E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into L.")
             case 0x6F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:6F::")
-                    print("LD IYL,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD IYL,A - FD:6F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into IYL.")
             case 0x70:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:70:d:")
-                    print("LD (IY+D),B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),B - FD:70:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores B to the memory location pointed to by IY plus $d.")
             case 0x71:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:71:d:")
-                    print("LD (IY+D),C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),C - FD:71:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores C to the memory location pointed to by IY plus $d.")
             case 0x72:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:72:d:")
-                    print("LD (IY+D),D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),D - FD:72:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores D to the memory location pointed to by IY plus $d.")
             case 0x73:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:73:d:")
-                    print("LD (IY+D),E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),E - FD:73:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores E to the memory location pointed to by IY plus $d.")
             case 0x74:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:74:d:")
-                    print("LD (IY+D),H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),H - FD:74:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores H to the memory location pointed to by IY plus $d.")
             case 0x75:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:75:d:")
-                    print("LD (IY+D),L")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),L - FD:75:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores L to the memory location pointed to by IY plus $d.")
             case 0x77:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:77:d:")
-                    print("LD (IY+D),A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD (IY+D),A - FD:77:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Stores A to the memory location pointed to by IY plus d.")
             case 0x78:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:78::")
-                    print("LD A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,B - FD:78::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of B are loaded into A.")
             case 0x79:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:79::")
-                    print("LD A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,C - FD:79::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of C are loaded into A.")
             case 0x7A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7A::")
-                    print("LD A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,D - FD:7A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of D are loaded into A.")
             case 0x7B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7B::")
-                    print("LD A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,E - FD:7B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of E are loaded into A.")
             case 0x7C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7C::")
-                    print("LD A,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,IYH - FD:7C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYH are loaded into A.")
             case 0x7D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7D::")
-                    print("LD A,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,IYL - FD:7D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of IYL are loaded into A.")
             case 0x7E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7E:d:")
-                    print("LD A,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,(IY+D) - FD:7E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by IY plus d into A.")
             case 0x7F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:7F::")
-                    print("LD A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD A,A - FD:7F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "The contents of A are loaded into A.")
             case 0x80:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:80::")
-                    print("ADD A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,B - FD:80::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B to A.")
             case 0x81:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:81::")
-                    print("ADD A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,C - FD:81::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C to A.")
             case 0x82:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:82::")
-                    print("ADD A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,D - FD:82::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D to A.")
             case 0x83:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:83::")
-                    print("ADD A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,E - FD:83::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E to A.")
             case 0x84:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:84::")
-                    print("ADD A,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,IYH - FD:84::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYH to A.")
             case 0x85:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:85::")
-                    print("ADD A,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,IYL - FD:85::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYL to A.")
             case 0x86:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:86:d:")
-                    print("ADD A,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,(IY+D) - FD:86:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IY plus $d to A.")
             case 0x87:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:87::")
-                    print("ADD A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADD A,A - FD:87::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A to A.")
             case 0x88:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:88::")
-                    print("ADC A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,B - FD:88::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds B and the carry flag to A.")
             case 0x89:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:89::")
-                    print("ADC A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,C - FD:89::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds C and the carry flag to A.")
             case 0x8A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8A::")
-                    print("ADC A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,D - FD:8A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds D and the carry flag to A.")
             case 0x8B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8B::")
-                    print("ADC A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,E - FD:8B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds E and the carry flag to A.")
             case 0x8C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8C::")
-                    print("ADC A,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,IYH - FD:8C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYH and the carry flag to A.")
             case 0x8D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8D::")
-                    print("ADC A,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,IYL - FD:8D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds IYL and the carry flag to A.")
             case 0x8E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8E:d:")
-                    print("ADC A,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,(IY+D) - FD:8E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adds the value pointed to by IY plus $d and the carry flag to A.")
             case 0x8F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:8F::")
-                    print("ADC A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - ADC A,A - FD:8F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Adds A and the carry flag to A.")
             case 0x90:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:90::")
-                    print("SUB B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB B - FD:90::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
             case 0x91:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:91::")
-                    print("SUB C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB C - FD:91::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A.")
             case 0x92:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:92::")
-                    print("SUB D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB D - FD:92::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A.")
             case 0x93:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:93::")
-                    print("SUB E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB E - FD:93::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A.")
             case 0x94:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:94::")
-                    print("SUB IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB IYH - FD:94::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH from A.")
             case 0x95:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:95::")
-                    print("SUB IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB IYL - FD:95::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "SubtractsIYLfrom A.")
             case 0x96:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:96:d:")
-                    print("SUB (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB (IY+D) - FD:96:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d from A.")
             case 0x97:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:97::")
-                    print("SUB A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SUB A - FD:97::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A.")
             case 0x98:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:98::")
-                    print("SBC A,B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,B - FD:98::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B and the carry flag from A.")
             case 0x99:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:99::")
-                    print("SBC A,C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,C - FD:99::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C and the carry flag from A.")
             case 0x9A:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9A::")
-                    print("SBC A,D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,D - FD:9A::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D and the carry flag from A.")
             case 0x9B:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9B::")
-                    print("SBC A,E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,E - FD:9B::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E and the carry flag from A.")
             case 0x9C:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9C::")
-                    print("SBC A,IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,IYH - FD:9C::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH and the carry flag from A.")
             case 0x9D:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9D::")
-                    print("SBC A,IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,IYL - FD:9D::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYL and the carry flag from A.")
             case 0x9E:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9E:d:")
-                    print("SBC A,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,(IY+D) - FD:9E:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d and the carry flag from A.")
             case 0x9F:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:9F::")
-                    print("SBC A,A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SBC A,A - FD:9F::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A and the carry flag from A.")
             case 0xA0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A0::")
-                    print("AND B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND B - FD:A0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with B")
             case 0xA1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A1::")
-                    print("AND C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND C - FD:A1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with C")
             case 0xA2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A2::")
-                    print("AND D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND D - FD:A2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with D")
             case 0xA3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A3::")
-                    print("AND E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND E - FD:A3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with E")
             case 0xA4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A4::")
-                    print("AND IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND IYH - FD:A4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IYH")
             case 0xA5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A5::")
-                    print("AND IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND IYL - FD:A5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with IYL")
             case 0xA6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A6:d:")
-                    print("AND (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND (IY+D) - FD:A6:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise AND on A with the value pointed to by IY plus $d.")
             case 0xA7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A7::")
-                    print("AND A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - AND A - FD:A7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "1", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise AND on A with A.")
             case 0xA8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A8::")
-                    print("XOR B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR B - FD:A8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with B")
             case 0xA9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:A9::")
-                    print("XOR C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR C - FD:A9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with C")
             case 0xAA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AA::")
-                    print("XOR D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR D - FD:AA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with D")
             case 0xAB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AB::")
-                    print("XOR E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR E - FD:AB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with E")
             case 0xAC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AC::")
-                    print("XOR IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR IYH - FD:AC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IYH")
             case 0xAD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AD::")
-                    print("XOR IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR IYL - FD:AD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with IYL")
             case 0xAE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AE:d:")
-                    print("XOR (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR (IY+D) - FD:AE:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise XOR on A with the value pointed to by IY plus $d.")
             case 0xAF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:AF::")
-                    print("XOR A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - XOR A - FD:AF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise XOR on A with A.")
             case 0xB0:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B0::")
-                    print("OR B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR B - FD:B0::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with B")
             case 0xB1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B1::")
-                    print("OR C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR C - FD:B1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with C")
             case 0xB2:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B2::")
-                    print("OR D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR D - FD:B2::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with D")
             case 0xB3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B3::")
-                    print("OR E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR E - FD:B3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with E")
             case 0xB4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B4::")
-                    print("OR IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR IYH - FD:B4::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IYH")
             case 0xB5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B5::")
-                    print("OR IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR IYL - FD:B5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with IYL")
             case 0xB6:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B6:d:")
-                    print("OR (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR (IY+D) - FD:B6:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with the value pointed to by IY plus $d.")
             case 0xB7:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B7::")
-                    print("OR A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - OR A - FD:B7::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Bitwise OR on A with A.")
             case 0xB8:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B8::")
-                    print("CP B")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP B - FD:B8::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts B from A and affects flags according to the result. A is not modified.")
             case 0xB9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:B9::")
-                    print("CP C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP C - FD:B9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts C from A and affects flags according to the result. A is not modified.")
             case 0xBA:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BA::")
-                    print("CP D")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP D - FD:BA::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts D from A and affects flags according to the result. A is not modified.")
             case 0xBB:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BB::")
-                    print("CP E")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP E - FD:BB::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts E from A and affects flags according to the result. A is not modified.")
             case 0xBC:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BC::")
-                    print("CP IYH")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP IYH - FD:BC::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYH from A and affects flags according to the result. A is not modified.")
             case 0xBD:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BD::")
-                    print("CP IYL")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP IYL - FD:BD::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts IYL from A and affects flags according to the result. A is not modified.")
             case 0xBE:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BE:d:")
-                    print("CP (IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP (IY+D) - FD:BE:d:")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+3
                 // OpcodeSize: 2, InstructionSize: 3, Cycle: [19], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts the value pointed to by IY plus $d from A and affects flags according to the result. A is not modified.")
             case 0xBF:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:BF::")
-                    print("CP A")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP A - FD:BF::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "Subtracts A from A and affects flags according to the result. A is not modified.")
@@ -9804,1857 +8661,1597 @@ class Z80 : ObservableObject {
                 {
                 case 0x00:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:00")
-                        print("RLC (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),B - FD:CB:d:00")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in B")
                 case 0x01:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:01")
-                        print("RLC (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),C - FD:CB:d:01")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in C")
                 case 0x02:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:02")
-                        print("RLC (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),D - FD:CB:d:02")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in D")
                 case 0x03:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:03")
-                        print("RLC (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),E - FD:CB:d:03")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in E")
                 case 0x04:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:04")
-                        print("RLC (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),H - FD:CB:d:04")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in H")
                 case 0x05:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:05")
-                        print("RLC (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),L - FD:CB:d:05")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in L")
                 case 0x06:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:06")
-                        print("RLC (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D) - FD:CB:d:06")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0.")
                 case 0x07:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:07")
-                        print("RLC (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RLC (IY+D),A - FD:CB:d:07")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and bit 0. The result is then stored in A")
                 case 0x08:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:08")
-                        print("RRC (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),B - FD:CB:d:08")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in B")
                 case 0x09:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:09")
-                        print("RRC (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),C - FD:CB:d:09")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in C")
                 case 0x0A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0A")
-                        print("RRC (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),D - FD:CB:d:0A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored inD")
                 case 0x0B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0B")
-                        print("RRC (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),E - FD:CB:d:0B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in E")
                 case 0x0C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0C")
-                        print("RRC (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),H - FD:CB:d:0C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in H")
                 case 0x0D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0D")
-                        print("RRC (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),L - FD:CB:d:0D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in L")
                 case 0x0E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0E")
-                        print("RRC (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D) - FD:CB:d:0E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7.")
                 case 0x0F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:0F")
-                        print("RRC (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RRC (IY+D),A - FD:CB:d:0F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and bit 7. The result is then stored in A.")
                 case 0x10:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:10")
-                        print("RL (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),B - FD:CB:d:10")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in B")
                 case 0x11:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:11")
-                        print("RL (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),C - FD:CB:d:11")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in C")
                 case 0x12:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:12")
-                        print("RL (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),D - FD:CB:d:12")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in D")
                 case 0x13:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:13")
-                        print("RL (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),E - FD:CB:d:13")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in E")
                 case 0x14:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:14")
-                        print("RL (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),H - FD:CB:d:14")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in H")
                 case 0x15:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:15")
-                        print("RL (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),L - FD:CB:d:15")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in L")
                 case 0x16:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:16")
-                        print("RL (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D) - FD:CB:d:16")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0.")
                 case 0x17:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:17")
-                        print("RL (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RL (IY+D),A - FD:CB:d:17")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated left one bit position. The contents of bit 7 are copied to the carry flag and the previous contents of the carry flag are copied to bit 0. The result is then stored in A.")
                 case 0x18:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:18")
-                        print("RR (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),B - FD:CB:d:18")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in B")
                 case 0x19:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:19")
-                        print("RR (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),C - FD:CB:d:19")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in C")
                 case 0x1A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1A")
-                        print("RR (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),D - FD:CB:d:1A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in D")
                 case 0x1B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1B")
-                        print("RR (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),E - FD:CB:d:1B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in E")
                 case 0x1C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1C")
-                        print("RR (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),H - FD:CB:d:1C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in H")
                 case 0x1D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1D")
-                        print("RR (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),L - FD:CB:d:1D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in L")
                 case 0x1E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1E")
-                        print("RR (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D) - FD:CB:d:1E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7.")
                 case 0x1F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:1F")
-                        print("RR (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RR (IY+D),A - FD:CB:d:1F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare rotated right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of the carry flag are copied to bit 7. The result is then stored in A.")
                 case 0x20:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:20")
-                        print("SLA (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),B - FD:CB:d:20")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in B")
                 case 0x21:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:21")
-                        print("SLA (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),C - FD:CB:d:21")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in C")
                 case 0x22:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:22")
-                        print("SLA (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),D - FD:CB:d:22")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in D")
                 case 0x23:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:23")
-                        print("SLA (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),E - FD:CB:d:23")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in E")
                 case 0x24:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:24")
-                        print("SLA (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),H - FD:CB:d:24")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in H.")
                 case 0x25:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:25")
-                        print("SLA (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),L - FD:CB:d:25")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in L")
                 case 0x26:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:26")
-                        print("SLA (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D) - FD:CB:d:26")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0.")
                 case 0x27:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:27")
-                        print("SLA (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLA (IY+D),A - FD:CB:d:27")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted left one bit position. The contents of bit 7 are copied to the carry flag and a zero is put into bit 0. The result is then stored in A")
                 case 0x28:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:28")
-                        print("SRA (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),B - FD:CB:d:28")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in B")
                 case 0x29:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:29")
-                        print("SRA (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),C - FD:CB:d:29")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in C")
                 case 0x2A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2A")
-                        print("SRA (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),D - FD:CB:d:2A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in D")
                 case 0x2B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2B")
-                        print("SRA (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),E - FD:CB:d:2B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in E")
                 case 0x2C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2C")
-                        print("SRA (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),H - FD:CB:d:2C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in H")
                 case 0x2D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2D")
-                        print("SRA (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),L - FD:CB:d:2D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in L")
                 case 0x2E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2E")
-                        print("SRA (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D) - FD:CB:d:2E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged.")
                 case 0x2F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:2F")
-                        print("SRA (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRA (IY+D),A - FD:CB:d:2F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and the previous contents of bit 7 are unchanged. The result is then stored in A.")
                 case 0x30:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:30")
-                        print("SLL (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),B - FD:CB:d:30")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in B")
                 case 0x31:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:31")
-                        print("SLL (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),C - FD:CB:d:31")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in C")
                 case 0x32:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:32")
-                        print("SLL (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),D - FD:CB:d:32")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in D")
                 case 0x33:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:33")
-                        print("SLL (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),E - FD:CB:d:33")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in E")
                 case 0x34:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:34")
-                        print("SLL (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),H - FD:CB:d:34")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in H")
                 case 0x35:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:35")
-                        print("SLL (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),L - FD:CB:d:35")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in L")
                 case 0x36:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:36")
-                        print("SLL (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D) - FD:CB:d:36")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0.")
                 case 0x37:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:37")
-                        print("SLL (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SLL (IY+D),A - FD:CB:d:37")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus d are shifted left one bit position. The contents of bit 7 are put into the carry flag and a one is put into bit 0. The result is then stored in A.")
                 case 0x38:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:38")
-                        print("SRL (IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),B - FD:CB:d:38")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in B")
                 case 0x39:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:39")
-                        print("SRL (IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),C - FD:CB:d:39")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in C")
                 case 0x3A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3A")
-                        print("SRL (IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),D - FD:CB:d:3A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in D")
                 case 0x3B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3B")
-                        print("SRL (IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),E - FD:CB:d:3B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in E")
                 case 0x3C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3C")
-                        print("SRL (IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),H - FD:CB:d:3C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in H")
                 case 0x3D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3D")
-                        print("SRL (IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),L - FD:CB:d:3D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in L")
                 case 0x3E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3E")
-                        print("SRL (IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D) - FD:CB:d:3E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "The contents of the memory location pointed to by IY plus $d are shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7.")
                 case 0x3F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:3F")
-                        print("SRL (IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SRL (IY+D),A - FD:CB:d:3F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "+", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: true , MnemonicDescription: "The contents of the memory location pointed to by IY plus dare shifted right one bit position. The contents of bit 0 are copied to the carry flag and a zero is put into bit 7. The result is then stored in A.")
                 case 0x40:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:40")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:40")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x41:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:41")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:41")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x42:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:42")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:42")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x43:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:43")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:43")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x44:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:44")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:44")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+3
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x45:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:45")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:45")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x46:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                            print("FD:CB:d:46")
-                            print("BIT 0,(IY+D)")
+                            print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:46")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x47:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:47")
-                        print("BIT 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 0,(IY+D) - FD:CB:d:47")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x48:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:48")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:48")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x49:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:49")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:49")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4A")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4B")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4C")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4D")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4E")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x4F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:4F")
-                        print("BIT 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 1,(IY+D) - FD:CB:d:4F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x50:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:50")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:50")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x51:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:51")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:51")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x52:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:52")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:52")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x53:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:53")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:53")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x54:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:54")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:54")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x55:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:55")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:55")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x56:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:56")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:56")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x57:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:57")
-                        print("BIT 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 2,(IY+D) - FD:CB:d:57")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x58:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:58")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:58")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x59:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:59")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:59")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5A")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5B")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5C")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5D")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5E")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x5F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:5F")
-                        print("BIT 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 3,(IY+D) - FD:CB:d:5F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x60:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:60")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:60")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x61:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:61")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:61")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x62:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:62")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:62")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x63:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:63")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:63")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x64:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:64")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:64")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x65:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:65")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:65")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x66:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:66")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:66")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x67:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:67")
-                        print("BIT 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 4,(IY+D) - FD:CB:d:67")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 4 of the memory location pointed to by IY plus $d.")
                 case 0x68:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:68")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:68")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x69:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:69")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:69")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6A")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6B")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6C")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6D")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6E")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+3
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x6F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:6F")
-                        print("BIT 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 5,(IY+D) - FD:CB:d:6F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 5 of the memory location pointed to by IY plus $d.")
                 case 0x70:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:70")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:70")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x71:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:71")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:71")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x72:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                    print("FD:CB:d:72")
-                    print("BIT 6,(IY+D)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:72")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x73:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:73")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:73")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x74:  // **** Still need to implement this opcode $$$$ enhanced debug output
                     #if DEBUG_CODE
-                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC)),"BIT 6,(IY+D) - FD:CB:d:74")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:74")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x75:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:75")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:75")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x76:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:76")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:76")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x77:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:77")
-                        print("BIT 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 6,(IY+D) - FD:CB:d:77")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 6 of the memory location pointed to by IY plus $d.")
                 case 0x78:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:78")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:78")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x79:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:79")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:79")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7A")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7B")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7C")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7D")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7E")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: false , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x7F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:7F")
-                        print("BIT 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - BIT 7,(IY+D) - FD:CB:d:7F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "0", PVFlag: " ", HFlag: "1", ZFlag: "+", SFlag: " ", UndocumentedFlag: true , MnemonicDescription: "Tests bit 7 of the memory location pointed to by IY plus $d.")
                 case 0x80:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:80")
-                        print("RES 0,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),B - FD:CB:d:80")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0x81:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:81")
-                        print("RES 0,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),C - FD:CB:d:81")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0x82:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:82")
-                        print("RES 0,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),D - FD:CB:d:82")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0x83:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:83")
-                        print("RES 0,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),E - FD:CB:d:83")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0x84:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:84")
-                        print("RES 0,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),H - FD:CB:d:84")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0x85:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:85")
-                        print("RES 0,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),L - FD:CB:d:85")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0x86:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:86")
-                        print("RES 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D) - FD:CB:d:86")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus $d.")
                 case 0x87:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:87")
-                        print("RES 0,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 0,(IY+D),A - FD:CB:d:87")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 0 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0x88:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                        print("FD:CB:d:88")
-                        print("RES 1,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),B - FD:CB:d:88")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0x89:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:89")
-                        print("RES 1,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),C - FD:CB:d:89")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0x8A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8A")
-                        print("RES 1,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),D - FD:CB:d:8A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0x8B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8B")
-                        print("RES 1,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),E - FD:CB:d:8B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0x8C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8C")
-                        print("RES 1,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),H - FD:CB:d:8C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0x8D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8D")
-                        print("RES 1,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),L - FD:CB:d:8D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0x8E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8E")
-                        print("RES 1,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D) - FD:CB:d:8E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus $d.")
                 case 0x8F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:8F")
-                        print("RES 1,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 1,(IY+D),A - FD:CB:d:8F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 1 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0x90:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:90")
-                        print("RES 2,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),B - FD:CB:d:90")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0x91:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:91")
-                        print("RES 2,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),C - FD:CB:d:91")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0x92:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:92")
-                        print("RES 2,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),D - FD:CB:d:92")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0x93:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:93")
-                        print("RES 2,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),E - FD:CB:d:93")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0x94:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:94")
-                        print("RES 2,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),H - FD:CB:d:94")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0x95:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:95")
-                        print("RES 2,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),L - FD:CB:d:95")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0x96:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:96")
-                        print("RES 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D) - FD:CB:d:96")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus $d.")
                 case 0x97:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:97")
-                        print("RES 2,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 2,(IY+D),A - FD:CB:d:97")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 2 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0x98:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:98")
-                        print("RES 3,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),B - FD:CB:d:98")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0x99:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:99")
-                        print("RES 3,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),C - FD:CB:d:99")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0x9A:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9A")
-                        print("RES 3,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),D - FD:CB:d:9A")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0x9B:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9B")
-                        print("RES 3,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),E - FD:CB:d:9B")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0x9C:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9C")
-                        print("RES 3,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),H - FD:CB:d:9C")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0x9D:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9D")
-                        print("RES 3,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),L - FD:CB:d:9D")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0x9E:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9E")
-                        print("RES 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D) - FD:CB:d:9E")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 3 of the memory location pointed to by IY plus $d.")
                 case 0x9F:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:9F")
-                        print("RES 3,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 3,(IY+D),A - FD:CB:d:9F")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xA0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A0")
-                        print("RES 4,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),B - FD:CB:d:A0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xA1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A1")
-                        print("RES 4,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),C - FD:CB:d:A1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xA2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A2")
-                        print("RES 4,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),D - FD:CB:d:A2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xA3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A3")
-                        print("RES 4,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),E - FD:CB:d:A3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xA4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A4")
-                        print("RES 4,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),H - FD:CB:d:A4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xA5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A5")
-                        print("RES 4,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),L - FD:CB:d:A5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xA6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A6")
-                        print("RES 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D) - FD:CB:d:A6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus $d.")
                 case 0xA7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A7")
-                        print("RES 4,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 4,(IY+D),A - FD:CB:d:A7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xA8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A8")
-                        print("RES 5,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),B - FD:CB:d:A8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xA9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:A9")
-                        print("RES 5,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),C - FD:CB:d:A9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xAA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:AA")
-                        print("RES 5,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),D - FD:CB:d:AA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xAB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:AB")
-                        print("RES 5,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),E - FD:CB:d:AB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xAC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:AC")
-                        print("RES 5,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),H - FD:CB:d:AC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xAD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:AD")
-                          print("RES 5,(IY+D),L")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),L - FD:CB:d:AD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xAE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:AE")
-                          print("RES 5,(IY+D)")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D) - FD:CB:d:AE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus $d.")
                 case 0xAF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:AF")
-                          print("RES 5,(IY+D),A")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 5,(IY+D),A - FD:CB:d:AF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 5 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xB0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B0")
-                          print("RES 6,(IY+D),B")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),B - FD:CB:d:B0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xB1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B1")
-                          print("RES 6,(IY+D),C")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),C - FD:CB:d:B1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xB2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B2")
-                          print("RES 6,(IY+D),D")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),D - FD:CB:d:B2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xB3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B3")
-                          print("RES 6,(IY+D),E")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),E - FD:CB:d:B3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xB4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B4")
-                          print("RES 6,(IY+D),H")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),H - FD:CB:d:B4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xB5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B5")
-                          print("RES 6,(IY+D),L")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),L - FD:CB:d:B5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xB6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B6")
-                          print("RES 6,(IY+D)")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D) - FD:CB:d:B6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus $d.")
                 case 0xB7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B7")
-                          print("RES 6,(IY+D),A")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 6,(IY+D),A - FD:CB:d:B7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 6 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xB8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B8")
-                          print("RES 7,(IY+D),B")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),B - FD:CB:d:B8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xB9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:B9")
-                          print("RES 7,(IY+D),C")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),C - FD:CB:d:B9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xBA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BA")
-                          print("RES 7,(IY+D),D")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),D - FD:CB:d:BA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xBB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BB")
-                          print("RES 7,(IY+D),E")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),E - FD:CB:d:BB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xBC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BC")
-                          print("RES 7,(IY+D),H")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),H - FD:CB:d:BC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xBD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BD")
-                          print("RES 7,(IY+D),L")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),L - FD:CB:d:BD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xBE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BE")
-                          print("RES 7,(IY+D)")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D) - FD:CB:d:BE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus $d.")
                 case 0xBF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                          print("FD:CB:d:BF")
-                          print("RES 7,(IY+D),A")
+                          print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RES 7,(IY+D),A - FD:CB:d:BF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Resets bit 7 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xC0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C0")
-                        print("SET 0,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),B - FD:CB:d:C0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xC1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C1")
-                        print("SET 0,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),C - FD:CB:d:C1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xC2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C2")
-                        print("SET 0,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),D - FD:CB:d:C2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xC3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C3")
-                        print("SET 0,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),E - FD:CB:d:C3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xC4:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:CB:d:C4")
-                    print("SET 0,(IY+D),H")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),H - FD:CB:d:C4")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xC5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C5")
-                        print("SET 0,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),L - FD:CB:d:C5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xC6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C6")
-                        print("SET 0,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D) - FD:CB:d:C6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus $d.")
                 case 0xC7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C7")
-                        print("SET 0,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 0,(IY+D),A - FD:CB:d:C7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 0 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xC8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:C8")
-                        print("SET 1,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),B - FD:CB:d:C8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xC9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                    print("FD:CB:d:C9")
-                    print("SET 1,(IY+D),C")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),C - FD:CB:d:C9")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xCA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:CA")
-                        print("SET 1,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),D - FD:CB:d:CA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xCB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:CB")
-                        print("SET 1,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),E - FD:CB:d:CB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xCC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:CC")
-                        print("SET 1,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),H - FD:CB:d:CC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xCD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:CD")
-                        print("SET 1,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),L - FD:CB:d:CD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xCE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                            print("FD:CB:d:CE")
-                            print("SET 1,(IY+D)")
+                            print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D) - FD:CB:d:CE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus $d.")
                 case 0xCF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:CF")
-                        print("SET 1,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 1,(IY+D),A - FD:CB:d:CF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 1 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xD0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D0")
-                        print("SET 2,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),B - FD:CB:d:D0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xD1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D1")
-                        print("SET 2,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),C - FD:CB:d:D1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xD2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D2")
-                        print("SET 2,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),D - FD:CB:d:D2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xD3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D3")
-                        print("SET 2,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),E - FD:CB:d:D3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xD4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D4")
-                        print("SET 2,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),H - FD:CB:d:D4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2   of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xD5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D5")
-                        print("SET 2,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),L - FD:CB:d:D5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xD6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D6")
-                        print("SET 2,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D) - FD:CB:d:D6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus $d.")
                 case 0xD7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D7")
-                        print("SET 2,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 2,(IY+D),A - FD:CB:d:D7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 2 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xD8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D8")
-                        print("SET 3,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),B - FD:CB:d:D8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in B")
                 case 0xD9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:D9")
-                        print("SET 3,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),C - FD:CB:d:D9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in C")
                 case 0xDA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DA")
-                        print("SET 3,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),D - FD:CB:d:DA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in D")
                 case 0xDB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DB")
-                        print("SET 3,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),E - FD:CB:d:DB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in E")
                 case 0xDC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DC")
-                        print("SET 3,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),H - FD:CB:d:DC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in H")
                 case 0xDD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DD")
-                        print("SET 3,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),L - FD:CB:d:DD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in L")
                 case 0xDE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DE")
-                        print("SET 3,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D) - FD:CB:d:DE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d.")
                 case 0xDF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:DF")
-                        print("SET 3,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 3,(IY+D),A - FD:CB:d:DF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 3 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xE0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E0")
-                        print("SET 4,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),B - FD:CB:d:E0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xE1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E1")
-                        print("SET 4,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),C - FD:CB:d:E1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xE2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E2")
-                        print("SET 4,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),D - FD:CB:d:E2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xE3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E3")
-                        print("SET 4,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),E - FD:CB:d:E3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xE4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E4")
-                        print("SET 4,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),H - FD:CB:d:E4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xE5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E5")
-                        print("SET 4,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),L - FD:CB:d:E5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xE6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E6")
-                        print("SET 4,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D) - FD:CB:d:E6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus $d.")
                 case 0xE7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E7")
-                        print("SET 4,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 4,(IY+D),A - FD:CB:d:E7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 4 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xE8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E8")
-                        print("SET 5,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),B - FD:CB:d:E8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in B")
                 case 0xE9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:E9")
-                        print("SET 5,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),C - FD:CB:d:E9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in C")
                 case 0xEA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:EA")
-                        print("SET 5,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),D - FD:CB:d:EA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in D")
                 case 0xEB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:EB")
-                        print("SET 5,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),E - FD:CB:d:EB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in E")
                 case 0xEC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:EC")
-                        print("SET 5,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),H - FD:CB:d:EC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in H")
                 case 0xED:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:ED")
-                        print("SET 5,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),L - FD:CB:d:ED")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in L")
                 case 0xEE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:EE")
-                        print("SET 5,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D) - FD:CB:d:EE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d.")
                 case 0xEF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:EF")
-                        print("SET 5,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 5,(IY+D),A - FD:CB:d:EF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 5 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xF0:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F0")
-                        print("SET 6,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),B - FD:CB:d:F0")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in B")
                 case 0xF1:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F1")
-                        print("SET 6,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),C - FD:CB:d:F1")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in C")
                 case 0xF2:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F2")
-                        print("SET 6,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),D - FD:CB:d:F2")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in D")
                 case 0xF3:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F3")
-                        print("SET 6,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),E - FD:CB:d:F3")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in E")
                 case 0xF4:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F4")
-                        print("SET 6,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),H - FD:CB:d:F4")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in H")
                 case 0xF5:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F5")
-                        print("SET 6,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),L - FD:CB:d:F5")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d. The result is then stored in L")
                 case 0xF6:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F6")
-                        print("SET 6,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D) - FD:CB:d:F6")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus $d.")
                 case 0xF7:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F7")
-                        print("SET 6,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 6,(IY+D),A - FD:CB:d:F7")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 6 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 case 0xF8:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F8")
-                        print("SET 7,(IY+D),B")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),B - FD:CB:d:F8")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in B")
                 case 0xF9:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:F9")
-                        print("SET 7,(IY+D),C")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),C - FD:CB:d:F9")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in C.")
                 case 0xFA:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FA")
-                        print("SET 7,(IY+D),D")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),D - FD:CB:d:FA")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in D")
                 case 0xFB:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FB")
-                        print("SET 7,(IY+D),E")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),E - FD:CB:d:FB")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in E")
                 case 0xFC:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FC")
-                        print("SET 7,(IY+D),H")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),H - FD:CB:d:FC")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in H")
                 case 0xFD:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FD")
-                        print("SET 7,(IY+D),L")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),L - FD:CB:d:FD")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in L")
                 case 0xFE:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FE")
-                        print("SET 7,(IY+D)")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D) - FD:CB:d:FE")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d.")
                 case 0xFF:  // **** Still need to implement this opcode
                     #if DEBUG_CODE
-                        print("FD:CB:d:FF")
-                        print("SET 7,(IY+D),A")
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - SET 7,(IY+D),A - FD:CB:d:FF")
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+4
                     // OpcodeSize: 4, InstructionSize: 4, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: true , MnemonicDescription: "Sets bit 7 of the memory location pointed to by IY plus d. The result is then stored in A.")
                 default : // **** Confirm what PC count jump should be
                     #if DEBUG_CODE
-                        print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                        print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                     #endif
                     TheseRegisters.PC = TheseRegisters.PC+1
                 } // End switch FD:CB
             case 0xE1:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:E1::")
-                    print("POP IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP IY - FD:E1::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The memory location pointed to by SP is stored into IYL and SP is incremented. The memory location pointed to by SP is stored into IYH and SP is incremented again.")
             case 0xE3:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:E3::")
-                    print("EX (SP),IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - POP (SP),IY - FD:E3::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [23], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Exchanges (SP) with IYL, and (SP+1) with IYH.")
             case 0xE5:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:E5::")
-                    print("PUSH IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - PUSH IY - FD:E5::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [15], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "SP is decremented and IYH is stored into the memory location pointed to by SP. SP is decremented again and IYL is stored into the memory location pointed to by SP.")
             case 0xE9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:E9::")
-                    print("JP (IY)")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - JP (IY) - FD:E9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [8], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IY into PC.")
             case 0xF9:  // **** Still need to implement this opcode
                 #if DEBUG_CODE
-                    print("FD:F9::")
-                    print("LD SP,IY")
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - LD SP,IY - FD:F9::")
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value of IY into SP.")
             default : // **** Confirm what PC count jump should be
                 #if DEBUG_CODE
-                    print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                    print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
                 #endif
                 TheseRegisters.PC = TheseRegisters.PC+1
             } // End switch FD
         case 0xFE: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("CP N - FE:n::")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - CP N - FE:n::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+2
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [7], CFlag: "+", NFlag: "+", PVFlag: "v", HFlag: "+", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Subtracts $n from A and affects flags according to the result. A is not modified.")
         case 0xFF: // **** Still need to implement this opcode
             #if DEBUG_CODE
-                print("RST 38H - FF:::")
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - RST 38H - FF:::")
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [11], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus one is pushed onto the stack, then is loaded with 38h")
         default: // **** Confirm what PC count jump should be
             #if DEBUG_CODE
-                print("Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
+                print("PC:",String(format: "%04X",Int(TheseRegisters.PC))," - Unimplemented opcode - ",FirstByte,":",SecondByte,":",ThirdByte,":",FourthByte)
             #endif
             TheseRegisters.PC = TheseRegisters.PC+1
         } // End switch FirstByte

@@ -25,6 +25,7 @@ class Microbee : ObservableObject
     var MicrobeeModel : MicrobeeModelType
     var BatteryBackupOn : Bool
     var ExecCount : Int = 0
+    var ExecutionCycles : Int = 1000
     var DebugView : Bool = true
     
     var MyCRTC = CRTC()
@@ -92,39 +93,40 @@ class Microbee : ObservableObject
     {
         if (MyZ80.CPURunning) // && (ExecCount < 1)
         {
-            #if DEBUG_CODE
-                let clock = ContinuousClock()
-                let result = clock.measure
-                {
-                    for MyIndex in 1...100
-                    {
-                        MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
-                    }
-                    print(result)
-                    print(result/100)
-                }
-            #else
-                for MyIndex in 1...100
+        #if DEBUG_CODE
+            let clock = ContinuousClock()
+            let result = clock.measure
+            {
+                for MyIndex in 1...ExecutionCycles
                 {
                     MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
                 }
-            #endif
+            }
+            //let elapsed = result/ExecutionCycles
+            //let milliseconds = elapsed.components.seconds * 1000 // + elapsed.components.attoseconds / 1_000_000_000_000_000
+            print("Aggregate instruction time : ",result)
+            print("Individual instruction time : ",result/ExecutionCycles)
+        #else
+            {
+                MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
+            }
+        #endif
             ExecCount = ExecCount + 1
         }
     }
     
     func StepInstruction( JumpValue : Int )
     {
-    #if DEBUG_CODE
-        let clock = ContinuousClock()
-        let result = clock.measure
-        {
-            MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
-        }
-        print(result)
-    #else
-        MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
-    #endif
+        #if DEBUG_CODE
+            let clock = ContinuousClock()
+            let result = clock.measure
+            {
+                MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
+            }
+            print("Individualinstruction time : ",result)
+            #else
+                MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
+          #endif
     }
     
     
