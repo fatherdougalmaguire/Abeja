@@ -95,18 +95,17 @@ class Microbee : ObservableObject
         {
         #if DEBUG_CODE
             let clock = ContinuousClock()
-            let result = clock.measure
+            let elapsed = clock.measure
             {
-                for MyIndex in 1...ExecutionCycles
+                for _ in 1...ExecutionCycles
                 {
                     MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
                 }
             }
-            //let elapsed = result/ExecutionCycles
-            //let milliseconds = elapsed.components.seconds * 1000 // + elapsed.components.attoseconds / 1_000_000_000_000_000
-            print("Aggregate instruction time : ",result)
-            print("Individual instruction time : ",result/ExecutionCycles)
+            print("Aggregate instruction time : ",elapsed)
+            print("Individual instruction time : ",elapsed/ExecutionCycles)
         #else
+            for _ in 1...ExecutionCycles
             {
                 MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
             }
@@ -123,7 +122,7 @@ class Microbee : ObservableObject
             {
                 MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
             }
-            print("Individualinstruction time : ",result)
+            print("Individual instruction time : ",result)
             #else
                 MyZ80.FetchInstruction(TheseRegisters : &CPURegisters,ThisMemory : &AllTheRam, ThisScreenMemory : &MyCRTC.screenram)
           #endif
@@ -183,6 +182,7 @@ class Microbee : ObservableObject
         self.AllTheRam.AddressSpace[0x0014] = 0x4F
         self.AllTheRam.AddressSpace[0x0015] = 0x77
         self.AllTheRam.AddressSpace[0x0016] = 0x23
+        self.ExecutionCycles = 1000
     }
 }
 

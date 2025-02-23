@@ -36,7 +36,8 @@ struct SwarmEmuApp: App {
             }
             CommandGroup(replacing: .help) {
                 Divider()
-                Link("Microbee Technologies Forum", destination: URL(string: "https://microbeetechnology.com.au/forum/")!)
+                Link("Microbee Software Preservation Project Forum", destination: URL(string: "https://microbee-mspp.org/forum/")!)
+                Link("Microbee Technology Forum", destination: URL(string: "https://microbeetechnology.com.au/forum/")!)
                 Link("Hello to Jason Isaacs", destination: URL(string: "https://www.kermodeandmayo.com")!)
             }
         }

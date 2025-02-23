@@ -123,7 +123,7 @@ struct SettingsView: View
     @State var ScreenColourChoice: String = "Amber"
     @State var interlace: Bool = false
     @State var debugview : Bool = true
-    
+
     var body: some View {
         Form()
         {
@@ -190,6 +190,14 @@ struct SettingsView: View
             {
                 ThisMicrobee.DebugView = !ThisMicrobee.DebugView
             }
+            TextField(
+                "PC:",
+                value: $ThisMicrobee.CPURegisters.PC, format: .number
+            ).padding().textFieldStyle(RoundedBorderTextFieldStyle())
+            TextField(
+                "Cycle count:",
+                value: $ThisMicrobee.ExecutionCycles, format: .number
+            ).padding().textFieldStyle(RoundedBorderTextFieldStyle())
         }.frame(width:350,alignment: .leading)
     }
 }
@@ -345,6 +353,14 @@ struct RegisterView : View
         header:
             {
                 Text("Flags")
+            }
+           Section
+           {
+                Text(String(ThisMicrobee.ExecutionCycles)+" cycles").monospaced().foregroundColor(.orange)
+            }
+        header:
+            {
+                Text("Misc Debug")
             }
         }.listStyle(.inset(alternatesRowBackgrounds: true))
     }
