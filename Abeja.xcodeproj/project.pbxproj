@@ -337,7 +337,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.193;
+				CURRENT_PROJECT_VERSION = 0.194;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
@@ -346,13 +346,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Abeja;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024. All Rights Reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024-2025. All Rights Reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.193;
+				MARKETING_VERSION = 0.194;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -369,7 +369,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.193;
+				CURRENT_PROJECT_VERSION = 0.194;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
@@ -378,13 +378,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Abeja;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024. All Rights Reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "\U0003© Tony Sanchez 2024-2025. All Rights Reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.193;
+				MARKETING_VERSION = 0.194;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

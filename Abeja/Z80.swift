@@ -52,8 +52,8 @@ class Z80 : ObservableObject {
             self.R = 0
             self.IX = 0
             self.IY = 0
-            self.SP = 0
-            self.PC = 0x0000
+            self.SP = 0xFFFF
+            self.PC = 0x8000
         }
     }
     
@@ -1515,6 +1515,8 @@ class Z80 : ObservableObject {
         var SecondByte : UInt8
         var ThirdByte : UInt8
         var FourthByte : UInt8
+        var TempResult : UInt8
+        var BitCount : UInt8 = 0
         
         var MemoryAddress : Int
         
@@ -1833,11 +1835,21 @@ class Z80 : ObservableObject {
 #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "*", NFlag: "-", PVFlag: "p", HFlag: "*", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Adjusts A for BCD addition and subtraction operations.")
-        case 0x28: // **** Still need to implement this opcode
+        case 0x28: // **** in progress.   Implement negative Intdisplacement
 #if DEBUG_CODE
             print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - JR Z,"+String(format: "%02X",Int(SecondByte))+" - 28:"+String(format: "%02X",Int(SecondByte)))
 #endif
-            TheseRegisters.PC = TheseRegisters.PC+2
+            //            Flag            S   Z   -   H   -   P   N   C
+            //            Binary bit      7   6   5   4   3   2   1   0
+                        TempResult = TheseRegisters.A | TheseRegisters.A
+                        if TempResult & (1 << 6) > 0 // Z is set
+                        {
+                            TheseRegisters.PC = TheseRegisters.PC+UInt16(SecondByte)
+                        }
+                        else
+                        {
+                            TheseRegisters.PC = TheseRegisters.PC+2
+                        }
             // OpcodeSize: 1, InstructionSize: 2, Cycle: [12,7], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the signed value $d is added to PC. The jump is measured from the start of the instruction opcode.")
         case 0x29: // **** Still need to implement this opcode
 #if DEBUG_CODE
@@ -2809,10 +2821,47 @@ class Z80 : ObservableObject {
 #endif
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [7], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with (HL).")
-        case 0xB7:  // **** Still need to implement this opcode
+        case 0xB7:
 #if DEBUG_CODE
             print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - OR A - B7")
 #endif
+//            Flag            S   Z   -   H   -   P   N   C
+//            Binary bit      7   6   5   4   3   2   1   0
+            TempResult = TheseRegisters.A | TheseRegisters.A
+            if TempResult & (1 << 7) > 0 // S - set if result is negative, otherwise reset
+            {
+                TheseRegisters.F = TheseRegisters.F | (1 << 7)
+            }
+            else
+            {
+                TheseRegisters.F = TheseRegisters.F & ~(1 << 7)
+            }
+            if TempResult == 0 // Z - set if result is 0, otherwise reset
+            {
+                TheseRegisters.F = TheseRegisters.F | (1 << 6)
+            }
+            else
+            {
+                TheseRegisters.F = TheseRegisters.F & ~(1 << 6)
+            }
+            TheseRegisters.F = TheseRegisters.F & ~(1 << 4) // H - reset
+            for MyIndex in 0...7
+            {
+              if TempResult & (1 << MyIndex) > 0
+              {
+                  BitCount = BitCount+1
+              }
+            }
+            if BitCount % 2 == 0 // P/V - set if even number of bits, otherwise reset
+            {
+                TheseRegisters.F = TheseRegisters.F | (1 << 2)
+            }
+            else
+            {
+                TheseRegisters.F = TheseRegisters.F & ~(1 << 2)
+            }
+            TheseRegisters.F = TheseRegisters.F & ~(1 << 1) // N - reset
+            TheseRegisters.F = TheseRegisters.F & ~(1 << 0) // C - reset
             TheseRegisters.PC = TheseRegisters.PC+1
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [4], CFlag: "0", NFlag: "0", PVFlag: "p", HFlag: "0", ZFlag: "+", SFlag: "+", UndocumentedFlag: false , MnemonicDescription: "Bitwise OR on A with A.")
         case 0xB8:  // **** Still need to implement this opcode
@@ -2881,11 +2930,11 @@ class Z80 : ObservableObject {
 #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is unset, $nn is copied to PC.")
-        case 0xC3:  // **** Still need to implement this opcode
+        case 0xC3:
 #if DEBUG_CODE
             print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - JP "+String(format: "%04X",Int(ThirdByte)*0x100+Int(SecondByte))+" - C3:"+String(format: "%02X",Int(SecondByte))+":"+String(format: "%02X",Int(ThirdByte)))
 #endif
-            TheseRegisters.PC = TheseRegisters.PC+3
+            TheseRegisters.PC = UInt16(Int(ThirdByte)*0x100+Int(SecondByte))
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "$nn is copied to PC.")
         case 0xC4: // **** Still need to implement this opcode
 #if DEBUG_CODE
@@ -2921,7 +2970,9 @@ class Z80 : ObservableObject {
 #if DEBUG_CODE
             print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - RET - C9")
 #endif
-            TheseRegisters.PC = TheseRegisters.PC+1
+            MemoryAddress = Int(TheseRegisters.SP)
+            TheseRegisters.PC = UInt16(Int(ThisMemory.AddressSpace[MemoryAddress+1])*0x100+Int(ThisMemory.AddressSpace[MemoryAddress]))
+            TheseRegisters.SP = TheseRegisters.SP+2
             // OpcodeSize: 1, InstructionSize: 1, Cycle: [10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The top stack entry is popped into PC.")
         case 0xCA:  // **** Still need to implement this opcode
 #if DEBUG_CODE
@@ -4503,11 +4554,26 @@ class Z80 : ObservableObject {
 #endif
             TheseRegisters.PC = TheseRegisters.PC+3
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17,10], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "If the zero flag is set, the current PC value plus three is pushed onto the stack, then is loaded with $nn.")
-        case 0xCD:  // **** Still need to implement this opcode
+        case 0xCD:
 #if DEBUG_CODE
             print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - CALL "+String(format: "%04X",Int(ThirdByte)*0x100+Int(SecondByte))+" - CD:"+String(format: "%02X",Int(SecondByte))+":"+String(format: "%02X",Int(ThirdByte)))
 #endif
             TheseRegisters.PC = TheseRegisters.PC+3
+            TheseRegisters.SP = TheseRegisters.SP-1
+            MemoryAddress = Int(TheseRegisters.SP)
+            ThisMemory.AddressSpace[MemoryAddress] =  UInt8(TheseRegisters.PC/0x100)
+            if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
+            {
+                ThisScreenMemory[MemoryAddress-0xF000] =  Float(UInt8(TheseRegisters.PC/0x100))
+            }
+            TheseRegisters.SP = TheseRegisters.SP-1
+            MemoryAddress = Int(TheseRegisters.SP)
+            ThisMemory.AddressSpace[MemoryAddress] =  UInt8(TheseRegisters.PC % 0x100)
+            if (MemoryAddress >= 0xF000) && (MemoryAddress <= 0xF7FF)
+            {
+                ThisScreenMemory[MemoryAddress-0xF000] =  Float(UInt8(TheseRegisters.PC % 0x100))
+            }
+            TheseRegisters.PC = UInt16(Int(ThirdByte)*0x100+Int(SecondByte))
             // OpcodeSize: 1, InstructionSize: 3, Cycle: [17], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "The current PC value plus three is pushed onto the stack, then is loaded with $nn.")
         case 0xCE: // **** Still need to implement this opcode
 #if DEBUG_CODE
@@ -7308,11 +7374,13 @@ class Z80 : ObservableObject {
 #endif
                 TheseRegisters.PC = TheseRegisters.PC+4
                 // OpcodeSize: 2, InstructionSize: 4, Cycle: [20], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Loads the value pointed to by $nn into BC.")
-            case 0x4D:  // **** Still need to implement this opcode
+            case 0x4D:  // **** In progress
 #if DEBUG_CODE
                 print("PC:"+String(format: "%04X",Int(TheseRegisters.PC))+" - RETI - ED:4D")
 #endif
-                TheseRegisters.PC = TheseRegisters.PC+2
+                MemoryAddress = Int(TheseRegisters.SP)
+                TheseRegisters.PC = UInt16(Int(ThisMemory.AddressSpace[MemoryAddress+1])*0x100+Int(ThisMemory.AddressSpace[MemoryAddress]))
+                TheseRegisters.SP = TheseRegisters.SP+2
                 // OpcodeSize: 2, InstructionSize: 2, Cycle: [14], CFlag: "-", NFlag: "-", PVFlag: "-", HFlag: "-", ZFlag: "-", SFlag: "-", UndocumentedFlag: false , MnemonicDescription: "Used at the end of a maskable interrupt service routine. The top stack entry is popped into PC, and signals an I/O device that the interrupt has finished, allowing nested interrupts (not a consideration on the TI).")
             case 0x4F:  // **** Still need to implement this opcode
 #if DEBUG_CODE

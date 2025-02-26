@@ -149,8 +149,8 @@ class Microbee : ObservableObject
         CPURegisters.R = 0
         CPURegisters.IX = 0
         CPURegisters.IY = 0
-        CPURegisters.SP = 0
-        CPURegisters.PC = 0x0000
+        CPURegisters.SP = 0xFFFF
+        CPURegisters.PC = 0x8000
         for MyIndex in 0x000...0xFFFF
         {
             AllTheRam.AddressSpace[MyIndex] = 0x00
