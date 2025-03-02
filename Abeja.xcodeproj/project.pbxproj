@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EA7F1A892C2FE1C4000CF5B7 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7F1A882C2FE1C4000CF5B7 /* Sound.swift */; };
+		EAD9C3E52D742EE3009F5437 /* z80.rom in Resources */ = {isa = PBXBuildFile; fileRef = EAD9C3E42D742EE3009F5437 /* z80.rom */; };
 		EADF416A2C2FDE07005DE675 /* buffer.metal in Sources */ = {isa = PBXBuildFile; fileRef = EADF41692C2FDE07005DE675 /* buffer.metal */; };
 		EADF41752C2FDE1E005DE675 /* AboutPanelCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416B2C2FDE1E005DE675 /* AboutPanelCommand.swift */; };
 		EADF41762C2FDE1E005DE675 /* Z80.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF416C2C2FDE1E005DE675 /* Z80.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		EA7F1A882C2FE1C4000CF5B7 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		EAD9C3E42D742EE3009F5437 /* z80.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = z80.rom; sourceTree = "<group>"; };
 		EADF41692C2FDE07005DE675 /* buffer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = buffer.metal; sourceTree = "<group>"; };
 		EADF416B2C2FDE1E005DE675 /* AboutPanelCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPanelCommand.swift; sourceTree = "<group>"; };
 		EADF416C2C2FDE1E005DE675 /* Z80.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Z80.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 		EACF73F22C2FDF8A00BDCCD2 /* ROMS */ = {
 			isa = PBXGroup;
 			children = (
+				EAD9C3E42D742EE3009F5437 /* z80.rom */,
 				EADF41812C2FDEA1005DE675 /* charrom.bin */,
 				EADF41822C2FDEA1005DE675 /* basic_5.22e.rom */,
 			);
@@ -176,6 +179,7 @@
 			files = (
 				EADF41832C2FDEA1005DE675 /* charrom.bin in Resources */,
 				EAFB12322C2FD7CF00B412DF /* Preview Assets.xcassets in Resources */,
+				EAD9C3E52D742EE3009F5437 /* z80.rom in Resources */,
 				EADF41842C2FDEA1005DE675 /* basic_5.22e.rom in Resources */,
 				EAFB122F2C2FD7CF00B412DF /* Assets.xcassets in Resources */,
 			);
@@ -337,7 +341,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.194;
+				CURRENT_PROJECT_VERSION = 0.195;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
@@ -352,7 +356,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.194;
+				MARKETING_VERSION = 0.195;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -369,7 +373,7 @@
 				CODE_SIGN_ENTITLEMENTS = Abeja/Abeja.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.194;
+				CURRENT_PROJECT_VERSION = 0.195;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Abeja/Preview Content\"";
 				DEVELOPMENT_TEAM = 5VUXP3WKH8;
@@ -384,7 +388,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.194;
+				MARKETING_VERSION = 0.195;
 				PRODUCT_BUNDLE_IDENTIFIER = com.emulator.Abeja;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
